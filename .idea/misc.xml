@@ -5,8 +5,10 @@
       <map>
         <entry key="app/src/main/res/drawable/community_background.xml" value="0.1335" />
         <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.1345" />
+        <entry key="app/src/main/res/drawable/triangle.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
         <entry key="app/src/main/res/layout/fragment_sports_home.xml" value="0.20989583333333334" />
+        <entry key="app/src/main/res/layout/news_item_list.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/sports_community_fragment.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/sports_home_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/sports_map_fragment.xml" value="0.22291666666666668" />
