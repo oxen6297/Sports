@@ -1,59 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:padding="10dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_margin="10dp"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/community_background"
-        android:padding="30dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/free_img"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/clipboard"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/community_background"
+            android:padding="30dp">
 
-        <TextView
-            android:id="@+id/free_board"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:gravity="center"
-            android:text="자유 게시판"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            app:layout_constraintStart_toEndOf="@+id/free_img"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/free_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/clipboard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/secret_img"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="30dp"
-            android:src="@drawable/secret"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/free_img" />
+            <TextView
+                android:id="@+id/free_board"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:text="자유 게시판"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/free_img"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
-            android:text="비밀 게시판"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            app:layout_constraintStart_toEndOf="@+id/secret_img"
-            app:layout_constraintTop_toBottomOf="@+id/free_img" />
+            <ImageView
+                android:id="@+id/secret_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/secret"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/free_img" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:text="비밀 게시판"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/secret_img"
+                app:layout_constraintTop_toBottomOf="@+id/free_img" />
+
+            <ImageView
+                android:id="@+id/question_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/question"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secret_img" />
+
+            <TextView
+                android:id="@+id/question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:text="질문 게시판"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/question_img"
+                app:layout_constraintTop_toBottomOf="@+id/secret_img" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/folding_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/question">
+
+                <ImageView
+                    android:id="@+id/sports_img"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/sports"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/sports"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:text="스포츠"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/sports_img"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/expand_btn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="40dp"
+                    android:background="@drawable/down"
+                    app:layout_constraintStart_toEndOf="@+id/sports"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/detail_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/folding_layout">
+
+                <ImageView
+                    android:id="@+id/ball_img"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/sports"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:text="구기종목"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/ball_img"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/leisure_img"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/kitesurf"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="관광레져"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/leisure_img"
+                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                <ImageView
+                    android:id="@+id/wave_img"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/wave"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/leisure_img" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="수상 스포츠"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/wave_img"
+                    app:layout_constraintTop_toBottomOf="@+id/leisure_img" />
+
+                <ImageView
+                    android:id="@+id/life_sports_img"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/run"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wave_img" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="생활 스포츠"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/life_sports_img"
+                    app:layout_constraintTop_toBottomOf="@+id/wave_img" />
+
+                <ImageView
+                    android:id="@+id/winter_sports"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/snowboarder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/life_sports_img" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="동계 스포츠"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/winter_sports"
+                    app:layout_constraintTop_toBottomOf="@+id/life_sports_img" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/faq_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/faq"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_layout" />
+
+            <TextView
+                android:id="@+id/faq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:text="문의하기"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/faq_img"
+                app:layout_constraintTop_toBottomOf="@+id/detail_layout" />
+
+            <ImageView
+                android:id="@+id/with_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/friends"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/faq_img" />
+
+            <TextView
+                android:id="@+id/with"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:text="함께해요!"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/with_img"
+                app:layout_constraintTop_toBottomOf="@+id/faq_img" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
