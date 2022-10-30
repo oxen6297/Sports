@@ -1,12 +1,11 @@
 package com.example.sportscommunity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.example.sportscommunity.community.FreeCategoryFragment
 import com.example.sportscommunity.databinding.ActivityMainBinding
-import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,37 +18,71 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val tabIconList = arrayListOf(
-            R.drawable.house,
-            R.drawable.community,
-            R.drawable.shop,
-            R.drawable.map,
-            R.drawable.reserved
-        )
 
-        binding.viewPager.adapter = SportsPagerAdapter(this, 5)
+        initBottomNavigation()
 
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.setIcon(tabIconList[position])
-        }.attach()
     }
 
-    class SportsPagerAdapter(
-        fragmentActivity: FragmentActivity,
-        private val tabCount: Int
-    ) : FragmentStateAdapter(fragmentActivity) {
-        override fun getItemCount(): Int = tabCount
+    private fun initBottomNavigation() {
 
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> SportsHomeFragment()
-                1 -> SportsCommunityFragment()
-                2 -> SportsShopFragment()
-                3 -> SportsMapFragment()
-                else -> SportsReservationFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container_view, SportsHomeFragment()).commitAllowingStateLoss()
+
+        binding.bottomNav.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, SportsHomeFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.community -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, SportsCommunityFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.shop -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, SportsShopFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.map -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, SportsMapFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                else -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, SportsReservationFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+
             }
-
         }
     }
+
+    fun changeFragment(index: Int) {
+        when (index) {
+            1 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, FreeCategoryFragment()).commit()
+            }
+            0 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, WriteContentFragment()).commit()
+            }
+        }
+    }
+
+    fun hideBottomNavigationView(hide: Boolean) {
+        if (hide) {
+            binding.bottomNav.visibility = View.GONE
+        }
+    }
+
 
 }
