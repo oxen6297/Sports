@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.SportsCommunityFragmentBinding
-import com.example.sportscommunity.databinding.SportsHomeFragmentBinding
 
 class SportsCommunityFragment : Fragment() {
 
@@ -25,6 +24,8 @@ class SportsCommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val mainActivity = (activity as MainActivity)
+
         binding.foldingLayout.setOnClickListener {
             if (binding.detailLayout.visibility == View.GONE) {
                 binding.detailLayout.visibility = View.VISIBLE
@@ -41,11 +42,15 @@ class SportsCommunityFragment : Fragment() {
             }
         }
 
+        binding.freeBoard.setOnClickListener {
+            mainActivity.changeFragment(1)
+        }
 
     }
-
     override fun onDestroy() {
         super.onDestroy()
         mBinding = null
     }
+
+
 }
