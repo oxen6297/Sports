@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/house"
+        android:title="홈"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/community"
+        android:enabled="true"
+        android:icon="@drawable/community"
+        android:title="커뮤니티"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/shop"
+        android:enabled="true"
+        android:icon="@drawable/shop"
+        android:title="중고거래"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/map"
+        android:enabled="true"
+        android:icon="@drawable/map"
+        android:title="친구찾기"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/reserved"
+        android:enabled="true"
+        android:icon="@drawable/reserved"
+        android:title="예약"
+        app:showAsAction="ifRoom" />
+</menu>
