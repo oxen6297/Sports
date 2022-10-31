@@ -42,20 +42,21 @@
                 android:layout_marginTop="20dp"
                 android:text="핫 게시물"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="18dp"
                 app:layout_constraintStart_toEndOf="@+id/fire_img"
                 app:layout_constraintTop_toBottomOf="@+id/search_edit" />
 
             <ImageView
                 android:id="@+id/fire_img"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_margin="20dp"
                 android:src="@drawable/fire"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/search_edit" />
 
             <TextView
+                android:background="@drawable/layout_background"
                 android:id="@+id/hot_text"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
@@ -68,7 +69,7 @@
                 android:id="@+id/img_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hot_text">

@@ -5,6 +5,8 @@
       <map>
         <entry key="app/src/main/res/drawable/community_background.xml" value="0.1335" />
         <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.1345" />
+        <entry key="app/src/main/res/drawable/layout_background.xml" value="0.141" />
+        <entry key="app/src/main/res/drawable/menu_select_color.xml" value="0.141" />
         <entry key="app/src/main/res/drawable/news_background.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/triangle.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
