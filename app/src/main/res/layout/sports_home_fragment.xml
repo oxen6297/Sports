@@ -198,14 +198,29 @@
 
             </com.google.android.gms.ads.AdView>
 
+            <TextView
+                android:id="@+id/title_news"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="30dp"
+                android:text="오늘의 뉴스"
+                android:textColor="@color/black"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/adView" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/news_recycle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/adView" />
+                app:layout_constraintTop_toBottomOf="@id/title_news" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
