@@ -39,33 +39,39 @@ class SportsHomeFragment : Fragment() {
 
         val call: Call<NewsList> = retrofitService.getNewsList()
 
-        call.enqueue(object : Callback<NewsList> {
-            override fun onResponse(
-                call: Call<NewsList>,
-                response: Response<NewsList>
-            ) {
-                if (response.isSuccessful) {
+            call.enqueue(object : Callback<NewsList> {
+                override fun onResponse(
+                    call: Call<NewsList>,
+                    response: Response<NewsList>
+                ) {
 
-                    binding.newsRecycle.apply {
-                        this.adapter = ListSourceAdapter(
-                            requireContext(),
-                            response.body()?.articles
-                        )
-                        this.layoutManager = LinearLayoutManager(
-                            requireContext(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                        )
-                        Log.d("success", "ad")
-                        Log.d("loadNews", response.body()?.articles.toString())
+                    try {
+                        if (response.isSuccessful) {
+
+                            binding.newsRecycle.apply {
+                                this.adapter = ListSourceAdapter(
+                                    requireContext(),
+                                    response.body()?.articles
+                                )
+                                this.layoutManager = LinearLayoutManager(
+                                    requireContext(),
+                                    LinearLayoutManager.HORIZONTAL,
+                                    false
+                                )
+                                Log.d("success", "loadSuccess")
+                                Log.d("loadNews", response.body()?.articles.toString())
+                            }
+                        }
+                    } catch (e:Exception){
+                        e.printStackTrace()
                     }
-                }
-            }
 
-            override fun onFailure(call: Call<NewsList>, t: Throwable) {
-                Log.d("failed", "failed")
-            }
-        })
+                }
+
+                override fun onFailure(call: Call<NewsList>, t: Throwable) {
+                    Log.d("failed", "failed")
+                }
+            })
     }
 
     override fun onDestroy() {
