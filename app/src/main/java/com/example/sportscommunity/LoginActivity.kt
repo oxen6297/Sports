@@ -1,14 +1,12 @@
 package com.example.sportscommunity
 
-import android.app.Application
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sportscommunity.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
@@ -32,6 +30,9 @@ class LoginActivity : AppCompatActivity() {
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.findPassword.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        binding.signUpBtn.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+
         val keyHash = Utility.getKeyHash(this)
         Log.d("keyHash", keyHash)
 
@@ -46,9 +47,54 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
+        binding.kakaoLoginBtn.setOnClickListener {
 
+//            // 로그인 정보 확인 (토큰 값이 있으면 자동 로그인)
+//            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+//                if (error != null) {
+//                    Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
+//                }
+//                else if (tokenInfo != null) {
+//                    Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
+//                    val intent = Intent(this, MainActivity::class.java)
+//                    startActivity(intent)
+//                }
+//            }
+
+            // 카카오계정으로 로그인
+            UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
+                if (error != null) {
+                    Log.d("tokenError", "로그인 실패", error)
+                } else if (token != null) {
+                    Log.d("LoginSuccess", "로그인 성공 ${token.accessToken}")
+                    val startMainIntent = Intent(this, MainActivity::class.java)
+                    startActivity(startMainIntent)
+                }
+            }
+
+            val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+                if (error != null) {
+                    Log.d("로그인 실패", error.toString())
+                } else if (token != null) {
+                    UserApiClient.instance.me { user, error ->
+                        startActivity(Intent(this, MainActivity::class.java))
+                    }
+                    Log.d("로그인성공", token.idToken.toString())
+                }
+            }
+
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(this@LoginActivity)) {
+                UserApiClient.instance.loginWithKakaoTalk(this@LoginActivity, callback = callback)
+            } else {
+                UserApiClient.instance.loginWithKakaoAccount(
+                    this@LoginActivity,
+                    callback = callback
+                )
+            }
+        }
 
         binding.run {
+            //네이버 API 연동
             naverLoginBtn.setOnClickListener {
 
                 val oAuthLoginCallback = object : OAuthLoginCallback {
@@ -86,6 +132,7 @@ class LoginActivity : AppCompatActivity() {
                         })
                     }
                 }
+
                 NaverIdLoginSDK.initialize(
                     this@LoginActivity,
                     getString(R.string.naver_cliend_id),
@@ -96,5 +143,4 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
 }
