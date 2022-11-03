@@ -15,8 +15,11 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
+        app:itemIconTint="@drawable/menu_select_color"
+        app:itemTextColor="@drawable/menu_select_color"
         android:layout_width="match_parent"
         app:labelVisibilityMode="labeled"
+        android:background="@color/white"
         app:menu="@menu/bottom_nav_menu"
         android:layout_height="?attr/actionBarSize"/>
 
