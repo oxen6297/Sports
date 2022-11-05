@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    implementation 'com.tbuonomo:dotsindicator:4.2'
+
     implementation'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
@@ -62,4 +64,5 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.11.2" // 카카오 로그인
 
     implementation group: 'com.kakao.sdk', name: 'usermgmt', version: '1.30.0'
+
 }

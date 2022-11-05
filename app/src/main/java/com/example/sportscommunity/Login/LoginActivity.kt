@@ -1,13 +1,14 @@
 package com.example.sportscommunity.Login
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.sportscommunity.MainActivity
 import com.example.sportscommunity.R
 import com.example.sportscommunity.databinding.ActivityLoginBinding
@@ -37,22 +38,15 @@ class LoginActivity : AppCompatActivity() {
 
         binding.run {
 
-            findPassword.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-            signUpBtn.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-
             val keyHash = Utility.getKeyHash(this@LoginActivity)
             Log.d("keyHash", keyHash)
 
             val actionBar = supportActionBar
             actionBar?.hide()
 
-            findPassword.setOnClickListener {
-                startActivity(Intent(this@LoginActivity, FindPasswordActivity::class.java))
-            }
+            vPager.adapter = LoginPagerAdapter(this@LoginActivity, 4)
 
-            signUpBtn.setOnClickListener {
-                startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
-            }
+            dotsIndicator.setViewPager2(vPager)
 
             kakaoLoginBtn.setOnClickListener {
                 kakaoLogin(this@LoginActivity)
@@ -60,19 +54,31 @@ class LoginActivity : AppCompatActivity() {
 
             naverLoginBtn.setOnClickListener {
                 naverLogin(this@LoginActivity)
-
             }
+
+            loginAnother.setOnClickListener {
+                startActivity(Intent(this@LoginActivity,AnotherLoginActivity::class.java))
+            }
+
+
         }
     }
 
     //카카오 로그인
     private fun kakaoLogin(context: Context) {
+
         UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
             if (error != null) {
+
                 Log.d("failed to Login", "로그인 실패", error)
+
             } else if (token != null) {
+
                 Log.d("Success Login", "로그인 성공 ${token.accessToken}")
+
                 startActivity(Intent(context, MainActivity::class.java))
+
+                Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -133,6 +139,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.e("userGender", "네이버 로그인한 유저 정보 - 성별 : $gender")
 
                         startActivity(Intent(context, MainActivity::class.java))
+                        Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show()
                     }
                 })
             }
@@ -145,5 +152,23 @@ class LoginActivity : AppCompatActivity() {
             "맺음"
         )
         NaverIdLoginSDK.authenticate(context, oAuthLoginCallback)
+    }
+
+    class LoginPagerAdapter(
+        fragmentActivity: FragmentActivity,
+        private val tabCount: Int
+    ) : FragmentStateAdapter(fragmentActivity) {
+        override fun getItemCount(): Int {
+            return tabCount
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> ViewpagerFragmentOne()
+                1 -> ViewpagerFragmentTwo()
+                2 -> ViewpagerFragmentThree()
+                else -> ViewpagerFragmentFour()
+            }
+        }
     }
 }

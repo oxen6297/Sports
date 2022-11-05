@@ -1,4 +1,4 @@
-package com.example.sportscommunity
+package com.example.sportscommunity.Login
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import com.example.sportscommunity.MainActivity
 import com.example.sportscommunity.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
@@ -28,9 +29,16 @@ class SignUpActivity : AppCompatActivity() {
 
         binding.run {
 
-            checkNull(nicknameEdit,checkNickname,"별명을")
-            checkNull(smsEdit,checkSmsText,"인증번호를")
-            checkNull(joinEmailEdit,checkEmailText,"이메일을")
+            backBtn.setOnClickListener {
+                onBackPressed()
+            }
+
+            createAccount.setOnClickListener {
+                startActivity(Intent(this@SignUpActivity, AnotherLoginActivity::class.java))
+            }
+
+            checkNull(nicknameEdit, checkNicknameText, "별명을")
+            checkNull(joinEmailEdit, checkIdText, "이메일을")
 
             checkPasswordTextView(joinPasswordEdit, confirmPassword, checkPasswordText)
 
@@ -104,7 +112,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun checkNull(editText: EditText, textView: TextView, content: String) {
 
         editText.doAfterTextChanged {
-            if (editText.text.isEmpty()){
+            if (editText.text.isEmpty()) {
                 textView.text = "$content 입력해주세요."
             }
         }

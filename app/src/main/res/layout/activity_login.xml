@@ -4,158 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:orientation="vertical"
+    tools:context=".Login.LoginActivity">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/v_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/app_logo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="80dp"
-                android:src="@drawable/community"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dots_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dotsColor="#FFD0A2"
+            app:dotsSize="7dp"
+            app:dotsSpacing="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:selectedDotColor="@color/orange" />
 
-            <TextView
-                android:id="@+id/welcome_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="AppName에 오신것을 환영합니다!"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/app_logo" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <EditText
-                android:id="@+id/email_edit"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="80dp"
-                android:background="@drawable/email_edit_background"
-                android:elevation="5dp"
-                android:hint="이메일을 입력해주세요"
-                android:paddingLeft="20dp"
-                android:textColorHint="#D8D8D8"
-                android:textSize="13dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/welcome_text" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="20dp">
 
-            <EditText
-                android:id="@+id/password_edit"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/email_edit_background"
-                android:elevation="5dp"
-                android:hint="패스워드를 입력해주세요"
-                android:inputType="textPassword"
-                android:maxLength="16"
-                android:paddingLeft="20dp"
-                android:textColorHint="#D8D8D8"
-                android:textSize="13dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email_edit" />
+        <Button
+            android:id="@+id/naver_login_btn"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/naver_login_btn"
+            app:layout_constraintEnd_toStartOf="@+id/kakao_login_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/find_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="10dp"
-                android:paddingBottom="1dp"
-                android:text="비밀번호를 잊으셨나요?"
-                android:textColor="#8E8E8E"
-                android:textSize="10dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/password_edit"
-                app:layout_constraintTop_toBottomOf="@+id/password_edit" />
+        <Button
+            android:id="@+id/kakao_login_btn"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/kakao_login_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/naver_login_btn"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/sign_in_btn"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="40dp"
-                android:background="@drawable/login_btn"
-                android:gravity="center"
-                android:text="로그인"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/find_password" />
+        <TextView
+            android:id="@+id/login_another"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="27dp"
+            android:text="다른 방법으로 로그인 >"
+            android:textColor="#707070"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/naver_login_btn" />
 
-            <Button
-                android:id="@+id/naver_login_btn"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/naver_login_btn"
-                android:text="네이버로 계정으로 로그인"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/sign_in_btn"
-                app:layout_constraintTop_toBottomOf="@+id/sign_in_btn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/or_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="또는"
-                android:textColor="@color/black"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/naver_login_btn" />
-
-            <Button
-                android:id="@+id/kakao_login_btn"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/kakao_login_btn"
-                android:text="카카오톡 계정으로 로그인"
-                android:textColor="#251403"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/sign_in_btn"
-                app:layout_constraintTop_toBottomOf="@+id/or_text" />
-
-            <TextView
-                android:id="@+id/sign_up_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="50dp"
-                android:gravity="center"
-                android:paddingBottom="1dp"
-                android:text="계정이 없으신가요?  회원가입 하러 가기"
-                android:textColor="#8E8E8E"
-                android:textSize="10dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/kakao_login_btn" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
