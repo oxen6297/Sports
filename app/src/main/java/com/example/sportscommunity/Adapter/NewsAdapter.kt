@@ -35,8 +35,6 @@ class ListSourceAdapter(
 
             newsTitle.text = model.title
             newsTitle.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-            newsDescription.text = model.description
-
 
             newsTitle.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$url"))

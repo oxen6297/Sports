@@ -1,7 +1,22 @@
 package com.example.sportscommunity
 
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+
+object Retrofits {
+    private fun createRetrofit(baseUrl: String): Retrofit {
+
+        return Retrofit.Builder().baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    fun getNewsService(): NewsService {
+        return createRetrofit("https://newsapi.org/").create(NewsService::class.java)
+    }
+}
 
 data class News(
     var title: String?,
@@ -11,7 +26,27 @@ data class News(
     var publishedAt: String
 )
 
-class NewsList{
+data class User(
+    var name: String?,
+    var email: String?,
+    var birthday: String?
+)
+
+data class Content(
+    var title: String?,
+    var content: String?,
+    var writer: String?,
+    val image: String?
+)
+
+data class Shop(
+    var title: String?,
+    var content: String?,
+    var image: String,
+    var writer: String?
+)
+
+class NewsList {
     var articles: MutableList<News>? = null
 }
 

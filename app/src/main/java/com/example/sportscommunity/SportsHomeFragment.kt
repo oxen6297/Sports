@@ -31,47 +31,43 @@ class SportsHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://newsapi.org/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val retrofitService = retrofit.create(NewsService::class.java)
+        val retrofitService = Retrofits.getNewsService()
 
         val call: Call<NewsList> = retrofitService.getNewsList()
 
-            call.enqueue(object : Callback<NewsList> {
-                override fun onResponse(
-                    call: Call<NewsList>,
-                    response: Response<NewsList>
-                ) {
+        call.enqueue(object : Callback<NewsList> {
+            override fun onResponse(
+                call: Call<NewsList>,
+                response: Response<NewsList>
+            ) {
 
-                    try {
-                        if (response.isSuccessful) {
+                try {
+                    if (response.isSuccessful) {
 
-                            binding.newsRecycle.apply {
-                                this.adapter = ListSourceAdapter(
-                                    requireContext(),
-                                    response.body()?.articles
-                                )
-                                this.layoutManager = LinearLayoutManager(
-                                    requireContext(),
-                                    LinearLayoutManager.HORIZONTAL,
-                                    false
-                                )
-                                Log.d("success", "loadSuccess")
-                                Log.d("loadNews", response.body()?.articles.toString())
-                            }
+                        binding.newsRecycle.apply {
+                            this.adapter = ListSourceAdapter(
+                                requireContext(),
+                                response.body()?.articles
+                            )
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                            )
+                            Log.d("success", "loadSuccess")
+                            Log.d("loadNews", response.body()?.articles.toString())
                         }
-                    } catch (e:Exception){
-                        e.printStackTrace()
                     }
-
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
-                override fun onFailure(call: Call<NewsList>, t: Throwable) {
-                    Log.d("failed", "failed")
-                }
-            })
+            }
+
+            override fun onFailure(call: Call<NewsList>, t: Throwable) {
+                Log.d("failed", "failed")
+            }
+        })
     }
 
     override fun onDestroy() {
