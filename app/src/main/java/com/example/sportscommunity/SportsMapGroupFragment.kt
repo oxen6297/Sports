@@ -4,19 +4,20 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.example.sportscommunity.Adapter.backPressed
-import com.example.sportscommunity.databinding.SportsMapFragmentBinding
+import com.example.sportscommunity.databinding.SportsMapGroupFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class SportsMapFragment : Fragment() {
+class SportsMapGroupFragment : Fragment() {
 
-    //개인 탭
+    //그룹 모집 탭
 
-    private var mBinding: SportsMapFragmentBinding? = null
+    private var mBinding: SportsMapGroupFragmentBinding? = null
     private val binding get() = mBinding!!
 
     override fun onCreateView(
@@ -24,7 +25,7 @@ class SportsMapFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = SportsMapFragmentBinding.inflate(inflater, container, false)
+        mBinding = SportsMapGroupFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -67,7 +68,6 @@ class SportsMapFragment : Fragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
     }
 
     override fun onAttach(context: Context) {
@@ -80,5 +80,6 @@ class SportsMapFragment : Fragment() {
         super.onResume()
 
         (activity as AppCompatActivity).supportActionBar?.title = "함께해요"
+
     }
 }

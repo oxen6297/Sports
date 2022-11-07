@@ -1,11 +1,14 @@
 package com.example.sportscommunity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import com.example.sportscommunity.community.FreeCategoryFragment
 import com.example.sportscommunity.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         initBottomNavigation()
 
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.map -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, SportsMapFragment())
+                        .replace(R.id.fragment_container_view, SportsMapGroupFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
@@ -75,6 +77,14 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, WriteContentFragment()).commit()
             }
+            2 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, SportsMapFragment()).commit()
+            }
+            3-> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, SportsMapGroupFragment()).commit()
+            }
         }
     }
 
@@ -82,6 +92,10 @@ class MainActivity : AppCompatActivity() {
         if (hide) {
             binding.bottomNav.visibility = View.GONE
         }
+    }
+
+    fun showOptionMenu(boolean: Boolean) {
+
     }
 
 

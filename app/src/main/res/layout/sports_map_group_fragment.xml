@@ -8,7 +8,7 @@
     android:paddingRight="20dp">
 
     <EditText
-        android:id="@+id/search_edit"
+        android:id="@+id/group_search_edit"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
@@ -21,87 +21,100 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/search_btn"
+        android:id="@+id/group_search_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/search"
-        app:layout_constraintBottom_toBottomOf="@+id/search_edit"
-        app:layout_constraintEnd_toEndOf="@+id/search_edit"
-        app:layout_constraintTop_toTopOf="@+id/search_edit" />
+        app:layout_constraintBottom_toBottomOf="@+id/group_search_edit"
+        app:layout_constraintEnd_toEndOf="@+id/group_search_edit"
+        app:layout_constraintTop_toTopOf="@+id/group_search_edit" />
 
     <TextView
-        android:id="@+id/sort_far"
+        android:id="@+id/group_sort_time"
         android:layout_width="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:layout_height="24dp"
         android:layout_marginTop="13dp"
         android:background="@drawable/edit_text_background"
         android:gravity="center"
-        android:text="가까운순"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="최신순"
         android:textColor="@color/black"
         android:textSize="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_edit" />
+        app:layout_constraintTop_toBottomOf="@id/group_search_edit" />
 
     <TextView
-        android:id="@+id/sort_category"
+        android:id="@+id/group_sort_category"
         android:layout_width="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:layout_height="24dp"
-        android:layout_marginStart="17dp"
         android:layout_marginTop="13dp"
         android:background="@drawable/edit_text_background"
         android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="종목"
         android:textColor="@color/black"
         android:textSize="10dp"
-        app:layout_constraintEnd_toStartOf="@id/sort_area"
-        app:layout_constraintStart_toEndOf="@+id/sort_far"
-        app:layout_constraintTop_toBottomOf="@+id/search_edit" />
+        app:layout_constraintEnd_toStartOf="@id/group_sort_number_member"
+        app:layout_constraintStart_toEndOf="@+id/group_sort_time"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
 
     <TextView
-        android:id="@+id/sort_area"
+        android:id="@+id/group_sort_number_member"
         android:layout_width="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:layout_height="24dp"
-        android:layout_marginStart="17dp"
         android:layout_marginTop="13dp"
         android:background="@drawable/edit_text_background"
         android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="인원수"
+        android:textColor="@color/black"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/group_sort_area"
+        app:layout_constraintStart_toEndOf="@+id/group_sort_category"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
+
+    <TextView
+        android:id="@+id/group_sort_area"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/edit_text_background"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="지역"
         android:textColor="@color/black"
         android:textSize="10dp"
-        app:layout_constraintStart_toEndOf="@+id/sort_category"
-        app:layout_constraintTop_toBottomOf="@+id/search_edit" />
+        app:layout_constraintEnd_toStartOf="@+id/group_sort_man_woman"
+        app:layout_constraintStart_toEndOf="@+id/group_sort_number_member"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
 
     <TextView
-        android:id="@+id/sort_man_woman"
+        android:id="@+id/group_sort_man_woman"
         android:layout_width="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:layout_height="24dp"
-        android:layout_marginStart="17dp"
         android:layout_marginTop="13dp"
         android:background="@drawable/edit_text_background"
         android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="성별"
         android:textColor="@color/black"
         android:textSize="10dp"
-        app:layout_constraintStart_toEndOf="@+id/sort_area"
-        app:layout_constraintTop_toBottomOf="@+id/search_edit" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/group_play_with_recycle"
+        android:id="@+id/play_with_recycle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sort_far" />
+        app:layout_constraintTop_toBottomOf="@+id/group_sort_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
