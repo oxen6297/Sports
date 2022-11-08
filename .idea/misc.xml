@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/arrow_down.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/bot_sheet.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/bottom_sheet_background.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/bottom_sheet_dialog_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/comment_background.xml" value="0.1535" />
         <entry key="app/src/main/res/drawable/community_background.xml" value="0.1335" />
         <entry key="app/src/main/res/drawable/default_indicator.xml" value="0.145" />
@@ -27,6 +31,7 @@
         <entry key="app/src/main/res/layout/ball_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.21927083333333333" />
         <entry key="app/src/main/res/layout/community_item_list.xml" value="0.225" />
+        <entry key="app/src/main/res/layout/e_sports_fragment.xml" value="0.21927083333333333" />
         <entry key="app/src/main/res/layout/faq_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/fragment_sports_home.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/free_category_tab.xml" value="0.165" />
