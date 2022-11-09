@@ -32,7 +32,7 @@
     <item
         android:id="@+id/reserved"
         android:enabled="true"
-        android:icon="@drawable/reserved"
-        android:title="예약"
+        android:icon="@drawable/user"
+        android:title="마이페이지"
         app:showAsAction="ifRoom" />
 </menu>

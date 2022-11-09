@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <ImageView
+        android:id="@+id/myPage_box"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/login_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_profile_img"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
+        android:layout_marginLeft="20dp"
+        android:src="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/myPage_box"
+        app:layout_constraintStart_toStartOf="@id/myPage_box"
+        app:layout_constraintTop_toTopOf="@id/myPage_box" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/add_profile_img_btn"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/mypage_plus_circle"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/user_profile_img"
+        app:layout_constraintEnd_toEndOf="@id/user_profile_img"
+        app:layout_constraintStart_toEndOf="@id/user_profile_img" />
+
+    <TextView
+        android:id="@+id/user_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginRight="10dp"
+        android:text="oxen6297 님"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/myPage_box"
+        app:layout_constraintStart_toStartOf="@id/myPage_box"
+        app:layout_constraintTop_toTopOf="@id/myPage_box" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
