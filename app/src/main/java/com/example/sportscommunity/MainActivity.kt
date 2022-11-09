@@ -1,13 +1,9 @@
 package com.example.sportscommunity
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
-import com.example.sportscommunity.community.FreeCategoryFragment
+import com.example.sportscommunity.community.*
 import com.example.sportscommunity.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -22,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initBottomNavigation()
-
     }
 
     private fun initBottomNavigation() {
@@ -58,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, SportsReservationFragment())
+                        .replace(R.id.fragment_container_view, SportsMyPageFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
@@ -69,21 +64,75 @@ class MainActivity : AppCompatActivity() {
 
     fun changeFragment(index: Int) {
         when (index) {
-            1 -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, FreeCategoryFragment()).commit()
-            }
             0 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, WriteContentFragment()).commit()
+                    .replace(R.id.fragment_container_view, WriteContentFragment())
+                    .addToBackStack(null).commit()
+            }
+            1 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, FreeCategoryFragment())
+                    .addToBackStack(null).commit()
             }
             2 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, SportsMapFragment()).commit()
+                    .replace(R.id.fragment_container_view, SportsMapFragment())
+                    .addToBackStack(null).commit()
             }
-            3-> {
+            3 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, SportsMapGroupFragment()).commit()
+                    .replace(R.id.fragment_container_view, SportsMapGroupFragment())
+                    .addToBackStack(null).commit()
+            }
+            4 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, BallSportsCategoryFragment())
+                    .addToBackStack("ball").commit()
+            }
+            5 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, LeisureCategoryFragment())
+                    .addToBackStack("leisure").commit()
+            }
+            6 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, WaterSportsCategoryFragment())
+                    .addToBackStack("water").commit()
+            }
+            7 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, LifeSportsCategoryFragment())
+                    .addToBackStack("life").commit()
+            }
+            8 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, WinterSportsCategoryFragment())
+                    .addToBackStack("winter").commit()
+            }
+            9 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, ESportsCategoryFragment())
+                    .addToBackStack("e_sports").commit()
+            }
+            10 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, SecretCategoryFragment())
+                    .addToBackStack(null).commit()
+            }
+            11 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, QuestionCategoryFragment())
+                    .addToBackStack(null).commit()
+            }
+            12 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, FaQCategoryFragment())
+                    .addToBackStack(null).commit()
+            }
+            13 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, SportsMapGroupFragment())
+                    .addToBackStack(null).commit()
             }
         }
     }
@@ -91,12 +140,18 @@ class MainActivity : AppCompatActivity() {
     fun hideBottomNavigationView(hide: Boolean) {
         if (hide) {
             binding.bottomNav.visibility = View.GONE
+        } else {
+            binding.bottomNav.visibility = View.VISIBLE
         }
     }
 
-    fun showOptionMenu(boolean: Boolean) {
-
+    fun itemSelected(){
+        binding.bottomNav.selectedItemId = R.id.map
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
 
+        mBinding = null
+    }
 }
