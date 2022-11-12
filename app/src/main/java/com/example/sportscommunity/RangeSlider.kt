@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.SortNumberBottomSheetDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.RangeSlider
@@ -42,12 +43,12 @@ class RangeSlider : BottomSheetDialogFragment() {
                 binding.maxText.text = "최대 인원: " + slider.values[1].toInt().toString() + "명"
 
                 binding.saveBtn.setOnClickListener {
-
+                    val mainActivity = activity as MainActivity
+                    mainActivity.setDataAtFragment(SportsMapGroupFragment(),slider.values[0].toInt())
+                    mainActivity.setDataAtFragmentTwo(SportsMapGroupFragment(),slider.values[1].toInt())
                 }
             }
         })
-
-
     }
 
     override fun onDestroy() {

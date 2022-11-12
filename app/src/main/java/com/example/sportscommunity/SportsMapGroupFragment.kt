@@ -9,20 +9,12 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.ViewGroupUtils
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import com.example.sportscommunity.Adapter.backPressed
 import com.example.sportscommunity.databinding.SportsMapGroupFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.slider.BaseOnSliderTouchListener
-import com.google.android.material.slider.RangeSlider
-import com.google.android.material.slider.Slider
-import org.w3c.dom.Text
 
 class SportsMapGroupFragment : Fragment() {
 
@@ -32,6 +24,9 @@ class SportsMapGroupFragment : Fragment() {
 
     private var flag = 0
     private var flags = 0
+
+    private var min: String? = null
+    private var max: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +44,17 @@ class SportsMapGroupFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
+        arguments?.let {
+            min = it.getInt("title").toString()
+        }
+        arguments?.let {
+            max = it.getInt("titles").toString()
+        }
+
+        Log.d("minmin",min.toString())
+        Log.d("maxmax",max.toString())
+
+
         binding.run {
 
             groupSortTime.setOnClickListener {
@@ -57,6 +63,7 @@ class SportsMapGroupFragment : Fragment() {
                     groupSortTime.setBackgroundResource(R.drawable.select_background)
                     groupSortTime.setTextColor(Color.WHITE)
                     flag = 1
+
                 } else if (flag == 1) {
                     groupSortTime.setBackgroundResource(R.drawable.edit_text_background)
                     groupSortTime.setTextColor(R.color.black)
@@ -105,16 +112,12 @@ class SportsMapGroupFragment : Fragment() {
                 bottomSheet(
                     bottomSheetDialog, bottomSheetView, R.id.sort_winter, groupSortCategory, "동계",
                 )
-                bottomSheet(
-                    bottomSheetDialog,
-                    bottomSheetView,
-                    R.id.sort_e_sports,
-                    groupSortCategory,
-                    "이스포츠",
+                bottomSheet(bottomSheetDialog, bottomSheetView, R.id.sort_e_sports, groupSortCategory, "이스포츠",
                 )
                 bottomSheet(
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, groupSortCategory, "전체",
                 )
+
             }
             val bottomSheetDialogFragment = com.example.sportscommunity.RangeSlider()
 
@@ -172,10 +175,12 @@ class SportsMapGroupFragment : Fragment() {
                             mainActivity.changeFragment(2)
                             bottomSheetDialog.dismiss()
                         }
+
                         bottomSheetView.findViewById<View>(R.id.group_frag).setOnClickListener {
                             mainActivity.changeFragment(3)
                             bottomSheetDialog.dismiss()
                         }
+
                         bottomSheetDialog.setContentView(bottomSheetView)
                         bottomSheetDialog.show()
                         true

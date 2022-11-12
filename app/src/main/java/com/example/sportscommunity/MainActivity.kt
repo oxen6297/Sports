@@ -3,6 +3,7 @@ package com.example.sportscommunity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.sportscommunity.community.*
 import com.example.sportscommunity.databinding.ActivityMainBinding
 
@@ -147,6 +148,28 @@ class MainActivity : AppCompatActivity() {
 
     fun itemSelected(){
         binding.bottomNav.selectedItemId = R.id.map
+    }
+
+    fun setDataAtFragment(fragment: Fragment, title:Int) {
+        val bundle = Bundle()
+        bundle.putInt("title", title)
+
+        fragment.arguments = bundle
+        setFragment(fragment)
+    }
+
+    fun setDataAtFragmentTwo(fragment: Fragment, title:Int) {
+        val bundle = Bundle()
+        bundle.putInt("titles", title)
+
+        fragment.arguments = bundle
+        setFragment(fragment)
+    }
+
+    private fun setFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container_view, fragment)
+        transaction.commit()
     }
 
     override fun onDestroy() {
