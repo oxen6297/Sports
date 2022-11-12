@@ -23,6 +23,8 @@
         <entry key="app/src/main/res/drawable/number_member.xml" value="0.1535" />
         <entry key="app/src/main/res/drawable/orange_indicator.xml" value="0.145" />
         <entry key="app/src/main/res/drawable/popupmenu_background.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/ripple.xml" value="0.115" />
+        <entry key="app/src/main/res/drawable/ripple_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/select_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/tab_dot.xml" value="0.145" />
         <entry key="app/src/main/res/drawable/triangle.xml" value="0.1" />
