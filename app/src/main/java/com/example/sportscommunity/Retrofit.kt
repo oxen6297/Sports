@@ -26,17 +26,46 @@ data class News(
     var publishedAt: String
 )
 
-data class User(
-    var name: String?,
-    var email: String?,
-    var birthday: String?
+data class GroupPlay(
+    var groupImg: String?,
+    var groupTitle: String?,
+    var groupCategory: String?,
+    var groupArea: String?,
+    var groupComment: String?,
+    var groupMemberNumber: String?,
+    var groupTime: String?
+)
+
+data class PlayWith(
+    var userImg: String?,
+    var playTitle: String?,
+    var userId: String?,
+    var userArea: String?,
+    var time: String?,
+    var goOn: String?,
+    var playCategory: String?,
+    var manWoman: String?,
+    var playComment: String?
+
+)
+
+data class Group(
+    var groupImage: String?,
+    var category: String?,
+    var time: String?
 )
 
 data class Content(
     var title: String?,
+    var time: String?,
+    var profileImage: String?,
+    var userId: String?,
     var content: String?,
-    var writer: String?,
-    val image: String?
+    var like: String?,
+    var bookMark: String?,
+    var chat: String?,
+    var share: String?
+
 )
 
 data class Shop(
