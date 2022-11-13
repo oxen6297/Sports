@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/drawable/bottom_sheet_dialog_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/comment_background.xml" value="0.1535" />
         <entry key="app/src/main/res/drawable/community_background.xml" value="0.1335" />
+        <entry key="app/src/main/res/drawable/content_background.xml" value="0.115" />
         <entry key="app/src/main/res/drawable/default_indicator.xml" value="0.145" />
         <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.1345" />
         <entry key="app/src/main/res/drawable/email_edit_background.xml" value="0.141" />
@@ -72,7 +73,7 @@
         <entry key="app/src/main/res/layout/toolbar_layout.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/water_sports_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/winter_sports_category_tab.xml" value="0.22239583333333332" />
-        <entry key="app/src/main/res/layout/write_content_item_list.xml" value="0.21927083333333333" />
+        <entry key="app/src/main/res/layout/write_content_item_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/write_content_layout.xml" value="0.25" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.22395833333333334" />
         <entry key="app/src/main/res/menu/bottom_navi.xml" value="0.22291666666666668" />
