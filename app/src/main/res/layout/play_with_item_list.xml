@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/user_profile_img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/kakao_default_profile_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/play_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="당구 치실분 모집합니다!"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/user_profile_img"
+        app:layout_constraintTop_toTopOf="@+id/user_profile_img" />
+
+    <TextView
+        android:id="@+id/user_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="안양 불주먹"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintStart_toEndOf="@+id/user_profile_img"
+        app:layout_constraintTop_toBottomOf="@+id/play_title" />
+
+    <TextView
+        android:id="@+id/user_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="광진구 화양동"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintStart_toEndOf="@+id/user_id"
+        app:layout_constraintTop_toBottomOf="@+id/play_title" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="1분전"
+        android:textSize="11dp"
+        app:layout_constraintStart_toEndOf="@+id/user_profile_img"
+        app:layout_constraintTop_toBottomOf="@id/user_id" />
+
+    <TextView
+        android:id="@+id/go_on_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="모집중"
+        android:textColor="@color/orange"
+        android:textSize="11dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/user_profile_img"
+        app:layout_constraintStart_toStartOf="@id/user_profile_img"
+        app:layout_constraintTop_toBottomOf="@+id/user_profile_img" />
+
+    <TextView
+        android:id="@+id/category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="종목"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/go_on_play"
+        app:layout_constraintTop_toBottomOf="@id/go_on_play" />
+
+    <TextView
+        android:id="@+id/play_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="당구"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintStart_toEndOf="@+id/category"
+        app:layout_constraintTop_toTopOf="@+id/category" />
+
+    <TextView
+        android:id="@+id/man_woman"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="제한"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/category"
+        app:layout_constraintTop_toBottomOf="@+id/category" />
+
+    <TextView
+        android:id="@+id/user_select_man_woman"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="상관없음"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="@id/play_category"
+        app:layout_constraintTop_toBottomOf="@id/play_category"
+        app:layout_constraintTop_toTopOf="@+id/man_woman" />
+
+    <TextView
+        android:id="@+id/user_comment"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/comment_background"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="초보도 환영합니다 200이하는 좀 그래요. 장소는 함께 협의해봐요 !"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="@+id/category"
+        app:layout_constraintTop_toBottomOf="@+id/user_select_man_woman" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
