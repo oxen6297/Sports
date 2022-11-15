@@ -1,263 +1,386 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
+    <data>
+
+        <variable
+            name="onclick"
+            type="com.example.sportscommunity.SportsHomeFragment" />
+
+    </data>
+
+
+    <LinearLayout
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </com.google.android.gms.ads.AdView>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent">
 
-            <TextView
-                android:id="@+id/title_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="종목별 커뮤니티"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.gms.ads.AdView>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/img_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_text">
+                android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/ball_img"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/sports"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/leisure_img"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/kitesurf"
-                    app:layout_constraintEnd_toStartOf="@+id/wave"
-                    app:layout_constraintStart_toEndOf="@+id/ball_img"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/wave"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/wave"
-                    app:layout_constraintEnd_toStartOf="@+id/life_sports"
-                    app:layout_constraintStart_toEndOf="@+id/leisure_img"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/life_sports"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/run"
-                    app:layout_constraintEnd_toStartOf="@+id/winter_sports"
-                    app:layout_constraintStart_toEndOf="@id/wave"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/winter_sports"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/snowboarder"
-                    app:layout_constraintEnd_toStartOf="@+id/e_sports"
-                    app:layout_constraintStart_toEndOf="@id/life_sports"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/e_sports"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
-                    android:src="@drawable/e_sports"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/community_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_background"
+                    android:padding="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                    <TextView
+                        android:id="@+id/title_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="종목별 커뮤니티"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/img_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/title_text">
+
+                        <ImageView
+                            android:id="@+id/ball_img"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:onClick="@{onclick::onClick}"
+                            android:src="@drawable/sports"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/leisure_img"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:onClick="@{onclick::onClick}"
+                            android:src="@drawable/kitesurf"
+                            app:layout_constraintEnd_toStartOf="@+id/wave"
+                            app:layout_constraintStart_toEndOf="@+id/ball_img"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/wave"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:onClick="@{onclick::onClick}"
+                            android:src="@drawable/wave"
+                            app:layout_constraintEnd_toStartOf="@+id/life_sports"
+                            app:layout_constraintStart_toEndOf="@+id/leisure_img"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/life_sports"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:onClick="@{onclick::onClick}"
+                            android:src="@drawable/run"
+                            app:layout_constraintEnd_toStartOf="@+id/winter_sports"
+                            app:layout_constraintStart_toEndOf="@id/wave"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/winter_sports"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:onClick="@{onclick::onClick}"
+                            android:src="@drawable/snowboarder"
+                            app:layout_constraintEnd_toStartOf="@+id/e_sports"
+                            app:layout_constraintStart_toEndOf="@id/life_sports"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/e_sports"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:onClick="@{onclick::onClick}"
+                            android:src="@drawable/e_sports"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/ball_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="구기"
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="@+id/ball_img"
+                            app:layout_constraintStart_toStartOf="@+id/ball_img"
+                            app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                        <TextView
+                            android:id="@+id/leisure_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="레져"
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="@+id/leisure_img"
+                            app:layout_constraintStart_toStartOf="@+id/leisure_img"
+                            app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                        <TextView
+                            android:id="@+id/water_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="해양"
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="@id/wave"
+                            app:layout_constraintStart_toStartOf="@+id/wave"
+                            app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                        <TextView
+                            android:id="@+id/life_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="생활"
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="@id/life_sports"
+                            app:layout_constraintStart_toStartOf="@+id/life_sports"
+                            app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                        <TextView
+                            android:id="@+id/winter_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="동계"
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="@+id/winter_sports"
+                            app:layout_constraintStart_toStartOf="@+id/winter_sports"
+                            app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                        <TextView
+                            android:id="@+id/game_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="게임"
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="@+id/e_sports"
+                            app:layout_constraintStart_toStartOf="@+id/e_sports"
+                            app:layout_constraintTop_toBottomOf="@+id/e_sports" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/hot_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="구기"
-                    android:textColor="@color/black"
-                    android:textSize="11dp"
-                    app:layout_constraintEnd_toEndOf="@+id/ball_img"
-                    app:layout_constraintStart_toStartOf="@+id/ball_img"
-                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/layout_background"
+                    android:padding="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/community_layout">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                    <TextView
+                        android:id="@+id/up_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="실시간 급상승"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/up_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginTop="13dp"
+                        android:background="@drawable/email_edit_background"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/up_title" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/group_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="레져"
-                    android:textColor="@color/black"
-                    android:textSize="11dp"
-                    app:layout_constraintEnd_toEndOf="@+id/leisure_img"
-                    app:layout_constraintStart_toStartOf="@+id/leisure_img"
-                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/layout_background"
+                    android:padding="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/hot_layout">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                    <TextView
+                        android:id="@+id/group_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{onclick::onClick}"
+                        android:text="마감임박 모임"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/go_group_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{onclick::onClick}"
+                        android:text=">"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/group_recycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="13dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/group_title" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/reserved_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="수상"
-                    android:textColor="@color/black"
-                    android:textSize="11dp"
-                    app:layout_constraintEnd_toEndOf="@id/wave"
-                    app:layout_constraintStart_toStartOf="@+id/wave"
-                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/layout_background"
+                    android:padding="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/group_layout">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                    <TextView
+                        android:id="@+id/reservation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="예약 서비스"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/reserved_field"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="13dp"
+                        android:background="@drawable/edit_text_background"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="서비스 준비중입니다."
+                        android:textColor="@color/black"
+                        android:textSize="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/reservation" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/news_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="생활"
-                    android:textColor="@color/black"
-                    android:textSize="11dp"
-                    app:layout_constraintEnd_toEndOf="@id/life_sports"
-                    app:layout_constraintStart_toStartOf="@+id/life_sports"
-                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/layout_background"
+                    android:padding="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/reserved_layout">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="동계"
-                    android:textColor="@color/black"
-                    android:textSize="11dp"
-                    app:layout_constraintEnd_toEndOf="@+id/winter_sports"
-                    app:layout_constraintStart_toStartOf="@+id/winter_sports"
-                    app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                    <TextView
+                        android:id="@+id/news_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="스포츠 뉴스"
+                        android:textColor="@color/black"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="게임"
-                    android:textColor="@color/black"
-                    android:textSize="11dp"
-                    app:layout_constraintEnd_toEndOf="@+id/e_sports"
-                    app:layout_constraintStart_toStartOf="@+id/e_sports"
-                    app:layout_constraintTop_toBottomOf="@+id/e_sports" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/news_recycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/news_header" />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/up_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="실시간 급상승"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_layout" />
-
-            <TextView
-                android:id="@+id/up_text"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginTop="13dp"
-                android:background="@drawable/email_edit_background"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/up_title" />
-
-            <TextView
-                android:id="@+id/group_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="마감임박 모임"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/up_text" />
-
-            <TextView
-                android:id="@+id/go_group_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text=">"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/up_text" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/group_recycle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/group_title" />
-
-            <TextView
-                android:id="@+id/news_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="[뉴스]"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/group_recycle" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/news_recycle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/news_header"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="50dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
+        </ScrollView>
 
 
-</LinearLayout>
+    </LinearLayout>
 
+</layout>

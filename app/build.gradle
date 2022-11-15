@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -8,6 +9,9 @@ android {
 
     buildFeatures{
         viewBinding true
+    }
+    buildFeatures{
+        dataBinding true
     }
 
     defaultConfig {
@@ -66,5 +70,7 @@ dependencies {
     implementation group: 'com.kakao.sdk', name: 'usermgmt', version: '1.30.0'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation 'androidx.databinding:databinding-runtime:7.3.1'
 
 }

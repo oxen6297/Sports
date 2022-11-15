@@ -6,10 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportscommunity.Adapter.backPressed
@@ -18,22 +16,24 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SportsHomeFragment : Fragment(),View.OnClickListener {
+class SportsHomeFragment : Fragment() {
 
-    private var mBinding: SportsHomeFragmentBinding? = null
-    private val binding get() = mBinding!!
+    lateinit var binding: SportsHomeFragmentBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = SportsHomeFragmentBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.sports_home_fragment, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.onclick = this
 
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
@@ -43,22 +43,6 @@ class SportsHomeFragment : Fragment(),View.OnClickListener {
         val call: Call<NewsList> = retrofitService.getNewsList()
 
         binding.run {
-
-            ballImg.setOnClickListener(this@SportsHomeFragment)
-            ballText.setOnClickListener(this@SportsHomeFragment)
-            leisureText.setOnClickListener(this@SportsHomeFragment)
-            leisureImg.setOnClickListener(this@SportsHomeFragment)
-            lifeSports.setOnClickListener(this@SportsHomeFragment)
-            lifeText.setOnClickListener(this@SportsHomeFragment)
-            wave.setOnClickListener(this@SportsHomeFragment)
-            waterText.setOnClickListener(this@SportsHomeFragment)
-            winterSports.setOnClickListener(this@SportsHomeFragment)
-            winterText.setOnClickListener(this@SportsHomeFragment)
-            eSports.setOnClickListener(this@SportsHomeFragment)
-            gameText.setOnClickListener(this@SportsHomeFragment)
-            groupTitle.setOnClickListener(this@SportsHomeFragment)
-            groupRecycle.setOnClickListener(this@SportsHomeFragment)
-
 
             call.enqueue(object : Callback<NewsList> {
                 override fun onResponse(
@@ -95,10 +79,10 @@ class SportsHomeFragment : Fragment(),View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View?) {
+    fun onClick(v: View?) {
         val mainActivity = (activity as MainActivity)
         binding.run {
-            when(v?.id){
+            when (v?.id) {
                 ballImg.id -> mainActivity.changeFragment(4)
                 ballText.id -> mainActivity.changeFragment(4)
                 leisureImg.id -> mainActivity.changeFragment(5)
@@ -117,6 +101,9 @@ class SportsHomeFragment : Fragment(),View.OnClickListener {
                 groupRecycle.id -> mainActivity.changeFragment(13).apply {
                     mainActivity.itemSelected()
                 }
+                goGroupBtn.id -> mainActivity.changeFragment(13).apply {
+                    mainActivity.itemSelected()
+                }
             }
         }
     }
@@ -133,9 +120,5 @@ class SportsHomeFragment : Fragment(),View.OnClickListener {
         (activity as AppCompatActivity).supportActionBar?.title = "홈"
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mBinding = null
-    }
 
 }
