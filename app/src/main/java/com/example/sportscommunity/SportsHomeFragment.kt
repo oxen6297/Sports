@@ -46,11 +46,11 @@ class SportsHomeFragment : Fragment() {
             callNews()
         }
 
-
-
+        binding.swipe.setOnRefreshListener {
+            binding.swipe.isRefreshing = false
+            callNews()
+        }
     }
-
-
 
     private fun callNews() {
         val retrofitService = Retrofits.getNewsService()
