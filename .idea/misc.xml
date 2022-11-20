@@ -4,14 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/ic_arrow_drop_down.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/arrow_down.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/bot_sheet.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/bottom_sheet_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/bottom_sheet_dialog_background.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/check_box_background.xml" value="0.12" />
+        <entry key="app/src/main/res/drawable/check_box_selector.xml" value="0.12" />
+        <entry key="app/src/main/res/drawable/checked_box_background.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/comment_background.xml" value="0.1535" />
         <entry key="app/src/main/res/drawable/community_background.xml" value="0.1335" />
         <entry key="app/src/main/res/drawable/content_background.xml" value="0.115" />
         <entry key="app/src/main/res/drawable/default_indicator.xml" value="0.145" />
+        <entry key="app/src/main/res/drawable/edit_back.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.1345" />
         <entry key="app/src/main/res/drawable/email_edit_background.xml" value="0.141" />
         <entry key="app/src/main/res/drawable/kakao_login_btn.xml" value="0.141" />
@@ -27,9 +32,11 @@
         <entry key="app/src/main/res/drawable/ripple.xml" value="0.115" />
         <entry key="app/src/main/res/drawable/ripple_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/select_background.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/spinner_background.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/tab_dot.xml" value="0.145" />
         <entry key="app/src/main/res/drawable/triangle.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/view_line_popup_menu.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/wirte_content_btn_background.xml" value="0.12" />
         <entry key="app/src/main/res/font/cafe_font.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/font/nanum_square.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/layout/activity_another_login.xml" value="0.2234375" />
@@ -45,6 +52,7 @@
         <entry key="app/src/main/res/layout/e_sports_fragment.xml" value="0.21927083333333333" />
         <entry key="app/src/main/res/layout/faq_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/fragment_sports_home.xml" value="0.20989583333333334" />
+        <entry key="app/src/main/res/layout/fragment_write_group_tab.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/free_category_tab.xml" value="0.165" />
         <entry key="app/src/main/res/layout/friends_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/group_item_list.xml" value="0.21927083333333333" />
@@ -73,8 +81,11 @@
         <entry key="app/src/main/res/layout/toolbar_layout.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/water_sports_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/winter_sports_category_tab.xml" value="0.22239583333333332" />
+        <entry key="app/src/main/res/layout/write_alone_fragment.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/layout/write_community_fragment.xml" value="0.22083333333333333" />
         <entry key="app/src/main/res/layout/write_content_item_list.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/write_content_layout.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/write_content_layout.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/write_group_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.22395833333333334" />
         <entry key="app/src/main/res/menu/bottom_navi.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/menu/bottom_navi_item.xml" value="0.22291666666666668" />

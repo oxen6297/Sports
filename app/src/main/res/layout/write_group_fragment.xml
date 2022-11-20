@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="모임 특성"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@+id/title_text"
+                app:layout_constraintTop_toBottomOf="@+id/title_text">
+
+                <RadioButton
+                    android:id="@+id/one_check_box"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:background="@drawable/check_box_selector"
+                    android:button="@null"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/one_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="다회성"
+                    android:textColor="#B9B9B9"
+                    android:textSize="12dp" />
+
+                <RadioButton
+                    android:id="@+id/two_check_box"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/check_box_selector"
+                    android:button="@null" />
+
+                <TextView
+                    android:id="@+id/two_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="일회성"
+                    android:textColor="#B9B9B9"
+                    android:textSize="12dp" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/category_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="카테고리"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group" />
+
+            <Spinner
+                android:id="@+id/category_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/spinner_background"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/category_title" />
+
+            <TextView
+                android:id="@+id/area_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="지역"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/category_spinner" />
+
+
+            <Spinner
+                android:id="@+id/area_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/spinner_background"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toStartOf="@+id/area_spinner_two"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/area_title" />
+
+            <Spinner
+                android:id="@+id/area_spinner_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="11dp"
+                android:layout_weight="1"
+                android:background="@drawable/spinner_background"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/area_spinner"
+                app:layout_constraintTop_toBottomOf="@+id/area_title" />
+
+
+            <CheckBox
+                android:id="@+id/area_check_box"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/check_box_selector"
+                android:button="@null"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/area_spinner" />
+
+            <TextView
+                android:id="@+id/area_check_box_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="상관없음"
+                android:textColor="#B9B9B9"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/area_check_box"
+                app:layout_constraintStart_toEndOf="@+id/area_check_box"
+                app:layout_constraintTop_toTopOf="@+id/area_check_box" />
+
+            <TextView
+                android:id="@+id/day_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="일시"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/area_check_box_text" />
+
+            <TextView
+                android:id="@+id/day_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/spinner_background"
+                android:padding="13dp"
+                android:text="날짜를 선택해주세요."
+                android:textColor="#B9B9B9"
+                android:textSize="12dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/day_title" />
+
+            <TextView
+                android:id="@+id/hour_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/spinner_background"
+                android:padding="13dp"
+                android:text="시간을 선택해주세요."
+                android:textColor="#B9B9B9"
+                android:textSize="12dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/day_spinner" />
+
+            <CheckBox
+                android:id="@+id/day_check_box"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/check_box_selector"
+                android:button="@null"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hour_spinner" />
+
+            <TextView
+                android:id="@+id/day_check_box_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="상관없음"
+                android:textColor="#B9B9B9"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/day_check_box"
+                app:layout_constraintStart_toEndOf="@+id/day_check_box"
+                app:layout_constraintTop_toTopOf="@+id/day_check_box" />
+
+            <TextView
+                android:id="@+id/content_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="제목"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/day_check_box" />
+
+            <EditText
+                android:id="@+id/content_title_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/edit_back"
+                android:hint="제목을 입력하세요."
+                android:padding="13dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/content_title" />
+
+            <TextView
+                android:id="@+id/short_text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="한줄 설명"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/content_title_edit" />
+
+            <EditText
+                android:id="@+id/short_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/edit_back"
+                android:hint="한줄 설명을 입력하세요."
+                android:padding="13dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/short_text_title" />
+
+            <TextView
+                android:id="@+id/content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="내용"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/short_text_edit" />
+
+            <EditText
+                android:id="@+id/content_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/edit_back"
+                android:hint="내용을 입력하세요. \n\n * 모임에서 주로 어떤 활동을 할 것인지,\n 모임 주기나 규칙등을 적어주면 좋아요.\n\n* 욕설 및 비방, 부적절한 내용 작성 시 경고 없이 삭제될 수 있습
+니다."
+                android:paddingLeft="15dp"
+                android:paddingTop="15dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="100dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/content_text" />
+
+            <TextView
+                android:id="@+id/tag_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="태그"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/content_text_edit" />
+
+            <EditText
+                android:id="@+id/tag_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/edit_back"
+                android:hint="#태그 를 활용하여 키워드를 뽑아보세요 (최대 10개)"
+                android:padding="13dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tag_title" />
+
+            <TextView
+                android:id="@+id/todo_sign_up_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="가입조건"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tag_text_edit" />
+
+            <TextView
+                android:id="@+id/number_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="인원"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/todo_sign_up_title" />
+
+            <TextView
+                android:id="@+id/max_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:text="최대"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/number_member"
+                app:layout_constraintTop_toBottomOf="@+id/todo_sign_up_title" />
+
+            <EditText
+                android:id="@+id/number_edit"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/edit_back"
+                android:hint="0"
+                android:inputType="number"
+                android:padding="13dp"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/max_number"
+                app:layout_constraintStart_toEndOf="@+id/max_number"
+                app:layout_constraintTop_toTopOf="@+id/max_number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:text="명"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/number_edit"
+                app:layout_constraintTop_toBottomOf="@+id/todo_sign_up_title" />
+
+            <TextView
+                android:id="@+id/sort_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="성별"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/number_edit" />
+
+            <Spinner
+                android:id="@+id/sort_sex_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/spinner_background"
+                android:spinnerMode="dialog"
+                app:layout_constraintStart_toEndOf="@+id/sort_sex"
+                app:layout_constraintTop_toBottomOf="@+id/sort_sex" />
+
+            <TextView
+                android:id="@+id/sort_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="나이"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sort_sex_spinner" />
+
+            <EditText
+                android:id="@+id/age_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/edit_back"
+                android:hint="0"
+                android:inputType="number"
+                android:padding="13dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/sort_age_range"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sort_age" />
+
+            <TextView
+                android:id="@+id/sort_age_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:text="~"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@id/age_edit"
+                app:layout_constraintEnd_toStartOf="@+id/age_edit_two"
+                app:layout_constraintStart_toEndOf="@+id/age_edit"
+                app:layout_constraintTop_toTopOf="@id/age_edit" />
+
+            <EditText
+                android:id="@+id/age_edit_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/edit_back"
+                android:hint="0"
+                android:inputType="number"
+                android:padding="13dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sort_age_range"
+                app:layout_constraintTop_toBottomOf="@+id/sort_age" />
+
+            <CheckBox
+                android:id="@+id/age_check_box"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/check_box_selector"
+                android:button="@null"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/age_edit_two" />
+
+            <TextView
+                android:id="@+id/age_check_box_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="상관없음"
+                android:textColor="#B9B9B9"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/age_check_box"
+                app:layout_constraintStart_toEndOf="@+id/age_check_box"
+                app:layout_constraintTop_toTopOf="@+id/age_check_box" />
+
+            <TextView
+                android:id="@+id/image_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="대표 사진"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/age_check_box" />
+
+
+            <TextView
+                android:id="@+id/image_name"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/edit_back"
+                android:gravity="center"
+                android:text="메인 이미지 (1080*1080 권장)"
+                android:textColor="#B9B9B9"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/upload_image_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_text" />
+
+            <Button
+                android:id="@+id/upload_image_btn"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/login_btn"
+                android:text="사진 선택"
+                android:textColor="@color/white"
+                android:textSize="13dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
