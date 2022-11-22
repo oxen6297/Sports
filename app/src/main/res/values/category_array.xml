@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="categoryList">
+
+        <item>선택</item>
+        <item>구기종목</item>
+        <item>레저</item>
+        <item>해양 스포츠</item>
+        <item>생활 스포츠</item>
+        <item>동계 스포츠</item>
+        <item>E-스포츠</item>
+        <item>기타</item>
+
+    </string-array>
+
+</resources>
