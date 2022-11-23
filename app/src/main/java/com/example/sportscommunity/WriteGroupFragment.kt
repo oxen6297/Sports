@@ -155,7 +155,12 @@ class WriteGroupFragment : Fragment() {
                     }
                 }
             saveBtn.setOnClickListener {
-                checkBlank("카테고리","지역","제목","한줄 내용","내용")
+                if (oneCheckBox.isChecked) {
+                    checkBlank()
+                }
+                if (twoCheckBox.isChecked) {
+                    checkAloneBlank()
+                }
             }
         }
     }
@@ -185,31 +190,43 @@ class WriteGroupFragment : Fragment() {
         }
     }
 
-    private fun checkBlank(
-        category: String,
-        area: String,
-        title: String,
-        shortContent: String,
-        content: String
-    ) {
+    private fun checkBlank() {
         binding.run {
-            if (oneCheckBox.isChecked) {
-                if (categorySpinner.selectedItem.toString() == "선택") {
-                    Toast.makeText(requireContext(), category + "를 입력해주세요", Toast.LENGTH_SHORT)
-                        .show()
-                } else if (areaSpinner.selectedItem.toString() == "시/도") {
-                    Toast.makeText(requireContext(), area + "을 입력해주세요", Toast.LENGTH_SHORT).show()
-                } else if (contentTitleEdit.text.isNullOrBlank()) {
-                    Toast.makeText(requireContext(), title + "을 입력해주세요", Toast.LENGTH_SHORT).show()
-                } else if (shortTextEdit.text.isNullOrBlank()) {
-                    Toast.makeText(requireContext(), shortContent + "을 입력해주세요", Toast.LENGTH_SHORT)
-                        .show()
-                } else if (contentTextEdit.text.isNullOrBlank()) {
-                    Toast.makeText(requireContext(), content + "을 입력해주세요", Toast.LENGTH_SHORT)
-                        .show()
-                } else{
-                    saveBtn.setBackgroundResource(R.drawable.login_btn)
+            if (categorySpinner.selectedItem.toString() == "선택") {
+                Toast.makeText(requireContext(), "카테고리를 입력해주세요", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (areaSpinner.selectedItem.toString() == "시/도" && !areaCheckBox.isChecked) {
+                Toast.makeText(requireContext(), "지역을 입력해주세요", Toast.LENGTH_SHORT).show()
+            } else if (contentTitleEdit.text.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "제목을 입력해주세요", Toast.LENGTH_SHORT).show()
+            } else if (shortTextEdit.text.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "한줄 설명을 입력해주세요", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (contentTextEdit.text.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "내용을 입력해주세요", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (ageEdit.text.isNullOrBlank() && ageEditTwo.text.isNullOrBlank() && !ageCheckBox.isChecked) {
+                Toast.makeText(requireContext(), "나이 범위를 입력해주세요", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d("saveBtnClick", "success")
+            }
+        }
+    }
+
+    private fun checkAloneBlank() {
+        checkBlank()
+        binding.run {
+            if (!dayCheckBox.isChecked) {
+                if (daySpinner.text == "날짜를 선택해주세요.") {
+                    Toast.makeText(requireContext(), "날짜를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                } else if (hourSpinner.text == "시간을 선택해주세요.") {
+                    Toast.makeText(requireContext(), "시간을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d("SaveBtnClicked", "success")
                 }
+            }
+            if (dayCheckBox.isChecked) {
+                Log.d("SaveBtnClicked", "success")
             }
         }
     }
