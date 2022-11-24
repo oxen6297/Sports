@@ -1,11 +1,17 @@
 package com.example.sportscommunity
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.community.*
 import com.example.sportscommunity.databinding.ActivityMainBinding
+import jxl.Sheet
+import jxl.Workbook
+import java.io.InputStream
+import java.lang.StringBuilder
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initBottomNavigation()
+        readExcel(this)
     }
 
     private fun initBottomNavigation() {
@@ -138,6 +145,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun changeWriteFragment(index: Int) {
+        when (index) {
+            0 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.write_fragment_container_view, WriteGroupFragment())
+                    .addToBackStack(null).commit()
+            }
+            1 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.write_fragment_container_view, WriteAloneFragment())
+                    .addToBackStack(null).commit()
+            }
+            2 -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.write_fragment_container_view, WriteCommunityFragment())
+                    .addToBackStack(null).commit()
+            }
+        }
+    }
+
     fun hideBottomNavigationView(hide: Boolean) {
         if (hide) {
             binding.bottomNav.visibility = View.GONE
@@ -146,11 +173,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun itemSelected(){
+    fun itemSelected() {
         binding.bottomNav.selectedItemId = R.id.map
     }
 
-    fun setDataAtFragment(fragment: Fragment, title:Int) {
+    fun setDataAtFragment(fragment: Fragment, title: Int) {
         val bundle = Bundle()
         bundle.putInt("title", title)
 
@@ -158,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         setFragment(fragment)
     }
 
-    fun setDataAtFragmentTwo(fragment: Fragment, title:Int) {
+    fun setDataAtFragmentTwo(fragment: Fragment, title: Int) {
         val bundle = Bundle()
         bundle.putInt("titles", title)
 
@@ -176,5 +203,28 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
 
         mBinding = null
+    }
+
+    fun readExcel(context: Context) {
+        try {
+            val inputStream: InputStream = context.resources.assets.open("sidos.xls")
+            val wb: Workbook = Workbook.getWorkbook(inputStream)
+
+            val sheet: Sheet = wb.getSheet(0)
+
+            val colTotal: Int = sheet.columns
+            val rowIndexStart: Int = 1
+            val rowTotal: Int = sheet.getColumn(colTotal - 1).size
+
+            for (row in rowIndexStart..rowTotal-256) {
+                for (col in 0..1) {
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Mainss", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("errorss", e.toString())
+        }
     }
 }
