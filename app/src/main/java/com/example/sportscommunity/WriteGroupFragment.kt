@@ -3,6 +3,7 @@ package com.example.sportscommunity
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -18,6 +19,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.WriteGroupFragmentBinding
+import jxl.Sheet
+import jxl.Workbook
+import java.io.InputStream
 import java.util.*
 
 class WriteGroupFragment : Fragment() {
@@ -72,6 +76,8 @@ class WriteGroupFragment : Fragment() {
 
 
         binding.run {
+
+            val activity = activity as MainActivity
 
             radioGroup.setOnCheckedChangeListener { group, checkedId ->
 
@@ -228,6 +234,161 @@ class WriteGroupFragment : Fragment() {
             if (dayCheckBox.isChecked) {
                 Log.d("SaveBtnClicked", "success")
             }
+        }
+    }
+
+    fun readExcel(context: Context) {
+        try {
+            val inputStream: InputStream = context.resources.assets.open("sido.xls")
+            val wb: Workbook = Workbook.getWorkbook(inputStream)
+
+            val sheet: Sheet = wb.getSheet(0)
+
+            val colTotal: Int = sheet.columns
+            val rowIndexStart: Int = 1
+            val rowTotal: Int = sheet.getColumn(colTotal - 1).size
+
+            //서울
+            for (row in rowIndexStart..rowTotal - 250) {
+                for (col in 1..1) {
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Seoul", "row:" + row + "col:" + col + "contents:" + contents)
+
+                    val seoulArray = arrayOf(contents)
+                    Log.d("seoulArray", seoulArray.contentToString())
+                }
+            }
+
+            //경기도
+            for (row in rowIndexStart + 25..rowTotal - 207){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Gyungi", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //인천
+            for (row in rowIndexStart + 68 .. rowTotal - 197){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Incheon", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //대전
+            for (row in rowIndexStart + 78 .. rowTotal - 192){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Daejeon", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //대구
+            for (row in rowIndexStart + 83 .. rowTotal - 184){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("DaeGu", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //울산
+            for (row in rowIndexStart + 91 .. rowTotal - 179){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Ulsan", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //전남
+            for (row in rowIndexStart + 96 .. rowTotal - 157){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Jeonnam", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //전북
+            for (row in rowIndexStart + 118 .. rowTotal - 141){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("JeonBuk", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //충남
+            for (row in rowIndexStart + 134 .. rowTotal - 125){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Chungnam", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //충북
+            for (row in rowIndexStart + 150 .. rowTotal - 111){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Chungbuk", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //제주
+            for (row in rowIndexStart + 164 .. rowTotal - 109){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Jeju", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //세종
+            for (row in rowIndexStart + 166 .. rowTotal - 86){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Sejong", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //광주
+            for (row in rowIndexStart + 189 .. rowTotal - 81){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Gwangju", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //부산
+            for (row in rowIndexStart + 194 .. rowTotal - 65){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Busan", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //경북
+            for (row in rowIndexStart + 210 .. rowTotal - 41){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Gyungbuk", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //경남
+            for (row in rowIndexStart + 234 .. rowTotal - 19){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Gyungnam", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+
+            //강원
+            for (row in rowIndexStart + 256 .. rowTotal){
+                for (col in 1..1){
+                    val contents: String = sheet.getCell(col, row).contents
+                    Log.d("Gangwon", "row:" + row + "col:" + col + "contents:" + contents)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("errorss", e.toString())
         }
     }
 }

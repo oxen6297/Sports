@@ -12,6 +12,7 @@ import jxl.Sheet
 import jxl.Workbook
 import java.io.InputStream
 import java.lang.StringBuilder
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initBottomNavigation()
-        readExcel(this)
     }
 
     private fun initBottomNavigation() {
@@ -203,28 +203,5 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
 
         mBinding = null
-    }
-
-    fun readExcel(context: Context) {
-        try {
-            val inputStream: InputStream = context.resources.assets.open("sidos.xls")
-            val wb: Workbook = Workbook.getWorkbook(inputStream)
-
-            val sheet: Sheet = wb.getSheet(0)
-
-            val colTotal: Int = sheet.columns
-            val rowIndexStart: Int = 1
-            val rowTotal: Int = sheet.getColumn(colTotal - 1).size
-
-            for (row in rowIndexStart..rowTotal-256) {
-                for (col in 0..1) {
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Mainss", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("errorss", e.toString())
-        }
     }
 }
