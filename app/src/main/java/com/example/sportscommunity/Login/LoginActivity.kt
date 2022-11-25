@@ -8,9 +8,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.sportscommunity.MainActivity
 import com.example.sportscommunity.R
+import com.example.sportscommunity.UserDatabase
+import com.example.sportscommunity.UserProfile
 import com.example.sportscommunity.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.util.Utility
@@ -108,6 +111,9 @@ class LoginActivity : AppCompatActivity() {
     //네이버 로그인
     private fun naverLogin(context: Context) {
 
+        val database = Room.databaseBuilder(applicationContext, UserDatabase::class.java,
+            "user-database").build()
+
         val oAuthLoginCallback = object : OAuthLoginCallback {
 
             override fun onError(errorCode: Int, message: String) {
@@ -137,6 +143,20 @@ class LoginActivity : AppCompatActivity() {
                         Log.e("userName", "네이버 로그인한 유저 정보 - 이름 : $name")
                         Log.e("userEmail", "네이버 로그인한 유저 정보 - 이메일 : $email")
                         Log.e("userGender", "네이버 로그인한 유저 정보 - 성별 : $gender")
+
+                        val userProfile = UserProfile(1,email,name)
+
+                        Thread(Runnable {
+                            val userProfiles = database.userProfileDao().getAll()
+
+                            database.userProfileDao().insert(userProfile)
+
+                            userProfiles.forEach {
+                                Log.d("roomDatabase",""+it.email)
+                            }
+                        }).start()
+
+
 
                         startActivity(Intent(context, MainActivity::class.java))
                         Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show()
