@@ -6,6 +6,7 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="../../Library/Android/sdk/platforms/android-32/data/res/layout/simple_spinner_dropdown_item.xml" value="0.221875" />
         <entry key="app/src/main/res/drawable-v24/ic_arrow_drop_down.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/alone_background.xml" value="0.1685" />
         <entry key="app/src/main/res/drawable/arrow_down.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/bot_sheet.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/bottom_sheet_background.xml" value="0.132" />
@@ -20,6 +21,7 @@
         <entry key="app/src/main/res/drawable/edit_back.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.1345" />
         <entry key="app/src/main/res/drawable/email_edit_background.xml" value="0.141" />
+        <entry key="app/src/main/res/drawable/group_background.xml" value="0.1685" />
         <entry key="app/src/main/res/drawable/kakao_login_btn.xml" value="0.141" />
         <entry key="app/src/main/res/drawable/layout_background.xml" value="0.141" />
         <entry key="app/src/main/res/drawable/login_btn.xml" value="0.141" />
@@ -68,7 +70,8 @@
         <entry key="app/src/main/res/layout/play_with_item_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/question_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/secret_category_tab.xml" value="0.22395833333333334" />
-        <entry key="app/src/main/res/layout/shop_list_item.xml" value="0.2203125" />
+        <entry key="app/src/main/res/layout/shop_bottom_sheet_dialog.xml" value="0.21927083333333333" />
+        <entry key="app/src/main/res/layout/shop_list_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/sort_group_bottom_sheet_dialog.xml" value="0.21927083333333333" />
         <entry key="app/src/main/res/layout/sort_man_bottom_sheet_dialog.xml" value="0.21927083333333333" />
         <entry key="app/src/main/res/layout/sort_number_bottom_sheet_dialog.xml" value="0.21927083333333333" />
@@ -76,8 +79,8 @@
         <entry key="app/src/main/res/layout/spinner_item_style.xml" value="0.22083333333333333" />
         <entry key="app/src/main/res/layout/sports_community_fragment.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/sports_home_fragment.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/sports_map_fragment.xml" value="0.22291666666666668" />
-        <entry key="app/src/main/res/layout/sports_map_group_fragment.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/layout/sports_map_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/sports_map_group_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/sports_mypage_fragment.xml" value="0.2203125" />
         <entry key="app/src/main/res/layout/sports_reservation_fragment.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/sports_shop_fragment.xml" value="0.22291666666666668" />

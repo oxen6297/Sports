@@ -149,18 +149,15 @@ class MainActivity : AppCompatActivity() {
         when (index) {
             0 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.write_fragment_container_view, WriteGroupFragment())
-                    .addToBackStack(null).commit()
+                    .replace(R.id.write_fragment_container_view, WriteGroupFragment()).commit()
             }
             1 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.write_fragment_container_view, WriteAloneFragment())
-                    .addToBackStack(null).commit()
+                    .replace(R.id.write_fragment_container_view, WriteAloneFragment()).commit()
             }
             2 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.write_fragment_container_view, WriteCommunityFragment())
-                    .addToBackStack(null).commit()
+                    .replace(R.id.write_fragment_container_view, WriteCommunityFragment()).commit()
             }
         }
     }
@@ -177,9 +174,9 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.selectedItemId = R.id.map
     }
 
-    fun setDataAtFragment(fragment: Fragment, title: Int) {
+    fun setDataAtFragment(fragment: Fragment, title: Int, name: String) {
         val bundle = Bundle()
-        bundle.putInt("title", title)
+        bundle.putInt(name, title)
 
         fragment.arguments = bundle
         setFragment(fragment)

@@ -2,6 +2,7 @@ package com.example.sportscommunity
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -51,11 +52,20 @@ class SportsMapGroupFragment : Fragment() {
             max = it.getInt("titles").toString()
         }
 
-        Log.d("minmin",min.toString())
-        Log.d("maxmax",max.toString())
+        Log.d("minmin", min.toString())
+        Log.d("maxmax", max.toString())
 
 
         binding.run {
+
+            writeBtn.setOnClickListener {
+                mainActivity.changeFragment(0)
+                mainActivity.setDataAtFragment(WriteContentFragment(), 1, "writeThree")
+            }
+
+            aloneBtn.setOnClickListener {
+                mainActivity.changeFragment(2)
+            }
 
             groupSortTime.setOnClickListener {
 
@@ -98,28 +108,29 @@ class SportsMapGroupFragment : Fragment() {
                 bottomSheetDialog.show()
 
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_ball, groupSortCategory, "구기종목",
+                    bottomSheetDialog, bottomSheetView, R.id.sort_ball, groupSortCategory, "구기종목"
                 )
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_leisure, groupSortCategory, "레저",
+                    bottomSheetDialog, bottomSheetView, R.id.sort_leisure, groupSortCategory, "레저"
                 )
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_water, groupSortCategory, "해양",
+                    bottomSheetDialog, bottomSheetView, R.id.sort_water, groupSortCategory, "해양"
                 )
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_life, groupSortCategory, "생활",
+                    bottomSheetDialog, bottomSheetView, R.id.sort_life, groupSortCategory, "생활"
                 )
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_winter, groupSortCategory, "동계",
-                )
-                bottomSheet(bottomSheetDialog, bottomSheetView, R.id.sort_e_sports, groupSortCategory, "이스포츠",
+                    bottomSheetDialog, bottomSheetView, R.id.sort_winter, groupSortCategory, "동계"
                 )
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_all, groupSortCategory, "전체",
+                    bottomSheetDialog, bottomSheetView, R.id.sort_e_sports, groupSortCategory, "이스포츠"
+                )
+                bottomSheet(
+                    bottomSheetDialog, bottomSheetView, R.id.sort_all, groupSortCategory, "전체"
                 )
 
             }
-            val bottomSheetDialogFragment = com.example.sportscommunity.RangeSlider()
+            val bottomSheetDialogFragment = RangeSlider()
 
             groupSortNumberMember.setOnClickListener {
 
@@ -151,45 +162,6 @@ class SportsMapGroupFragment : Fragment() {
                 )
             }
         }
-
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.select_map_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-
-                // Handle the menu selection
-                return when (menuItem.itemId) {
-                    R.id.options_menu -> {
-
-                        val bottomSheetDialog =
-                            BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
-                        val bottomSheetView = LayoutInflater.from(requireContext()).inflate(
-                            R.layout.bottom_sheet_dialog,
-                            view.findViewById(R.id.bottom_sheet) as LinearLayout?
-                        )
-
-                        bottomSheetView.findViewById<View>(R.id.alone_frag).setOnClickListener {
-                            mainActivity.changeFragment(2)
-                            bottomSheetDialog.dismiss()
-                        }
-
-                        bottomSheetView.findViewById<View>(R.id.group_frag).setOnClickListener {
-                            mainActivity.changeFragment(3)
-                            bottomSheetDialog.dismiss()
-                        }
-
-                        bottomSheetDialog.setContentView(bottomSheetView)
-                        bottomSheetDialog.show()
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onAttach(context: Context) {

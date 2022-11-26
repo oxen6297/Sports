@@ -2,6 +2,7 @@ package com.example.sportscommunity
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -40,6 +41,11 @@ class SportsMapFragment : Fragment() {
         mainActivity.hideBottomNavigationView(false)
 
         binding.run {
+
+            groupBtn.setOnClickListener {
+                mainActivity.changeFragment(3)
+            }
+
             sortFar.setOnClickListener {
                 if (flags == 0) {
                     sortFar.setBackgroundResource(R.drawable.select_background)
@@ -51,6 +57,11 @@ class SportsMapFragment : Fragment() {
                     sortFar.setTextColor(R.color.black)
                     flags = 0
                 }
+            }
+
+            writeBtn.setOnClickListener {
+                mainActivity.changeFragment(0)
+                mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"writeTwo")
             }
 
             sortCategory.setOnClickListener {
@@ -110,46 +121,6 @@ class SportsMapFragment : Fragment() {
                 )
             }
         }
-
-
-
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-
-                menuInflater.inflate(R.menu.select_map_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-
-                return when (menuItem.itemId) {
-                    R.id.options_menu -> {
-
-                        val bottomSheetDialog = BottomSheetDialog(requireContext())
-                        val bottomSheetView = LayoutInflater.from(requireContext()).inflate(
-                            R.layout.bottom_sheet_dialog,
-                            view.findViewById(R.id.bottom_sheet)
-                        )
-                        bottomSheetView.setBackgroundColor(Color.TRANSPARENT)
-
-                        bottomSheetView.findViewById<View>(R.id.alone_frag).setOnClickListener {
-                            mainActivity.changeFragment(2)
-                            bottomSheetDialog.dismiss()
-                        }
-
-                        bottomSheetView.findViewById<View>(R.id.group_frag).setOnClickListener {
-                            mainActivity.changeFragment(3)
-                            bottomSheetDialog.dismiss()
-                        }
-
-                        bottomSheetDialog.setContentView(bottomSheetView)
-                        bottomSheetDialog.show()
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
     private fun bottomSheet(
         bottomSheetDialog: BottomSheetDialog,
