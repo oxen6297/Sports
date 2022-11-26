@@ -3,7 +3,6 @@ package com.example.sportscommunity
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -19,9 +18,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.WriteGroupFragmentBinding
-import jxl.Sheet
-import jxl.Workbook
-import java.io.InputStream
 import java.util.*
 
 class WriteGroupFragment : Fragment() {
@@ -31,7 +27,6 @@ class WriteGroupFragment : Fragment() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private var dateString = ""
     private var timeString = ""
-    var groupFlag: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +41,6 @@ class WriteGroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val areaItemTwo = arrayOf("시/군/구", "노원구", "종로구")
         val sexItem = arrayOf("상관없음", "남자", "여자")
 
         val categoryAdapter =
@@ -63,27 +57,59 @@ class WriteGroupFragment : Fragment() {
                 R.layout.spinner_dropdown_item
             )
 
-        val areaAdapterTwo =
-            ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, areaItemTwo)
 
         val sexAdapter =
             ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, sexItem)
 
         categoryAdapter.setDropDownViewResource(R.layout.spinner_item_style)
         areaAdapter.setDropDownViewResource(R.layout.spinner_item_style)
-        areaAdapterTwo.setDropDownViewResource(R.layout.spinner_item_style)
         sexAdapter.setDropDownViewResource(R.layout.spinner_item_style)
 
 
         binding.run {
 
-            val activity = activity as MainActivity
+            categorySpinner.adapter = categoryAdapter
+            areaSpinner.adapter = areaAdapter
+            sortSexSpinner.adapter = sexAdapter
+
+            areaSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when(position){
+                        0 -> detailAreaSpinner(R.array.noSelect)
+                        1 -> detailAreaSpinner(R.array.seoulItem)
+                        2 -> detailAreaSpinner(R.array.gyungiList)
+                        3 -> detailAreaSpinner(R.array.incheonList)
+                        4 -> detailAreaSpinner(R.array.daeJeonList)
+                        5 -> detailAreaSpinner(R.array.daeGuList)
+                        6 -> detailAreaSpinner(R.array.ulsanList)
+                        7 -> detailAreaSpinner(R.array.jeonnamList)
+                        8 -> detailAreaSpinner(R.array.jeonbukList)
+                        9 -> detailAreaSpinner(R.array.chungnamList)
+                        10 -> detailAreaSpinner(R.array.chungbukList)
+                        11 -> detailAreaSpinner(R.array.jejuList)
+                        12-> detailAreaSpinner(R.array.sejongList)
+                        13 -> detailAreaSpinner(R.array.gwangjuList)
+                        14 -> detailAreaSpinner(R.array.busanList)
+                        15 -> detailAreaSpinner(R.array.gyungbukList)
+                        16 -> detailAreaSpinner(R.array.gyungnamList)
+                        17 -> detailAreaSpinner(R.array.gangwonList)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            }
 
             radioGroup.setOnCheckedChangeListener { group, checkedId ->
 
                 when (checkedId) {
                     R.id.two_check_box -> visibleDayOrHour()
-
                     else -> invisibleDayOrHour()
                 }
             }
@@ -122,15 +148,9 @@ class WriteGroupFragment : Fragment() {
                 ).show()
             }
 
-            categorySpinner.adapter = categoryAdapter
-            areaSpinner.adapter = areaAdapter
-            areaSpinnerTwo.adapter = areaAdapterTwo
-            sortSexSpinner.adapter = sexAdapter
-
             if (categorySpinner.isFocused) {
                 Log.d("spinnerr", "success")
             }
-
 
             categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -237,158 +257,167 @@ class WriteGroupFragment : Fragment() {
         }
     }
 
-    fun readExcel(context: Context) {
-        try {
-            val inputStream: InputStream = context.resources.assets.open("sido.xls")
-            val wb: Workbook = Workbook.getWorkbook(inputStream)
-
-            val sheet: Sheet = wb.getSheet(0)
-
-            val colTotal: Int = sheet.columns
-            val rowIndexStart: Int = 1
-            val rowTotal: Int = sheet.getColumn(colTotal - 1).size
-
-            //서울
-            for (row in rowIndexStart..rowTotal - 250) {
-                for (col in 1..1) {
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Seoul", "row:" + row + "col:" + col + "contents:" + contents)
-
-                    val seoulArray = arrayOf(contents)
-                    Log.d("seoulArray", seoulArray.contentToString())
-                }
-            }
-
-            //경기도
-            for (row in rowIndexStart + 25..rowTotal - 207){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Gyungi", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //인천
-            for (row in rowIndexStart + 68 .. rowTotal - 197){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Incheon", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //대전
-            for (row in rowIndexStart + 78 .. rowTotal - 192){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Daejeon", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //대구
-            for (row in rowIndexStart + 83 .. rowTotal - 184){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("DaeGu", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //울산
-            for (row in rowIndexStart + 91 .. rowTotal - 179){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Ulsan", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //전남
-            for (row in rowIndexStart + 96 .. rowTotal - 157){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Jeonnam", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //전북
-            for (row in rowIndexStart + 118 .. rowTotal - 141){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("JeonBuk", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //충남
-            for (row in rowIndexStart + 134 .. rowTotal - 125){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Chungnam", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //충북
-            for (row in rowIndexStart + 150 .. rowTotal - 111){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Chungbuk", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //제주
-            for (row in rowIndexStart + 164 .. rowTotal - 109){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Jeju", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //세종
-            for (row in rowIndexStart + 166 .. rowTotal - 86){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Sejong", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //광주
-            for (row in rowIndexStart + 189 .. rowTotal - 81){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Gwangju", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //부산
-            for (row in rowIndexStart + 194 .. rowTotal - 65){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Busan", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //경북
-            for (row in rowIndexStart + 210 .. rowTotal - 41){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Gyungbuk", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //경남
-            for (row in rowIndexStart + 234 .. rowTotal - 19){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Gyungnam", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-
-            //강원
-            for (row in rowIndexStart + 256 .. rowTotal){
-                for (col in 1..1){
-                    val contents: String = sheet.getCell(col, row).contents
-                    Log.d("Gangwon", "row:" + row + "col:" + col + "contents:" + contents)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("errorss", e.toString())
+    private fun detailAreaSpinner(item:Int){
+        binding.run {
+            val adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                item,
+                R.layout.spinner_dropdown_item
+            )
+            adapter.setDropDownViewResource(R.layout.spinner_item_style)
+            areaSpinnerTwo.adapter = adapter
         }
     }
+
+//    private fun readExcel(context: Context, spinner: Spinner) {
+//        try {
+//            val inputStream: InputStream = context.resources.assets.open("sido.xls")
+//            val wb: Workbook = Workbook.getWorkbook(inputStream)
+//
+//            val sheet: Sheet = wb.getSheet(0)
+//
+//            val colTotal: Int = sheet.columns
+//            val rowIndexStart = 1
+//            val rowTotal: Int = sheet.getColumn(colTotal - 1).size
+//
+//            //서울
+//            for (row in rowIndexStart..rowTotal - 250) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Seoul", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //경기도
+//            for (row in rowIndexStart + 25..rowTotal - 207) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Gyungi", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //인천
+//            for (row in rowIndexStart + 68..rowTotal - 197) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Incheon", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //대전
+//            for (row in rowIndexStart + 78..rowTotal - 192) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Daejeon", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //대구
+//            for (row in rowIndexStart + 83..rowTotal - 184) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("DaeGu", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //울산
+//            for (row in rowIndexStart + 91..rowTotal - 179) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Ulsan", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //전남
+//            for (row in rowIndexStart + 96..rowTotal - 157) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Jeonnam", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //전북
+//            for (row in rowIndexStart + 118..rowTotal - 141) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("JeonBuk", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //충남
+//            for (row in rowIndexStart + 134..rowTotal - 125) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Chungnam", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //충북
+//            for (row in rowIndexStart + 150..rowTotal - 111) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Chungbuk", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //제주
+//            for (row in rowIndexStart + 164..rowTotal - 109) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Jeju", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //세종
+//            for (row in rowIndexStart + 166..rowTotal - 86) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Sejong", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //광주
+//            for (row in rowIndexStart + 189..rowTotal - 81) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Gwangju", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //부산
+//            for (row in rowIndexStart + 194..rowTotal - 65) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Busan", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //경북
+//            for (row in rowIndexStart + 210..rowTotal - 41) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Gyungbuk", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //경남
+//            for (row in rowIndexStart + 234..rowTotal - 19) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Gyungnam", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//
+//            //강원
+//            for (row in rowIndexStart + 256..rowTotal) {
+//                for (col in 1..1) {
+//                    val contents: String = sheet.getCell(col, row).contents
+//                    Log.d("Gangwon", "row:" + row + "col:" + col + "contents:" + contents)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            Log.d("errorss", e.toString())
+//        }
+//    }
 }
