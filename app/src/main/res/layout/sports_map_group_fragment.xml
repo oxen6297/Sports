@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -18,7 +19,8 @@
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlSymmetry" />
 
     <Button
         android:id="@+id/group_search_btn"
@@ -29,6 +31,33 @@
         app:layout_constraintBottom_toBottomOf="@+id/group_search_edit"
         app:layout_constraintEnd_toEndOf="@+id/group_search_edit"
         app:layout_constraintTop_toTopOf="@+id/group_search_edit" />
+
+    <Button
+        android:id="@+id/group_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/group_background"
+        android:textColor="@color/white"
+        android:text="단체"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/alone_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
+
+    <Button
+        android:id="@+id/alone_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:text="개인"
+        android:textSize="14dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/alone_background"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/group_btn"/>
 
     <TextView
         android:id="@+id/group_sort_time"
@@ -43,7 +72,7 @@
         android:textColor="@color/black"
         android:textSize="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/group_search_edit" />
+        app:layout_constraintTop_toBottomOf="@id/group_btn" />
 
     <TextView
         android:id="@+id/group_sort_category"
@@ -59,7 +88,7 @@
         android:textSize="10dp"
         app:layout_constraintEnd_toStartOf="@id/group_sort_number_member"
         app:layout_constraintStart_toEndOf="@+id/group_sort_time"
-        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
+        app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
     <TextView
         android:id="@+id/group_sort_number_member"
@@ -75,7 +104,7 @@
         android:textSize="10dp"
         app:layout_constraintEnd_toStartOf="@+id/group_sort_area"
         app:layout_constraintStart_toEndOf="@+id/group_sort_category"
-        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
+        app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
     <TextView
         android:id="@+id/group_sort_area"
@@ -86,12 +115,12 @@
         android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="지역"
+        android:text="거리순"
         android:textColor="@color/black"
         android:textSize="10dp"
         app:layout_constraintEnd_toStartOf="@+id/group_sort_man_woman"
         app:layout_constraintStart_toEndOf="@+id/group_sort_number_member"
-        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
+        app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
     <TextView
         android:id="@+id/group_sort_man_woman"
@@ -106,7 +135,7 @@
         android:textColor="@color/black"
         android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
+        app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/play_with_recycle"
@@ -116,5 +145,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/group_sort_time" />
+
+    <Button
+        android:id="@+id/write_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
