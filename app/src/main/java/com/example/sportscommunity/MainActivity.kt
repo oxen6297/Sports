@@ -75,71 +75,85 @@ class MainActivity : AppCompatActivity() {
             0 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, WriteContentFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             1 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, FreeCategoryFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             2 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, SportsMapFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             3 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, SportsMapGroupFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             4 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, BallSportsCategoryFragment())
-                    .addToBackStack("ball").commit()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             5 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, LeisureCategoryFragment())
-                    .addToBackStack("leisure").commit()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             6 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, WaterSportsCategoryFragment())
-                    .addToBackStack("water").commit()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             7 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, LifeSportsCategoryFragment())
-                    .addToBackStack("life").commit()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             8 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, WinterSportsCategoryFragment())
-                    .addToBackStack("winter").commit()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             9 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, ESportsCategoryFragment())
-                    .addToBackStack("e_sports").commit()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             10 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, SecretCategoryFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             11 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, QuestionCategoryFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             12 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, FaQCategoryFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
             13 -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_view, SportsMapGroupFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null).commit()
             }
         }
@@ -149,15 +163,21 @@ class MainActivity : AppCompatActivity() {
         when (index) {
             0 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.write_fragment_container_view, WriteGroupFragment()).commit()
+                    .replace(R.id.write_fragment_container_view, WriteGroupFragment())
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             1 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.write_fragment_container_view, WriteAloneFragment()).commit()
+                    .replace(R.id.write_fragment_container_view, WriteAloneFragment())
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
             2 -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.write_fragment_container_view, WriteCommunityFragment()).commit()
+                    .replace(R.id.write_fragment_container_view, WriteCommunityFragment())
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null).commit()
             }
         }
     }
@@ -172,6 +192,10 @@ class MainActivity : AppCompatActivity() {
 
     fun itemSelected() {
         binding.bottomNav.selectedItemId = R.id.map
+    }
+
+    fun homeSelected(){
+        binding.bottomNav.selectedItemId = R.id.home
     }
 
     fun setDataAtFragment(fragment: Fragment, title: Int, name: String) {
