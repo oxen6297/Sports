@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="30dp">
+
+    <ImageView
+        android:id="@+id/shop_img"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/login_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/shop_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:text="title"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/shop_img"
+        app:layout_constraintTop_toTopOf="@+id/shop_img" />
+
+    <TextView
+        android:id="@+id/user_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4.5dp"
+        android:text="수영"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/shop_title"
+        app:layout_constraintTop_toBottomOf="@+id/shop_title" />
+
+    <TextView
+        android:id="@+id/area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="광진구 화양동"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintStart_toEndOf="@+id/user_id"
+        app:layout_constraintTop_toTopOf="@+id/user_id" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4.5dp"
+        android:text="35,000원"
+        android:textColor="@color/black"
+        android:textSize="13dp"
+        app:layout_constraintStart_toStartOf="@+id/user_id"
+        app:layout_constraintTop_toBottomOf="@+id/user_id" />
+
+    <ImageView
+        android:id="@+id/heart_img"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:tint="#B9B9B9"
+        android:src="@drawable/heart"
+        app:layout_constraintBottom_toBottomOf="@+id/shop_img"
+        app:layout_constraintStart_toStartOf="@+id/user_id" />
+
+    <TextView
+        android:id="@+id/heart_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="10"
+        android:textColor="#B9B9B9"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/heart_img"
+        app:layout_constraintStart_toEndOf="@+id/heart_img"
+        app:layout_constraintTop_toTopOf="@+id/heart_img" />
+
+    <ImageView
+        android:id="@+id/chat_img"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/chat"
+        app:layout_constraintBottom_toBottomOf="@+id/shop_img"
+        app:layout_constraintStart_toEndOf="@+id/heart_num"
+        app:tint="#B9B9B9" />
+
+    <TextView
+        android:id="@+id/chat_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="3"
+        android:textColor="#B9B9B9"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/chat_img"
+        app:layout_constraintStart_toEndOf="@+id/chat_img"
+        app:layout_constraintTop_toTopOf="@+id/chat_img" />
+
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1분전"
+        android:textColor="#B9B9B9"
+        app:layout_constraintBottom_toBottomOf="@id/shop_img"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
