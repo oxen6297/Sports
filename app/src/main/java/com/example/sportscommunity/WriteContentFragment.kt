@@ -19,6 +19,7 @@ class WriteContentFragment : Fragment() {
     private var flag: Int = 0
     private var flags: Int = 0
     private var flagss: Int = 0
+    lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -140,7 +141,7 @@ class WriteContentFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        val callback = object : OnBackPressedCallback(true) {
+        callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 requireActivity().supportFragmentManager.popBackStack()
             }

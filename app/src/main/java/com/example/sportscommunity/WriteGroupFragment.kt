@@ -1,8 +1,10 @@
 package com.example.sportscommunity
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -14,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -27,6 +30,8 @@ class WriteGroupFragment : Fragment() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private var dateString = ""
     private var timeString = ""
+    lateinit var callback: OnBackPressedCallback
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +45,9 @@ class WriteGroupFragment : Fragment() {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val mainActivity = activity as MainActivity
+        mainActivity.hideBottomNavigationView(true)
 
         val sexItem = arrayOf("상관없음", "남자", "여자")
 
@@ -79,7 +87,7 @@ class WriteGroupFragment : Fragment() {
                     position: Int,
                     id: Long
                 ) {
-                    when(position){
+                    when (position) {
                         0 -> detailAreaSpinner(R.array.noSelect)
                         1 -> detailAreaSpinner(R.array.seoulItem)
                         2 -> detailAreaSpinner(R.array.gyungiList)
@@ -92,7 +100,7 @@ class WriteGroupFragment : Fragment() {
                         9 -> detailAreaSpinner(R.array.chungnamList)
                         10 -> detailAreaSpinner(R.array.chungbukList)
                         11 -> detailAreaSpinner(R.array.jejuList)
-                        12-> detailAreaSpinner(R.array.sejongList)
+                        12 -> detailAreaSpinner(R.array.sejongList)
                         13 -> detailAreaSpinner(R.array.gwangjuList)
                         14 -> detailAreaSpinner(R.array.busanList)
                         15 -> detailAreaSpinner(R.array.gyungbukList)
@@ -257,7 +265,7 @@ class WriteGroupFragment : Fragment() {
         }
     }
 
-    private fun detailAreaSpinner(item:Int){
+    private fun detailAreaSpinner(item: Int) {
         binding.run {
             val adapter = ArrayAdapter.createFromResource(
                 requireContext(),
@@ -267,6 +275,27 @@ class WriteGroupFragment : Fragment() {
             adapter.setDropDownViewResource(R.layout.spinner_item_style)
             areaSpinnerTwo.adapter = adapter
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val builder = AlertDialog.Builder(requireContext()).setTitle("맺음")
+                    .setMessage("작성을 취소하시겠습니까?\n확인시 작성중이던 글은 삭제됩니다.")
+                    .setPositiveButton("확인") { dialog, which ->
+
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container_view, SportsMapGroupFragment())
+                            .commit()
+                    }.setNegativeButton("취소") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                builder.show()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
 //    private fun readExcel(context: Context, spinner: Spinner) {

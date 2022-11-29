@@ -1,5 +1,7 @@
 package com.example.sportscommunity
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -19,6 +22,8 @@ class WriteCommunityFragment : Fragment() {
     private var mBinding: WriteCommunityFragmentBinding? = null
     private val binding get() = mBinding!!
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+    lateinit var callback: OnBackPressedCallback
+
 
 
     override fun onCreateView(
@@ -63,7 +68,27 @@ class WriteCommunityFragment : Fragment() {
                 checkBlank()
             }
         }
+    }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val builder = AlertDialog.Builder(requireContext()).setTitle("맺음")
+                    .setMessage("작성을 취소하시겠습니까?\n확인시 작성중이던 글은 삭제됩니다.")
+                    .setPositiveButton("확인") { dialog, which ->
+
+                        val mainActivity = activity as MainActivity
+                        mainActivity.homeSelected()
+
+                    }.setNegativeButton("취소") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                builder.show()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onDestroy() {
