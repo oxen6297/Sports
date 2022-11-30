@@ -11,10 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.R
-import com.example.sportscommunity.UserDatabase
-import com.example.sportscommunity.UserProfile
+import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.util.Utility
@@ -24,6 +21,9 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
     private var email: String = ""
     private var gender: String = ""
     private var name: String = ""
+    private var birth: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             loginAnother.setOnClickListener {
-                startActivity(Intent(this@LoginActivity,AnotherLoginActivity::class.java))
+                startActivity(Intent(this@LoginActivity, AnotherLoginActivity::class.java))
             }
 
 
@@ -103,13 +104,14 @@ class LoginActivity : AppCompatActivity() {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e(TAG, "사용자 정보 요청 실패", error)
-            }
-            else if (user != null) {
-                Log.i(TAG, "사용자 정보 요청 성공" +
-                        "\n회원번호: ${user.id}" +
-                        "\n이메일: ${user.kakaoAccount?.email}" +
-                        "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+            } else if (user != null) {
+                Log.i(
+                    TAG, "사용자 정보 요청 성공" +
+                            "\n회원번호: ${user.id}" +
+                            "\n이메일: ${user.kakaoAccount?.email}" +
+                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                )
             }
         }
 
@@ -126,8 +128,10 @@ class LoginActivity : AppCompatActivity() {
     //네이버 로그인
     private fun naverLogin(context: Context) {
 
-        val database = Room.databaseBuilder(applicationContext, UserDatabase::class.java,
-            "user-database").build()
+        val database = Room.databaseBuilder(
+            applicationContext, UserDatabase::class.java,
+            "user-database"
+        ).build()
 
         val oAuthLoginCallback = object : OAuthLoginCallback {
 
@@ -137,6 +141,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onFailure(httpStatus: Int, message: String) {
+
             }
 
             override fun onSuccess() {
@@ -155,11 +160,51 @@ class LoginActivity : AppCompatActivity() {
                         name = result.profile?.name.toString()
                         email = result.profile?.email.toString()
                         gender = result.profile?.gender.toString()
+                        birth = result.profile?.birthday.toString()
                         Log.e("userName", "네이버 로그인한 유저 정보 - 이름 : $name")
                         Log.e("userEmail", "네이버 로그인한 유저 정보 - 이메일 : $email")
                         Log.e("userGender", "네이버 로그인한 유저 정보 - 성별 : $gender")
+                        Log.e("userBirth", "네이버 로그인한 유저 정보 - 생년월일 : $birth")
 
-                        val userProfile = UserProfile(1,email,name)
+                        /**
+                         * 서버 연동 부분 --------------------------------------------------------
+                         */
+//                        val users = mutableListOf<User>()
+//                        users[0].email = email
+                        val user = HashMap<String, Any>()
+
+                        user.put("email", email)
+                        user.put("name", name)
+                        user.put("password",gender)
+
+                        val retrofitService = Retrofits.postUserInfo()
+                        val call: Call<User> = retrofitService.postUser(user)
+
+                        call.enqueue(object : Callback<User> {
+                            override fun onResponse(
+                                call: Call<User>,
+                                response: Response<User>
+                            ) {
+                                try {
+                                    if (response.isSuccessful) {
+                                        Log.e("userInfoPost", "success")
+                                        Log.d("성공:", "${response.body()}")
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("userInfoPost", response.body().toString())
+                                    Log.e("userInfoPost", response.message().toString())
+                                }
+                            }
+
+                            override fun onFailure(call: Call<User>, t: Throwable) {
+                                Log.e("userInfoPost", t.message.toString())
+                            }
+                        })
+                        /**
+                         *  여기까지 ------------------------------------------------------------
+                         */
+
+                        val userProfile = UserProfile(1, email, name)
 
                         Thread(Runnable {
                             val userProfiles = database.userProfileDao().getAll()
@@ -167,7 +212,7 @@ class LoginActivity : AppCompatActivity() {
                             database.userProfileDao().insert(userProfile)
 
                             userProfiles.forEach {
-                                Log.d("roomDatabase",""+it.email)
+                                Log.d("roomDatabase", "" + it.email)
                             }
                         }).start()
 
