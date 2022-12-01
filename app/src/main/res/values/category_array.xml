@@ -10,6 +10,10 @@
         <item>생활 스포츠</item>
         <item>동계 스포츠</item>
         <item>E-스포츠</item>
+        <item>자유게시판</item>
+        <item>비밀게시판</item>
+        <item>질문게시판</item>
+        <item>문의하기</item>
         <item>기타</item>
 
     </string-array>
