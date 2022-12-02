@@ -32,9 +32,22 @@ object Retrofits {
 
 class User(
     val id: Int,
-    val email: String?
+    val email: String?,
+    val gender: String?,
+    val birth: String?,
+    val profileImage: String?,
+    val nickname: String?,
+    val token: String?
+
 ) {
-    constructor(email: String?) : this(0, email)
+    constructor(
+        email: String?,
+        gender: String?,
+        birth: String?,
+        profileImage: String?,
+        nickname: String?,
+        token: String?
+    ) : this(0, email, gender, birth, profileImage, nickname, token)
 }
 
 data class News(
@@ -112,6 +125,6 @@ interface NewsService {
 interface UserInfo {
     @POST("ribbon/.idea/server/apis/sign.php")
     fun postUser(
-        @Body params: HashMap<String,Any>
+        @Body params: HashMap<String, Any>
     ): Call<User>
 }
