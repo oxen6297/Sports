@@ -26,12 +26,13 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class LoginActivity : AppCompatActivity() {
 
     private var mBinding: ActivityLoginBinding? = null
     private val binding get() = mBinding!!
-
     private var email: String = ""
     private var gender: String = ""
     private var name: String = ""
@@ -39,6 +40,10 @@ class LoginActivity : AppCompatActivity() {
     private var profileImage: String = ""
     private var nickname: String = ""
     private var token: String = ""
+    private var profile: String = ""
+    private var dateTime: String = ""
+    private val naverType: String = "naver"
+    private val kakaoType: String = "kakao"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,18 +186,29 @@ class LoginActivity : AppCompatActivity() {
                 nickname = user.kakaoAccount?.profile?.nickname.toString()
                 token = user.id.toString()
 
+                val currentDate = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ISO_DATE
+                val formatted = currentDate.format(formatter)
+                Log.d("currentDate",formatted.toString())
+
+                val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+                val formattedTime = currentDate.format(formatterTwo)
+                Log.d("currentTime",formattedTime.toString())
+
+                dateTime = "$formatted $formattedTime"
+                Log.d("currentDateTime",dateTime)
+
                 /**
                  * 카카오 로그인 서버 연동 부분 --------------------------------------------------------
                  */
                 val user = HashMap<String,Any>()
 
-                user["email"] = email
-                user["name"] = name
-                user["gender"] = gender
-                user["birth"] = birth
-                user["profileImage"] = profileImage
-                user["nickname"] = nickname
-                user["token"] = token
+                profile = "$gender $birth $profileImage $nickname"
+                user["sns_id"] = email
+                user["sns_name"] = name
+                user["sns_profile"] = profile
+                user["sns_type"] = kakaoType
+                user["sns_connect_date"] = dateTime
 
                 val retrofitService = Retrofits.postUserInfo()
                 val call: Call<User> = retrofitService.postUser(user)
@@ -280,18 +296,28 @@ class LoginActivity : AppCompatActivity() {
                         Log.e("nickname", "네이버 로그인한 유저 정보 - 별명: $nickname")
                         Log.e("token", "네이버 로그인한 유저 정보 - 토큰 : $token")
 
+                        val currentDate = LocalDateTime.now()
+                        val formatter = DateTimeFormatter.ISO_DATE
+                        val formatted = currentDate.format(formatter)
+                        Log.d("currentDate",formatted.toString())
+
+                        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+                        val formattedTime = currentDate.format(formatterTwo)
+                        Log.d("currentTime",formattedTime.toString())
+
+                        dateTime = "$formatted $formattedTime"
+                        Log.d("currentDateTime",dateTime)
+
                         /**
                          * 네이버 로그인 서버 연동 부분 --------------------------------------------------------
                          */
                         val user = HashMap<String, Any>()
-
-                        user["email"] = email
-                        user["name"] = name
-                        user["gender"] = gender
-                        user["birth"] = birth
-                        user["profileImage"] = profileImage
-                        user["nickname"] = nickname
-                        user["token"] = token
+                        profile = "$gender $birth $profileImage $nickname"
+                        user["sns_id"] = email
+                        user["sns_name"] = name
+                        user["sns_profile"] = profile
+                        user["sns_type"] = naverType
+                        user["sns_connect_date"] = dateTime
 
                         val retrofitService = Retrofits.postUserInfo()
                         val call: Call<User> = retrofitService.postUser(user)
