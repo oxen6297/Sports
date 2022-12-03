@@ -1,9 +1,12 @@
 package com.example.sportscommunity
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +15,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import com.example.sportscommunity.Adapter.WriteShopAdapter
 import com.example.sportscommunity.databinding.WriteShopFragmentBinding
 
 class WriteShopFragment : Fragment() {
@@ -20,6 +29,11 @@ class WriteShopFragment : Fragment() {
     private var mBinding: WriteShopFragmentBinding? = null
     private val binding get() = mBinding!!
     lateinit var callback: OnBackPressedCallback
+    private var glide: RequestManager? = null
+    private var shopImage = mutableListOf<Uri>()
+    private var imageText = mutableListOf<String>()
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+    var flag = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +44,60 @@ class WriteShopFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val writeShopAdapter =
+            WriteShopAdapter(requireContext().applicationContext, shopImage,imageText)
+
+        val imageUri = "drawable://" + R.drawable.add_image
+        shopImage.add(Uri.parse(imageUri))
+        shopImage.add(Uri.parse(imageUri))
+        shopImage.add(Uri.parse(imageUri))
+        shopImage.add(Uri.parse(imageUri))
+        shopImage.add(Uri.parse(imageUri))
+
+        imageText.add("대표사진")
+        imageText.add("두번째 사진")
+        imageText.add("세번째 사진")
+        imageText.add("네번째 사진")
+        imageText.add("다섯번째 사진")
+
+        glide = Glide.with(this)
+        binding.productListview.adapter = writeShopAdapter
+        binding.productListview.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        writeShopAdapter.setItemClickListener(object : WriteShopAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                imagePickerLauncher.launch(
+                    Intent(Intent.ACTION_PICK).apply {
+                        this.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        this.action = Intent.ACTION_GET_CONTENT
+                        val mainActivity = activity as MainActivity
+                        mainActivity.setDataAtFragment(this@WriteShopFragment,position,"flag")
+                    }
+                )
+            }
+        })
+
+
+        imagePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                it.data?.data?.let { uri ->
+                    val imageUri: Uri? = it.data?.data
+                    if (imageUri != null) {
+
+                        arguments.let { bundle ->
+                            flag = bundle!!.getInt("flag")
+                        }
+                        shopImage[flag] = imageUri
+                        binding.productListview.adapter = writeShopAdapter
+                        writeShopAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
 
         val categoryAdapter =
             ArrayAdapter.createFromResource(

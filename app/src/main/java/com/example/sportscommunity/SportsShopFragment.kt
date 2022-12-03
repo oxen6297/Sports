@@ -44,6 +44,11 @@ class SportsShopFragment : Fragment() {
         mainActivity.hideBottomNavigationView(false)
 
         binding.run {
+
+            writeBtn.setOnClickListener {
+                mainActivity.changeFragment(14)
+            }
+
             shopSortTime.setOnClickListener {
                 if (flag == 0) {
                     shopSortTime.setBackgroundResource(R.drawable.select_background)
