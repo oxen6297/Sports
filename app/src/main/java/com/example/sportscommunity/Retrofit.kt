@@ -2,7 +2,6 @@ package com.example.sportscommunity
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -66,17 +65,17 @@ data class News(
 
 //회원가입 및 네이버, 카카오 로그인
 class User(
-    val username: String?,
-    val password: String?,
-    val email: String?,
-    val nickname: String?,
-    val mobile: String?,
-    val sns_type: String?,
-    val sns_connect_date: String?,
-    val modify_date: String?,
-    val birth: String?,
-    val image: String?,
-    val gender: String?
+    var username: String?,
+    var password: String?,
+    var email: String?,
+    var nickname: String?,
+    var mobile: String?,
+    var sns_type: String?,
+    var sns_connect_date: String?,
+    var modify_date: String?,
+    var birth: String?,
+    var image: String?,
+    var gender: String?
 )
 
 //함께해요 단체
@@ -133,13 +132,14 @@ class WritePlayWith(
     var write_time: String?
 )
 
-
+//홈화면 함께해요 단체
 data class Group(
     var groupImage: String?,
     var category: String?,
     var time: String?
 )
 
+//커뮤니티
 data class Content(
     var title: String?,
     var time: String?,
@@ -159,6 +159,7 @@ class WriteContent(
     var write_time: String?
 )
 
+//중고거래탭
 data class Shop(
     var title: String?,
     var content: String?,
@@ -184,17 +185,20 @@ class WriteShop(
     var write_time: String?
 )
 
+//좋아요
 class Like(
     var type: String?,
     var id: String
 )
 
+//댓글
 class Chat(
     var type: String?,
     var id: String,
     var content: String
 )
 
+//뉴스
 class NewsList {
     var articles: MutableList<News>? = null
 }

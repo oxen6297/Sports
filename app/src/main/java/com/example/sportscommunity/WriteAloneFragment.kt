@@ -16,6 +16,11 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.WriteAloneFragmentBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class WriteAloneFragment : Fragment() {
@@ -25,6 +30,18 @@ class WriteAloneFragment : Fragment() {
     private var dateString = ""
     private var timeString = ""
     lateinit var callback: OnBackPressedCallback
+    private var categoryType = 0
+    private var area = ""
+    private var dateAndTime = ""
+    private var title = ""
+    private var content = ""
+    private var sex = ""
+    private var minAge = ""
+    private var maxAge = ""
+    private var writeTime = ""
+    private var date = ""
+    private var time = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +63,7 @@ class WriteAloneFragment : Fragment() {
         val categoryAdapter =
             ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.categoryList,
+                R.array.sportsList,
                 R.layout.spinner_dropdown_item
             )
 
@@ -110,6 +127,11 @@ class WriteAloneFragment : Fragment() {
                     dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
                     daySpinner.text = dateString
                     daySpinner.setTextColor(Color.parseColor("#1F1F1F"))
+                    mainActivity.setDataAtFragmentTwo(
+                        this@WriteAloneFragment,
+                        dateString,
+                        "dateTwo"
+                    )
                 }
                 DatePickerDialog(
                     requireContext(),
@@ -127,6 +149,11 @@ class WriteAloneFragment : Fragment() {
                     timeString = "${hourOfDay}시 ${minute}분"
                     hourSpinner.text = timeString
                     hourSpinner.setTextColor(Color.parseColor("#1F1F1F"))
+                    mainActivity.setDataAtFragmentTwo(
+                        this@WriteAloneFragment,
+                        timeString,
+                        "timeTwo"
+                    )
                 }
                 TimePickerDialog(
                     requireContext(),
@@ -139,6 +166,7 @@ class WriteAloneFragment : Fragment() {
 
             saveBtn.setOnClickListener {
                 checkAloneBlank()
+                aloneRetrofit()
             }
 
         }
@@ -219,4 +247,95 @@ class WriteAloneFragment : Fragment() {
             areaSpinnerTwo.adapter = adapter
         }
     }
+
+    private fun aloneRetrofit() {
+        arguments?.let {
+            date = it.getString("dateTwo").toString()
+            time = it.getString("timeTwo").toString()
+        }
+
+        when (binding.categorySpinner.selectedItem) {
+            "구기종목" -> categoryType = 1
+            "레저" -> categoryType = 2
+            "해양 스포츠" -> categoryType = 3
+            "생활 스포츠" -> categoryType = 4
+            "동계 스포츠" -> categoryType = 5
+            "E-스포츠" -> categoryType = 6
+        }
+
+        area = if (binding.areaCheckBox.isChecked) {
+            "상관없음"
+        } else {
+            binding.areaSpinner.selectedItem.toString() +
+                    binding.areaSpinnerTwo.selectedItem.toString()
+        }
+        dateAndTime = if (binding.dayCheckBox.isChecked) {
+            "상관없음"
+        } else {
+            "$date $time"
+        }
+        title = binding.contentTitleEdit.text.toString()
+        content = binding.contentTextEdit.text.toString()
+        sex = if (binding.sortSexSpinner.selectedItem == "상관없음") {
+            "상관없음"
+        } else {
+            binding.sortSexSpinner.selectedItem.toString()
+        }
+        if (binding.ageCheckBox.isChecked) {
+            minAge = "상관없음"
+            maxAge = "상관없음"
+            Log.d("age", minAge)
+        } else {
+            minAge = binding.ageEdit.text.toString()
+            maxAge = binding.ageEditTwo.text.toString()
+            Log.d("age", minAge)
+        }
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        Log.d("currentDate", formatted.toString())
+
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        Log.d("currentTime", formattedTime.toString())
+
+        writeTime = "$formatted $formattedTime"
+        Log.d("currentDateTime", writeTime)
+
+        val writing = HashMap<String, Any>()
+        writing["type"] = categoryType
+        writing["area"] = area
+        writing["date"] = dateAndTime
+        writing["title"] = title
+        writing["content"] = content
+        writing["sex"] = sex
+        writing["min_age"] = minAge
+        writing["max_age"] = maxAge
+        writing["write_time"] = writeTime
+
+        val retrofitService = Retrofits.postAlone()
+        val call: Call<WritePlayWith> = retrofitService.postContent(writing)
+
+        call.enqueue(object : Callback<WritePlayWith> {
+            override fun onResponse(
+                call: Call<WritePlayWith>,
+                response: Response<WritePlayWith>
+            ) {
+                try {
+                    if (response.isSuccessful) {
+                        Log.e("userInfoPost", "success")
+                        Log.d("성공:", "${response.body()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("userInfoPost", response.body().toString())
+                    Log.e("userInfoPost", response.message().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<WritePlayWith>, t: Throwable) {
+                Log.e("userInfoPost", t.message.toString())
+            }
+        })
+    }
+
 }

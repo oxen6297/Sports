@@ -1,20 +1,39 @@
 package com.example.sportscommunity.Login
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.telephony.SmsMessage
+import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.example.sportscommunity.MainActivity
+import com.example.sportscommunity.Retrofits
+import com.example.sportscommunity.User
 import com.example.sportscommunity.databinding.ActivitySignUpBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
     private var mBinding: ActivitySignUpBinding? = null
     private val binding get() = mBinding!!
+    private var name = ""
+    private var nickname = ""
+    private var email = ""
+    private var password = ""
+    private var signTime = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,10 +52,6 @@ class SignUpActivity : AppCompatActivity() {
                 onBackPressed()
             }
 
-            createAccount.setOnClickListener {
-                startActivity(Intent(this@SignUpActivity, AnotherLoginActivity::class.java))
-            }
-
             checkNull(nicknameEdit, checkNicknameText, "별명을")
             checkNull(joinEmailEdit, checkIdText, "이메일을")
 
@@ -46,8 +61,8 @@ class SignUpActivity : AppCompatActivity() {
 
                 if (checkInfo(nameEdit, "이름") &&
                     checkInfo(nicknameEdit, "별명") &&
-                    checkInfo(phoneNumberEdit, "휴대폰 번호") &&
-                    checkInfo(smsEdit, "인증번호") &&
+//                    checkInfo(phoneNumberEdit, "휴대폰 번호") &&
+//                    checkInfo(smsEdit, "인증번호") &&
                     checkInfo(joinEmailEdit, "이메일") &&
                     checkInfo(joinPasswordEdit, "비밀번호") &&
                     checkInfo(confirmPassword, "비밀번호 확인") &&
@@ -55,6 +70,7 @@ class SignUpActivity : AppCompatActivity() {
 
                 ) {
                     Toast.makeText(this@SignUpActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
+                    signUpRetrofit()
                     startActivity(intent)
                 }
             }
@@ -117,4 +133,54 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun signUpRetrofit(){
+        name = binding.nameEdit.text.toString()
+        nickname = binding.nicknameEdit.text.toString()
+        email = binding.joinEmailEdit.text.toString()
+        password = binding.joinPasswordEdit.text.toString()
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        Log.d("currentDate",formatted.toString())
+
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        Log.d("currentTime",formattedTime.toString())
+
+        signTime = "$formatted $formattedTime"
+        Log.d("currentDateTime",signTime)
+
+        val user = HashMap<String,Any>()
+        user["username"] = name
+        user["nickname"] = nickname
+        user["email"] = email
+        user["password"] = password
+        user["create_date"] = signTime
+
+        val retrofitService = Retrofits.postUserInfo()
+        val call: Call<User> = retrofitService.postUser(user)
+
+        call.enqueue(object : Callback<User> {
+            override fun onResponse(
+                call: Call<User>,
+                response: Response<User>
+            ) {
+                try {
+                    if (response.isSuccessful) {
+                        Log.e("userInfoPost", "success")
+                        Log.d("성공:", "${response.body()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("userInfoPost", response.body().toString())
+                    Log.e("userInfoPost", response.message().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Log.e("userInfoPost", t.message.toString())
+            }
+        })
+    }
+
 }

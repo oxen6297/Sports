@@ -16,6 +16,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.WriteCommunityFragmentBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class WriteCommunityFragment : Fragment() {
 
@@ -23,7 +28,11 @@ class WriteCommunityFragment : Fragment() {
     private val binding get() = mBinding!!
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     lateinit var callback: OnBackPressedCallback
-
+    private var categoryType = 0
+    private var title = ""
+    private var content = ""
+    private var image = ""
+    private var writeTime = ""
 
 
     override fun onCreateView(
@@ -48,7 +57,9 @@ class WriteCommunityFragment : Fragment() {
         categoryAdapter.setDropDownViewResource(R.layout.spinner_item_style)
 
         binding.run {
+            val mainActivity = activity as MainActivity
             categorySpinner.adapter = categoryAdapter
+
 
             uploadImageBtn.setOnClickListener {
                 imagePickerLauncher.launch(Intent(Intent.ACTION_PICK).apply {
@@ -61,11 +72,17 @@ class WriteCommunityFragment : Fragment() {
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     it.data?.data?.let {
                         imageName.text = it.lastPathSegment.toString()
+                        mainActivity.setDataAtFragmentTwo(
+                            this@WriteCommunityFragment,
+                            it.toString(),
+                            "title"
+                        )
                     }
                 }
 
             saveBtn.setOnClickListener {
                 checkBlank()
+                communityRetrofit()
             }
         }
     }
@@ -110,5 +127,69 @@ class WriteCommunityFragment : Fragment() {
                 Log.d("saveBtnClick", "success")
             }
         }
+    }
+
+    private fun communityRetrofit() {
+        arguments?.let {
+            image = it.getInt("title").toString()
+        }
+
+        when (binding.categorySpinner.selectedItem) {
+            "구기종목" -> categoryType = 1
+            "레저" -> categoryType = 2
+            "해양 스포츠" -> categoryType = 3
+            "생활 스포츠" -> categoryType = 4
+            "동계 스포츠" -> categoryType = 5
+            "E-스포츠" -> categoryType = 6
+            "자유게시판" -> categoryType = 7
+            "비밀게시판" -> categoryType = 8
+            "질문게시판" -> categoryType = 9
+            "문의하기" -> categoryType = 10
+        }
+
+        title = binding.contentTitleEdit.text.toString()
+        content = binding.contentTextEdit.text.toString()
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        Log.d("currentDate", formatted.toString())
+
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        Log.d("currentTime", formattedTime.toString())
+
+        writeTime = "$formatted $formattedTime"
+        Log.d("currentDateTime", writeTime)
+
+        val user = HashMap<String, Any>()
+        user["type"] = categoryType
+        user["title"] = title
+        user["content"] = content
+        user["image"] = image
+        user["time"] = writeTime
+
+        val retrofitService = Retrofits.postCommunity()
+        val call: Call<WriteContent> = retrofitService.postContent(user)
+
+        call.enqueue(object : Callback<WriteContent> {
+            override fun onResponse(
+                call: Call<WriteContent>,
+                response: Response<WriteContent>
+            ) {
+                try {
+                    if (response.isSuccessful) {
+                        Log.e("userInfoPost", "success")
+                        Log.d("성공:", "${response.body()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("userInfoPost", response.body().toString())
+                    Log.e("userInfoPost", response.message().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<WriteContent>, t: Throwable) {
+                Log.e("userInfoPost", t.message.toString())
+            }
+        })
     }
 }
