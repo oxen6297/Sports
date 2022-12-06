@@ -5,108 +5,228 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bottom_sheet_dialog_background"
-    android:theme="@style/BottomSheetDialog"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:paddingBottom="30dp">
+    android:paddingBottom="30dp"
+    android:theme="@style/BottomSheetDialog">
 
-    <TextView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/sort_ball"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="구기 종목"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/divider_one"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/sort_leisure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="레저"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:gravity="center"
+            android:text="구기 종목"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_one"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_leisure"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_ball" />
 
-    <TextView
-        android:id="@+id/sort_water"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_leisure"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="해양"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/divider_one"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_one">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="레저"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_two"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_water"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_leisure" />
 
-    <TextView
-        android:id="@+id/sort_life"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_water"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="생활"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/divider_three"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_two">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="해양"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_three"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_life"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_water" />
 
-    <TextView
-        android:id="@+id/sort_winter"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_life"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="동계"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/divider_four"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_three">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="생활"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_four"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_winter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_life" />
 
-    <TextView
-        android:id="@+id/sort_e_sports"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_winter"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="이스포츠"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/divider_five"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_four">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="동계"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_five"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_e_sports"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_winter" />
 
-    <TextView
-        android:id="@+id/sort_all"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_e_sports"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="전체"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/divider_six"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sort_e_sports" />
+        app:layout_constraintTop_toBottomOf="@+id/divider_five">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:gravity="center"
+            android:text="이스포츠"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_six"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_all"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sort_e_sports" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_six">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="전체"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

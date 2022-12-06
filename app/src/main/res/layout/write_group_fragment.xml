@@ -266,8 +266,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="11dp"
                 android:background="@drawable/edit_back"
-                android:hint="한줄 설명을 입력하세요."
+                android:hint="한줄 설명을 입력하세요. (최대 40자)"
                 android:padding="13dp"
+                android:maxLength="40"
                 android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -304,31 +305,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/content_text" />
 
             <TextView
-                android:id="@+id/tag_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="태그"
-                android:textColor="@color/black"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/content_text_edit" />
-
-            <EditText
-                android:id="@+id/tag_text_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="11dp"
-                android:background="@drawable/edit_back"
-                android:hint="#태그 를 활용하여 키워드를 뽑아보세요 (최대 10개)"
-                android:padding="13dp"
-                android:textSize="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tag_title" />
-
-            <TextView
                 android:id="@+id/todo_sign_up_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -338,7 +314,7 @@
                 android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tag_text_edit" />
+                app:layout_constraintTop_toBottomOf="@+id/content_text_edit" />
 
             <TextView
                 android:id="@+id/number_member"
@@ -510,7 +486,6 @@
                 android:text="메인 이미지 (1080*1080 권장)"
                 android:textColor="#B9B9B9"
                 android:textSize="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/upload_image_btn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_text" />
@@ -526,7 +501,6 @@
                 android:textColor="@color/white"
                 android:textSize="13dp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_text" />
 

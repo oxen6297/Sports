@@ -217,31 +217,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/content_text" />
 
             <TextView
-                android:id="@+id/tag_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="태그"
-                android:textColor="@color/black"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/content_text_edit" />
-
-            <EditText
-                android:id="@+id/tag_text_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="11dp"
-                android:background="@drawable/edit_back"
-                android:hint="#태그 를 활용하여 키워드를 뽑아보세요 (최대 10개)"
-                android:padding="13dp"
-                android:textSize="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tag_title" />
-
-            <TextView
                 android:id="@+id/todo_sign_up_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -251,7 +226,7 @@
                 android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tag_text_edit" />
+                app:layout_constraintTop_toBottomOf="@+id/content_text_edit" />
 
 
             <TextView

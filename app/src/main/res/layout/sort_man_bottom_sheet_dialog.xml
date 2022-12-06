@@ -5,52 +5,98 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bottom_sheet_dialog_background"
-    android:theme="@style/BottomSheetDialog"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:paddingBottom="30dp">
+    android:paddingBottom="30dp"
+    android:theme="@style/BottomSheetDialog">
 
-    <TextView
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/sort_man"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="남자"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/divider_one"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/sort_woman"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="여자"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="남자"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_one"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_woman"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_man" />
 
-    <TextView
-        android:id="@+id/sort_all"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_woman"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="전체"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/divider_two"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_one">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="여자"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider_two"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/sort_all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sort_woman" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/sort_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_two">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="전체"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

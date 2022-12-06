@@ -107,39 +107,12 @@
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ribbon_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toStartOf="@+id/chat_layout"
-            app:layout_constraintStart_toEndOf="@+id/heart_layout"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/ribbon_img"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/ribbon" />
-
-            <TextView
-                android:id="@+id/ribbon_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:text="스크랩"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/chat_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toStartOf="@+id/share_layout"
-            app:layout_constraintStart_toEndOf="@+id/ribbon_layout"
+            app:layout_constraintStart_toEndOf="@+id/heart_layout"
+            android:layout_marginStart="30dp"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -154,32 +127,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:text="댓글"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/share_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/share_img"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/share" />
-
-            <TextView
-                android:id="@+id/share_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:text="공유"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 

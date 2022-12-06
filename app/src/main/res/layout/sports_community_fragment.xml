@@ -28,7 +28,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/free_board"
+                android:id="@+id/free_board_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/free_img" />
 
             <TextView
-                android:id="@+id/secret_board"
+                android:id="@+id/secret_board_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -70,7 +70,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/secret_img" />
 
             <TextView
-                android:id="@+id/question"
+                android:id="@+id/question_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/question">
+                app:layout_constraintTop_toBottomOf="@id/question_text">
 
                 <ImageView
                     android:id="@+id/sports_img"
@@ -140,6 +140,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/ball_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -159,6 +160,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/ball_img" />
 
                 <TextView
+                    android:id="@+id/leisure_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -179,11 +181,12 @@
                     app:layout_constraintTop_toBottomOf="@+id/leisure_img" />
 
                 <TextView
+                    android:id="@+id/water_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="30dp"
-                    android:text="수상 스포츠"
+                    android:text="해양 스포츠"
                     android:textColor="@color/black"
                     android:textSize="15dp"
                     app:layout_constraintStart_toEndOf="@+id/wave_img"
@@ -199,6 +202,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/wave_img" />
 
                 <TextView
+                    android:id="@+id/life_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -210,7 +214,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/wave_img" />
 
                 <ImageView
-                    android:id="@+id/winter_sports"
+                    android:id="@+id/winter_sports_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="30dp"
@@ -219,6 +223,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/life_sports_img" />
 
                 <TextView
+                    android:id="@+id/winter_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -226,8 +231,31 @@
                     android:text="동계 스포츠"
                     android:textColor="@color/black"
                     android:textSize="15dp"
-                    app:layout_constraintStart_toEndOf="@+id/winter_sports"
+                    app:layout_constraintStart_toEndOf="@+id/winter_sports_img"
                     app:layout_constraintTop_toBottomOf="@+id/life_sports_img" />
+
+                <ImageView
+                    android:id="@+id/e_sports_img"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/winter_text"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/e_sports"/>
+
+                <TextView
+                    android:id="@+id/e_sports_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="E - Sports"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/e_sports_img"
+                    app:layout_constraintTop_toBottomOf="@+id/winter_text" />
+
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -241,7 +269,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/detail_layout" />
 
             <TextView
-                android:id="@+id/faq"
+                android:id="@+id/faq_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -252,26 +280,6 @@
                 app:layout_constraintStart_toEndOf="@+id/faq_img"
                 app:layout_constraintTop_toBottomOf="@+id/detail_layout" />
 
-            <ImageView
-                android:id="@+id/with_img"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/friends"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/faq_img" />
-
-            <TextView
-                android:id="@+id/with"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="30dp"
-                android:text="함께해요!"
-                android:textColor="@color/black"
-                android:textSize="15dp"
-                app:layout_constraintStart_toEndOf="@+id/with_img"
-                app:layout_constraintTop_toBottomOf="@+id/faq_img" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
