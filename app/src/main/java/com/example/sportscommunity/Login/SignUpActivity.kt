@@ -157,6 +157,11 @@ class SignUpActivity : AppCompatActivity() {
         user["email"] = email
         user["password"] = password
         user["create_date"] = signTime
+//        user["mobile"] = "123"
+//        user["modify_date"] = "asd"
+//        user["birth"] = "asd"
+//        user["image"] = "asd"
+//        user["gender"] = ""
 
         val retrofitService = Retrofits.postUserInfo()
         val call: Call<User> = retrofitService.postUser(user)

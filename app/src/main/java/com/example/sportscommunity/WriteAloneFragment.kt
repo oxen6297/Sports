@@ -303,15 +303,15 @@ class WriteAloneFragment : Fragment() {
         Log.d("currentDateTime", writeTime)
 
         val writing = HashMap<String, Any>()
-        writing["type"] = categoryType
-        writing["area"] = area
+        writing["id"] = categoryType
+        writing["local"] = area
         writing["date"] = dateAndTime
         writing["title"] = title
-        writing["content"] = content
-        writing["sex"] = sex
-        writing["min_age"] = minAge
-        writing["max_age"] = maxAge
-        writing["write_time"] = writeTime
+        writing["description"] = content
+        writing["gender"] = sex
+        writing["minage"] = minAge
+        writing["maxage"] = maxAge
+        writing["writetime"] = writeTime
 
         val retrofitService = Retrofits.postAlone()
         val call: Call<WritePlayWith> = retrofitService.postContent(writing)

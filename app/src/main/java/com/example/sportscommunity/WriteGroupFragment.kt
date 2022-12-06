@@ -21,6 +21,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.WriteGroupFragmentBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class WriteGroupFragment : Fragment() {
@@ -31,6 +36,20 @@ class WriteGroupFragment : Fragment() {
     private var dateString = ""
     private var timeString = ""
     lateinit var callback: OnBackPressedCallback
+    private var area = ""
+    private var categoryType = 0
+    private var dateAndTime = ""
+    private var title = ""
+    private var shortContent = ""
+    private var content = ""
+    private var peopleNum = ""
+    private var sex = ""
+    private var minAge = ""
+    private var maxAge = ""
+    private var writeTime = ""
+    private var image = ""
+    private var date = ""
+    private var time = ""
 
 
     override fun onCreateView(
@@ -54,7 +73,7 @@ class WriteGroupFragment : Fragment() {
         val categoryAdapter =
             ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.categoryList,
+                R.array.sportsList,
                 R.layout.spinner_dropdown_item
             )
 
@@ -129,6 +148,7 @@ class WriteGroupFragment : Fragment() {
                     dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
                     daySpinner.text = dateString
                     daySpinner.setTextColor(Color.parseColor("#1F1F1F"))
+                    mainActivity.setDataAtFragmentTwo(this@WriteGroupFragment, dateString, "date")
                 }
                 DatePickerDialog(
                     requireContext(),
@@ -146,6 +166,7 @@ class WriteGroupFragment : Fragment() {
                     timeString = "${hourOfDay}시 ${minute}분"
                     hourSpinner.text = timeString
                     hourSpinner.setTextColor(Color.parseColor("#1F1F1F"))
+                    mainActivity.setDataAtFragmentTwo(this@WriteGroupFragment, timeString, "time")
                 }
                 TimePickerDialog(
                     requireContext(),
@@ -186,14 +207,17 @@ class WriteGroupFragment : Fragment() {
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     it.data?.data?.let {
                         imageName.text = it.lastPathSegment.toString()
+                        image = it.toString()
                     }
                 }
             saveBtn.setOnClickListener {
                 if (oneCheckBox.isChecked) {
                     checkBlank()
+                    groupRetrofit()
                 }
                 if (twoCheckBox.isChecked) {
                     checkAloneBlank()
+                    groupRetrofit()
                 }
             }
         }
@@ -298,155 +322,103 @@ class WriteGroupFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-//    private fun readExcel(context: Context, spinner: Spinner) {
-//        try {
-//            val inputStream: InputStream = context.resources.assets.open("sido.xls")
-//            val wb: Workbook = Workbook.getWorkbook(inputStream)
-//
-//            val sheet: Sheet = wb.getSheet(0)
-//
-//            val colTotal: Int = sheet.columns
-//            val rowIndexStart = 1
-//            val rowTotal: Int = sheet.getColumn(colTotal - 1).size
-//
-//            //서울
-//            for (row in rowIndexStart..rowTotal - 250) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Seoul", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //경기도
-//            for (row in rowIndexStart + 25..rowTotal - 207) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Gyungi", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //인천
-//            for (row in rowIndexStart + 68..rowTotal - 197) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Incheon", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //대전
-//            for (row in rowIndexStart + 78..rowTotal - 192) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Daejeon", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //대구
-//            for (row in rowIndexStart + 83..rowTotal - 184) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("DaeGu", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //울산
-//            for (row in rowIndexStart + 91..rowTotal - 179) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Ulsan", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //전남
-//            for (row in rowIndexStart + 96..rowTotal - 157) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Jeonnam", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //전북
-//            for (row in rowIndexStart + 118..rowTotal - 141) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("JeonBuk", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //충남
-//            for (row in rowIndexStart + 134..rowTotal - 125) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Chungnam", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //충북
-//            for (row in rowIndexStart + 150..rowTotal - 111) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Chungbuk", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //제주
-//            for (row in rowIndexStart + 164..rowTotal - 109) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Jeju", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //세종
-//            for (row in rowIndexStart + 166..rowTotal - 86) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Sejong", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //광주
-//            for (row in rowIndexStart + 189..rowTotal - 81) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Gwangju", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //부산
-//            for (row in rowIndexStart + 194..rowTotal - 65) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Busan", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //경북
-//            for (row in rowIndexStart + 210..rowTotal - 41) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Gyungbuk", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //경남
-//            for (row in rowIndexStart + 234..rowTotal - 19) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Gyungnam", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//
-//            //강원
-//            for (row in rowIndexStart + 256..rowTotal) {
-//                for (col in 1..1) {
-//                    val contents: String = sheet.getCell(col, row).contents
-//                    Log.d("Gangwon", "row:" + row + "col:" + col + "contents:" + contents)
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Log.d("errorss", e.toString())
-//        }
-//    }
+    private fun groupRetrofit() {
+
+        arguments?.let {
+            date = it.getString("date").toString()
+            time = it.getString("time").toString()
+        }
+
+        when (binding.categorySpinner.selectedItem) {
+            "구기종목" -> categoryType = 1
+            "레저" -> categoryType = 2
+            "해양 스포츠" -> categoryType = 3
+            "생활 스포츠" -> categoryType = 4
+            "동계 스포츠" -> categoryType = 5
+            "E-스포츠" -> categoryType = 6
+        }
+
+        area = if (binding.areaCheckBox.isChecked) {
+            "상관없음"
+        } else {
+            binding.areaSpinner.selectedItem.toString() +
+                    binding.areaSpinnerTwo.selectedItem.toString()
+        }
+
+        dateAndTime = if (binding.dayCheckBox.isChecked) {
+            "상관없음"
+        } else {
+            "$date $time"
+        }
+
+        title = binding.contentTextEdit.text.toString()
+        shortContent = binding.shortTextEdit.text.toString()
+        content = binding.contentTextEdit.text.toString()
+        peopleNum = binding.numberEdit.text.toString()
+        sex = if (binding.sortSexSpinner.selectedItem == "상관없음") {
+            "상관없음"
+        } else {
+            binding.sortSexSpinner.selectedItem.toString()
+        }
+
+        if (binding.ageCheckBox.isChecked) {
+            minAge = "상관없음"
+            maxAge = "상관없음"
+            Log.d("age", minAge)
+        } else {
+            minAge = binding.ageEdit.text.toString()
+            maxAge = binding.ageEditTwo.text.toString()
+            Log.d("age", minAge)
+        }
+
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        Log.d("currentDate", formatted.toString())
+
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        Log.d("currentTime", formattedTime.toString())
+
+        writeTime = "$formatted $formattedTime"
+        Log.d("currentDateTime", writeTime)
+
+        val writing = HashMap<String, Any>()
+        writing["id"] = categoryType
+        writing["local"] = area
+        writing["date"] = dateAndTime
+        writing["title"] = title
+        writing["line"] = shortContent
+        writing["description"] = content
+        writing["peoplenum"] = peopleNum
+        writing["gender"] = sex
+        writing["minage"] = minAge
+        writing["maxage"] = maxAge
+        writing["writetime"] = writeTime
+        writing["titleimage"] = image
+
+        val retrofitService = Retrofits.postGroup()
+        val call: Call<WriteGroupPlay> = retrofitService.postContent(writing)
+
+        call.enqueue(object : Callback<WriteGroupPlay> {
+            override fun onResponse(
+                call: Call<WriteGroupPlay>,
+                response: Response<WriteGroupPlay>
+            ) {
+                try {
+                    if (response.isSuccessful) {
+                        Log.e("userInfoPost", "success")
+                        Log.d("성공:", "${response.body()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("userInfoPost", response.body().toString())
+                    Log.e("userInfoPost", response.message().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<WriteGroupPlay>, t: Throwable) {
+                Log.e("userInfoPost", t.message.toString())
+            }
+        })
+    }
 }

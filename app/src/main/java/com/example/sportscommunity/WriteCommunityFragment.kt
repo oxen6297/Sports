@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.sportscommunity.databinding.WriteCommunityFragmentBinding
+import com.kakao.usermgmt.StringSet.email
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -72,11 +73,7 @@ class WriteCommunityFragment : Fragment() {
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     it.data?.data?.let {
                         imageName.text = it.lastPathSegment.toString()
-                        mainActivity.setDataAtFragmentTwo(
-                            this@WriteCommunityFragment,
-                            it.toString(),
-                            "title"
-                        )
+                        image = it.toString()
                     }
                 }
 
@@ -130,9 +127,6 @@ class WriteCommunityFragment : Fragment() {
     }
 
     private fun communityRetrofit() {
-        arguments?.let {
-            image = it.getInt("title").toString()
-        }
 
         when (binding.categorySpinner.selectedItem) {
             "구기종목" -> categoryType = 1
@@ -160,16 +154,18 @@ class WriteCommunityFragment : Fragment() {
 
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
+        Log.d("imageUri",image)
 
-        val user = HashMap<String, Any>()
-        user["type"] = categoryType
-        user["title"] = title
-        user["content"] = content
-        user["image"] = image
-        user["time"] = writeTime
+        val comwrites = HashMap<String, Any>()
+        comwrites["title"] = title
+        comwrites["description"] = content
+        comwrites["img"] = image
+        comwrites["id"] = categoryType.toString()
+        comwrites["userid"] = 3
+        comwrites["writedate"] = writeTime
 
         val retrofitService = Retrofits.postCommunity()
-        val call: Call<WriteContent> = retrofitService.postContent(user)
+        val call: Call<WriteContent> = retrofitService.postContent(comwrites)
 
         call.enqueue(object : Callback<WriteContent> {
             override fun onResponse(

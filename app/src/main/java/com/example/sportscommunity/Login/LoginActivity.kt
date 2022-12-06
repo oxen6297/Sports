@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
     private var profileImage: String = ""
     private var nickname: String = ""
     private var token: String = ""
-    private var profile: String = ""
+    private var mobile: String = ""
     private var dateTime: String = ""
     private val naverType: String = "naver"
     private val kakaoType: String = "kakao"
@@ -185,6 +185,7 @@ class LoginActivity : AppCompatActivity() {
                 profileImage = user.kakaoAccount?.profile?.thumbnailImageUrl.toString()
                 nickname = user.kakaoAccount?.profile?.nickname.toString()
                 token = user.id.toString()
+                mobile = user.kakaoAccount?.phoneNumber.toString()
 
                 val currentDate = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ISO_DATE
@@ -203,12 +204,16 @@ class LoginActivity : AppCompatActivity() {
                  */
                 val user = HashMap<String,Any>()
 
-                profile = "$gender $birth $profileImage $nickname"
-                user["sns_id"] = email
-                user["sns_name"] = name
-                user["sns_profile"] = profile
-                user["sns_type"] = kakaoType
-                user["sns_connect_date"] = dateTime
+                user["username"] = name
+                user["nickname"] = nickname
+                user["email"] = email
+                user["password"] = "password"
+                user["create_date"] = dateTime
+                user["mobile"] = mobile
+                user["modify_date"] = ""
+                user["birth"] = birth
+                user["image"] = profileImage
+                user["gender"] = gender
 
                 val retrofitService = Retrofits.postUserInfo()
                 val call: Call<User> = retrofitService.postUser(user)
@@ -287,6 +292,7 @@ class LoginActivity : AppCompatActivity() {
                         profileImage = result.profile?.profileImage.toString()
                         nickname = result.profile?.nickname.toString()
                         token = result.profile?.id.toString()
+                        mobile = result.profile?.mobile.toString()
 
                         Log.e("userName", "네이버 로그인한 유저 정보 - 이름 : $name")
                         Log.e("userEmail", "네이버 로그인한 유저 정보 - 이메일 : $email")
@@ -312,12 +318,16 @@ class LoginActivity : AppCompatActivity() {
                          * 네이버 로그인 서버 연동 부분 --------------------------------------------------------
                          */
                         val user = HashMap<String, Any>()
-                        profile = "$gender $birth $profileImage $nickname"
-                        user["sns_id"] = email
-                        user["sns_name"] = name
-                        user["sns_profile"] = profile
-                        user["sns_type"] = naverType
-                        user["sns_connect_date"] = dateTime
+                        user["username"] = name
+                        user["nickname"] = nickname
+                        user["email"] = email
+                        user["password"] = "password"
+                        user["create_date"] = dateTime
+                        user["mobile"] = mobile
+                        user["modify_date"] = ""
+                        user["birth"] = birth
+                        user["image"] = profileImage
+                        user["gender"] = gender
 
                         val retrofitService = Retrofits.postUserInfo()
                         val call: Call<User> = retrofitService.postUser(user)

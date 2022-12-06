@@ -23,17 +23,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sportscommunity.Adapter.WriteShopAdapter
 import com.example.sportscommunity.databinding.WriteShopFragmentBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class WriteShopFragment : Fragment() {
 
     private var mBinding: WriteShopFragmentBinding? = null
     private val binding get() = mBinding!!
     lateinit var callback: OnBackPressedCallback
-    private var glide: RequestManager? = null
     private var shopImage = mutableListOf<Uri>()
     private var imageText = mutableListOf<String>()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     var flag = 0
+    private var area = ""
+    private var categoryType = 0
+    private var title = ""
+    private var content = ""
+    private var writeTime = ""
+    private var price = ""
+    private var image = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,10 +59,12 @@ class WriteShopFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val mainActivity = activity as MainActivity
+        mainActivity.hideBottomNavigationView(true)
         val writeShopAdapter =
-            WriteShopAdapter(requireContext().applicationContext, shopImage,imageText)
+            WriteShopAdapter(requireContext().applicationContext, shopImage, imageText)
+        val imageUri = "drawable://" + R.drawable.add_image_background
 
-        val imageUri = "drawable://" + R.drawable.add_image
         shopImage.add(Uri.parse(imageUri))
         shopImage.add(Uri.parse(imageUri))
         shopImage.add(Uri.parse(imageUri))
@@ -64,7 +77,6 @@ class WriteShopFragment : Fragment() {
         imageText.add("네번째 사진")
         imageText.add("다섯번째 사진")
 
-        glide = Glide.with(this)
         binding.productListview.adapter = writeShopAdapter
         binding.productListview.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -75,8 +87,7 @@ class WriteShopFragment : Fragment() {
                     Intent(Intent.ACTION_PICK).apply {
                         this.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         this.action = Intent.ACTION_GET_CONTENT
-                        val mainActivity = activity as MainActivity
-                        mainActivity.setDataAtFragment(this@WriteShopFragment,position,"flag")
+                        mainActivity.setDataAtFragment(this@WriteShopFragment, position, "flag")
                     }
                 )
             }
@@ -87,6 +98,9 @@ class WriteShopFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 it.data?.data?.let { uri ->
                     val imageUri: Uri? = it.data?.data
+
+                    mainActivity.setDataAtFragmentTwo(this, it.toString(), "imageTwo")
+
                     if (imageUri != null) {
 
                         arguments.let { bundle ->
@@ -102,7 +116,7 @@ class WriteShopFragment : Fragment() {
         val categoryAdapter =
             ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.categoryList,
+                R.array.sportsList,
                 R.layout.spinner_dropdown_item
             )
         val areaAdapter =
@@ -154,6 +168,7 @@ class WriteShopFragment : Fragment() {
             }
             saveBtn.setOnClickListener {
                 checkBlank()
+                shopRetrofit()
             }
         }
     }
@@ -214,5 +229,74 @@ class WriteShopFragment : Fragment() {
                 Log.d("saveBtnClick", "success")
             }
         }
+    }
+
+    private fun shopRetrofit() {
+        when (binding.categorySpinner.selectedItem) {
+            "구기종목" -> categoryType = 1
+            "레저" -> categoryType = 2
+            "해양 스포츠" -> categoryType = 3
+            "생활 스포츠" -> categoryType = 4
+            "동계 스포츠" -> categoryType = 5
+            "E-스포츠" -> categoryType = 6
+        }
+
+        area = if (binding.areaCheckBox.isChecked) {
+            "상관없음"
+        } else {
+            binding.areaSpinner.selectedItem.toString() +
+                    binding.areaSpinnerTwo.selectedItem.toString()
+        }
+        title = binding.contentTextEdit.text.toString()
+        content = binding.contentTextEdit.text.toString()
+        price = binding.priceEdit.text.toString()
+        arguments?.let {
+            image = it.getString("imageTwo").toString()
+        }
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        Log.d("currentDate", formatted.toString())
+
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        Log.d("currentTime", formattedTime.toString())
+
+        writeTime = "$formatted $formattedTime"
+        Log.d("currentDateTime", writeTime)
+
+        val writing = HashMap<String, Any>()
+        writing["id"] = categoryType
+        writing["local"] = area
+        writing["title"] = title
+        writing["description"] = content
+        writing["writedate"] = writeTime
+        writing["usedimage"] = image
+        writing["price"] = price
+        writing["userid"] = 3
+
+        val retrofitService = Retrofits.postShop()
+        val call: Call<WriteShop> = retrofitService.postContent(writing)
+
+        call.enqueue(object : Callback<WriteShop> {
+            override fun onResponse(
+                call: Call<WriteShop>,
+                response: Response<WriteShop>
+            ) {
+                try {
+                    if (response.isSuccessful) {
+                        Log.e("userInfoPost", "success")
+                        Log.d("성공:", "${response.body()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("userInfoPost", response.body().toString())
+                    Log.e("userInfoPost", response.message().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<WriteShop>, t: Throwable) {
+                Log.e("userInfoPost", t.message.toString())
+            }
+        })
     }
 }
