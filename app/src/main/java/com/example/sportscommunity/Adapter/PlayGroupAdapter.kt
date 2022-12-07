@@ -14,7 +14,11 @@ class PlayGroupAdapter(
 ) : RecyclerView.Adapter<PlayGroupAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: PlayGroupItemListBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root){
+            fun onBind(data:GroupPlay){
+                binding.groups = data
+            }
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -25,21 +29,22 @@ class PlayGroupAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.binding.run {
-
-            val model = playGroup!![position]
-            val url = model.groupImg
-
-            Glide.with(context).load(url).error(R.drawable.picture).fitCenter()
-                .into(groupProfileImg)
-
-            groupName.text = model.groupTitle
-            groupCategory.text = model.groupCategory
-            groupArea.text = model.groupArea
-            groupComment.text = model.groupCategory
-            numberMember.text = model.groupMemberNumber
-            groupTime.text = model.groupTime
-        }
+        holder.onBind(playGroup!![position])
+//        holder.binding.run {
+//
+//            val model = playGroup!![position]
+//            val url = model.groupImg
+//
+//            Glide.with(context).load(url).error(R.drawable.picture).fitCenter()
+//                .into(groupProfileImg)
+//
+//            groupName.text = model.groupTitle
+//            groupCategory.text = model.groupCategory
+//            groupArea.text = model.groupArea
+//            groupComment.text = model.groupCategory
+//            numberMember.text = model.groupMemberNumber
+//            groupTime.text = model.groupTime
+//        }
     }
 
     override fun getItemCount(): Int = playGroup!!.size

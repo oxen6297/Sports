@@ -6,6 +6,8 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.TranslateAnimation
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.R
@@ -19,7 +21,7 @@ class WriteShopAdapter(
 
     private lateinit var itemClickListener: OnItemClickListener
     private lateinit var itemClickListeners: OnItemClickListener
-    private val imageUri = "drawable://" + R.drawable.add_image
+    private val imageUri = "drawable://" + R.drawable.add_image_background
 
     class ViewHolder(val binding: WriteShopListItemBinding) :
         RecyclerView.ViewHolder(binding.root)

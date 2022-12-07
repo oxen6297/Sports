@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="shop"
+            type="com.example.sportscommunity.Shop" />
+
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="30dp">
@@ -10,6 +20,8 @@
         android:layout_width="88dp"
         android:layout_height="88dp"
         android:src="@drawable/login_btn"
+        app:imageUrl="@{shop.image}"
+        app:error="@{@drawable/login_btn}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
-        android:text="title"
+        android:text="@{shop.title}"
         android:textColor="@color/black"
         android:textSize="14dp"
         android:textStyle="bold"
@@ -30,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4.5dp"
-        android:text="수영"
+        android:text="@{shop.category}"
         android:textColor="@color/black"
         android:textSize="11dp"
         android:textStyle="bold"
@@ -42,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:text="광진구 화양동"
+        android:text="@{shop.area}"
         android:textColor="@color/black"
         android:textSize="11dp"
         app:layout_constraintStart_toEndOf="@+id/user_id"
@@ -53,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4.5dp"
-        android:text="35,000원"
+        android:text="@{shop.price}"
         android:textColor="@color/black"
         android:textSize="13dp"
         app:layout_constraintStart_toStartOf="@+id/user_id"
@@ -106,10 +118,11 @@
         android:id="@+id/time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1분전"
+        android:text="@{shop.timeText}"
         android:textColor="#B9B9B9"
         app:layout_constraintBottom_toBottomOf="@id/shop_img"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

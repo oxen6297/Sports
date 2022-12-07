@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="groups"
+            type="com.example.sportscommunity.GroupPlay" />
+
+    </data>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,6 +21,8 @@
         android:layout_height="90dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/kakao_default_profile_image"
+        app:imageUrl="@{groups.groupImg}"
+        app:error="@{@drawable/kakao_default_profile_image}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="화양 빌리어드 클럽"
+        android:text="@{groups.groupTitle}"
         android:textColor="@color/black"
         android:textSize="14dp"
         android:textStyle="bold"
@@ -30,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="당구"
+        android:text="@{groups.groupCategory}"
         android:textColor="@color/black"
         android:textSize="12dp"
         android:textStyle="bold"
@@ -42,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="광진구 화양동"
+        android:text="@{groups.groupArea}"
         android:textColor="@color/black"
         android:textSize="12dp"
         app:layout_constraintStart_toEndOf="@+id/group_category"
@@ -53,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="초보도 환영합니다 함께 즐겨요!"
+        android:text="@{groups.groupComment}"
         android:textColor="@color/black"
         android:textSize="11dp"
         app:layout_constraintStart_toStartOf="@id/group_category"
@@ -69,7 +82,7 @@
         android:paddingTop="3dp"
         android:paddingRight="8dp"
         android:paddingBottom="3dp"
-        android:text="14/15"
+        android:text="@{groups.groupMemberNumber}"
         android:textColor="@color/white"
         android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="@id/group_profile_img"
@@ -79,9 +92,10 @@
         android:id="@+id/group_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1분전"
+        android:text="@{groups.groupTime}"
         android:textSize="11dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/group_profile_img"/>
+        app:layout_constraintBottom_toBottomOf="@+id/group_profile_img"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

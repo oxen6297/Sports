@@ -11,7 +11,11 @@ class ShopAdapter(
     private val context: Context, private val shopList: MutableList<Shop>?
 ) : RecyclerView.Adapter<ShopAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ShopListItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ShopListItemBinding) : RecyclerView.ViewHolder(binding.root){
+        fun onBind(data:Shop){
+            binding.shop = data
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -21,6 +25,7 @@ class ShopAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.onBind(shopList!![position])
     }
 
     override fun getItemCount(): Int = shopList!!.size

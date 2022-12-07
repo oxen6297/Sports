@@ -5,16 +5,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.sportscommunity.Group
+import com.example.sportscommunity.GroupPlay
 import com.example.sportscommunity.R
 import com.example.sportscommunity.databinding.GroupItemListBinding
 
 class GroupAdapter(
-    private val context: Context, private val groupList: MutableList<Group>?
+    private val context: Context, private val groupList: MutableList<GroupPlay>?
 ) : RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: GroupItemListBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: GroupItemListBinding) :
+        RecyclerView.ViewHolder(binding.root){
+            fun onBind(data:GroupPlay){
+                binding.group = data
+            }
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -25,16 +29,8 @@ class GroupAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.binding.run {
-            val model = groupList!![position]
-            val url = model.groupImage
+        holder.onBind(groupList!![position])
 
-            Glide.with(context).load(url).error(R.drawable.picture).fitCenter()
-                .into(groupItemImage)
-
-            groupItemName.text = model.category
-            groupItemTime.text = model.time
-        }
     }
 
     override fun getItemCount(): Int = groupList!!.size
