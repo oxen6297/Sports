@@ -22,7 +22,7 @@ fun backPressed(context: Context, activity: FragmentActivity) {
             }
 
             if (System.currentTimeMillis() <= backPressedTime + 1500) {
-                activity.finish()
+                activity.finishAffinity()
             }
         }
     }
