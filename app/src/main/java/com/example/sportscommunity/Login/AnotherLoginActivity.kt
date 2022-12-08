@@ -1,5 +1,6 @@
 package com.example.sportscommunity.Login
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -45,13 +46,29 @@ class AnotherLoginActivity : AppCompatActivity() {
 
                 if (checkInfo(loginEmailEdit, "아이디") && checkInfo(loginPasswordEdit, "패스워호")) {
 
-                    Toast.makeText(this@AnotherLoginActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@AnotherLoginActivity, MainActivity::class.java))
+                    goLogin()
                 }
-
             }
         }
     }
+
+    //로그인
+    private fun goLogin() {
+        binding.run {
+            val sp = getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+            val email = sp.getString("email", "empty")
+            val password = sp.getString("password", "empty")
+            if (loginEmailEdit.text.toString() == email.toString()) {
+                if (loginPasswordEdit.text.toString() == password.toString()) {
+                    startActivity(Intent(this@AnotherLoginActivity, MainActivity::class.java))
+                }
+            } else {
+                Toast.makeText(this@AnotherLoginActivity, "아이디와 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
 
     // 빈칸 확인
     private fun checkInfo(editText: EditText, name: String): Boolean {

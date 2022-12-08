@@ -44,8 +44,6 @@ class SignUpActivity : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar?.hide()
 
-        val intent = Intent(this, MainActivity::class.java)
-
         binding.run {
 
             backBtn.setOnClickListener {
@@ -69,9 +67,7 @@ class SignUpActivity : AppCompatActivity() {
                     checkConfirmPassword(joinPasswordEdit, confirmPassword)
 
                 ) {
-                    Toast.makeText(this@SignUpActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
                     signUpRetrofit()
-                    startActivity(intent)
                 }
             }
         }
@@ -134,7 +130,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun signUpRetrofit(){
+    private fun signUpRetrofit() {
         name = binding.nameEdit.text.toString()
         nickname = binding.nicknameEdit.text.toString()
         email = binding.joinEmailEdit.text.toString()
@@ -142,16 +138,16 @@ class SignUpActivity : AppCompatActivity() {
         val currentDate = LocalDateTime.now()
         val formatter = DateTimeFormatter.ISO_DATE
         val formatted = currentDate.format(formatter)
-        Log.d("currentDate",formatted.toString())
+        Log.d("currentDate", formatted.toString())
 
         val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
         val formattedTime = currentDate.format(formatterTwo)
-        Log.d("currentTime",formattedTime.toString())
+        Log.d("currentTime", formattedTime.toString())
 
         signTime = "$formatted $formattedTime"
-        Log.d("currentDateTime",signTime)
+        Log.d("currentDateTime", signTime)
 
-        val user = HashMap<String,Any>()
+        val user = HashMap<String, Any>()
         user["username"] = name
         user["nickname"] = nickname
         user["email"] = email
@@ -167,6 +163,7 @@ class SignUpActivity : AppCompatActivity() {
         val call: Call<User> = retrofitService.postUser(user)
 
         call.enqueue(object : Callback<User> {
+            @SuppressLint("ApplySharedPref", "CommitPrefEdits")
             override fun onResponse(
                 call: Call<User>,
                 response: Response<User>
@@ -175,6 +172,21 @@ class SignUpActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         Log.e("userInfoPost", "success")
                         Log.d("성공:", "${response.body()}")
+                        val sharedPreferences =
+                            getSharedPreferences("userId", Context.MODE_PRIVATE)
+                        val sp = getSharedPreferences("userInfo",Context.MODE_PRIVATE)
+
+                        val editor = sharedPreferences.edit()
+                        val editorTwo = sp.edit()
+
+                        editor.putString("id", response.body()?.id.toString())
+                        editorTwo.putString("email", binding.joinEmailEdit.text.toString())
+                        editorTwo.putString("password", binding.joinPasswordEdit.text.toString())
+                        editor.commit()
+
+                        Toast.makeText(this@SignUpActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
+
                     }
                 } catch (e: Exception) {
                     Log.e("userInfoPost", response.body().toString())
@@ -184,6 +196,11 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<User>, t: Throwable) {
                 Log.e("userInfoPost", t.message.toString())
+                Toast.makeText(
+                    this@SignUpActivity,
+                    "오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
