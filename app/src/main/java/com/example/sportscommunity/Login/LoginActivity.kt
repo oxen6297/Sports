@@ -1,5 +1,6 @@
 package com.example.sportscommunity.Login
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -119,18 +120,33 @@ class LoginActivity : AppCompatActivity() {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e(TAG, "사용자 정보 요청 실패", error)
-            }
-            else if (user != null) {
+            } else if (user != null) {
                 val scopes = mutableListOf<String>()
 
-                if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.add("account_email") }
-                if (user.kakaoAccount?.birthdayNeedsAgreement == true) { scopes.add("birthday") }
-                if (user.kakaoAccount?.birthyearNeedsAgreement == true) { scopes.add("birthyear") }
-                if (user.kakaoAccount?.genderNeedsAgreement == true) { scopes.add("gender") }
-                if (user.kakaoAccount?.phoneNumberNeedsAgreement == true) { scopes.add("phone_number") }
-                if (user.kakaoAccount?.profileNeedsAgreement == true) { scopes.add("profile") }
-                if (user.kakaoAccount?.ageRangeNeedsAgreement == true) { scopes.add("age_range") }
-                if (user.kakaoAccount?.ciNeedsAgreement == true) { scopes.add("account_ci") }
+                if (user.kakaoAccount?.emailNeedsAgreement == true) {
+                    scopes.add("account_email")
+                }
+                if (user.kakaoAccount?.birthdayNeedsAgreement == true) {
+                    scopes.add("birthday")
+                }
+                if (user.kakaoAccount?.birthyearNeedsAgreement == true) {
+                    scopes.add("birthyear")
+                }
+                if (user.kakaoAccount?.genderNeedsAgreement == true) {
+                    scopes.add("gender")
+                }
+                if (user.kakaoAccount?.phoneNumberNeedsAgreement == true) {
+                    scopes.add("phone_number")
+                }
+                if (user.kakaoAccount?.profileNeedsAgreement == true) {
+                    scopes.add("profile")
+                }
+                if (user.kakaoAccount?.ageRangeNeedsAgreement == true) {
+                    scopes.add("age_range")
+                }
+                if (user.kakaoAccount?.ciNeedsAgreement == true) {
+                    scopes.add("account_ci")
+                }
 
                 if (scopes.count() > 0) {
                     Log.d(TAG, "사용자에게 추가 동의를 받아야 합니다.")
@@ -151,8 +167,7 @@ class LoginActivity : AppCompatActivity() {
                             UserApiClient.instance.me { user, error ->
                                 if (error != null) {
                                     Log.e("majjem", "사용자 정보 요청 실패", error)
-                                }
-                                else if (user != null) {
+                                } else if (user != null) {
                                     Log.i("majjem", "사용자 정보 요청 성공")
                                 }
                             }
@@ -190,19 +205,19 @@ class LoginActivity : AppCompatActivity() {
                 val currentDate = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ISO_DATE
                 val formatted = currentDate.format(formatter)
-                Log.d("currentDate",formatted.toString())
+                Log.d("currentDate", formatted.toString())
 
                 val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
                 val formattedTime = currentDate.format(formatterTwo)
-                Log.d("currentTime",formattedTime.toString())
+                Log.d("currentTime", formattedTime.toString())
 
                 dateTime = "$formatted $formattedTime"
-                Log.d("currentDateTime",dateTime)
+                Log.d("currentDateTime", dateTime)
 
                 /**
                  * 카카오 로그인 서버 연동 부분 --------------------------------------------------------
                  */
-                val user = HashMap<String,Any>()
+                val user = HashMap<String, Any>()
 
                 user["username"] = name
                 user["nickname"] = nickname
@@ -219,6 +234,7 @@ class LoginActivity : AppCompatActivity() {
                 val call: Call<User> = retrofitService.postUser(user)
 
                 call.enqueue(object : Callback<User> {
+                    @SuppressLint("CommitPrefEdits", "ApplySharedPref")
                     override fun onResponse(
                         call: Call<User>,
                         response: Response<User>
@@ -227,6 +243,12 @@ class LoginActivity : AppCompatActivity() {
                             if (response.isSuccessful) {
                                 Log.e("userInfoPost", "success")
                                 Log.d("성공:", "${response.body()}")
+
+                                val sharedPreferences =
+                                    getSharedPreferences("userId", Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("id",response.body()?.id.toString())
+                                editor.commit()
                             }
                         } catch (e: Exception) {
                             Log.e("userInfoPost", response.body().toString())
@@ -305,14 +327,14 @@ class LoginActivity : AppCompatActivity() {
                         val currentDate = LocalDateTime.now()
                         val formatter = DateTimeFormatter.ISO_DATE
                         val formatted = currentDate.format(formatter)
-                        Log.d("currentDate",formatted.toString())
+                        Log.d("currentDate", formatted.toString())
 
                         val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
                         val formattedTime = currentDate.format(formatterTwo)
-                        Log.d("currentTime",formattedTime.toString())
+                        Log.d("currentTime", formattedTime.toString())
 
                         dateTime = "$formatted $formattedTime"
-                        Log.d("currentDateTime",dateTime)
+                        Log.d("currentDateTime", dateTime)
 
                         /**
                          * 네이버 로그인 서버 연동 부분 --------------------------------------------------------
@@ -333,6 +355,7 @@ class LoginActivity : AppCompatActivity() {
                         val call: Call<User> = retrofitService.postUser(user)
 
                         call.enqueue(object : Callback<User> {
+                            @SuppressLint("ApplySharedPref")
                             override fun onResponse(
                                 call: Call<User>,
                                 response: Response<User>
@@ -341,6 +364,12 @@ class LoginActivity : AppCompatActivity() {
                                     if (response.isSuccessful) {
                                         Log.e("userInfoPost", "success")
                                         Log.d("성공:", "${response.body()}")
+
+                                        val sharedPreferences =
+                                            getSharedPreferences("userId", Context.MODE_PRIVATE)
+                                        val editor = sharedPreferences.edit()
+                                        editor.putString("id",response.body()?.id.toString())
+                                        editor.commit()
                                     }
                                 } catch (e: Exception) {
                                     Log.e("userInfoPost", response.body().toString())
@@ -368,8 +397,6 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }).start()
 
-
-
                         startActivity(Intent(context, MainActivity::class.java))
                         Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show()
                     }
@@ -386,29 +413,30 @@ class LoginActivity : AppCompatActivity() {
         NaverIdLoginSDK.authenticate(context, oAuthLoginCallback)
     }
 
-    private fun callUserInfo(context: Context){
-        val retrofitService = Retrofits.getUserService()
-        val call: Call<UserEmail> = retrofitService.getUserInfo()
-
-        call.enqueue(object : Callback<UserEmail> {
-            override fun onResponse(call: Call<UserEmail>, response: Response<UserEmail>) {
-                try {
-                    if (response.isSuccessful){
-                        //유저 정보, 이메일 받아오기
-                        if (response.body()?.userInfo!=null){
-                            startActivity(Intent(context, MainActivity::class.java))
-                        }
-                    }
-                } catch (e: Exception){
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<UserEmail>, t: Throwable) {
-                Log.d("failed", "Shop_failed")
-            }
-        })
-    }
+//    private fun callUserInfo(context: Context){
+//        val retrofitService = Retrofits.getUserService()
+//        val call: Call<UserEmail> = retrofitService.getUserInfo()
+//
+//        call.enqueue(object : Callback<UserEmail> {
+//            override fun onResponse(call: Call<UserEmail>, response: Response<UserEmail>) {
+//                try {
+//                    if (response.isSuccessful){
+//                        //유저 정보, 이메일 받아오기
+//                        if (response.body()?.userInfo!=null){
+//                            startActivity(Intent(context, MainActivity::class.java))
+//                        }
+//                        Log.d("userInfoGet","")
+//                    }
+//                } catch (e: Exception){
+//                    e.printStackTrace()
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<UserEmail>, t: Throwable) {
+//                Log.d("failed", "Shop_failed")
+//            }
+//        })
+//    }
 
     class LoginPagerAdapter(
         fragmentActivity: FragmentActivity,
