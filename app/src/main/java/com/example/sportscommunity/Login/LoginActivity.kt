@@ -386,6 +386,30 @@ class LoginActivity : AppCompatActivity() {
         NaverIdLoginSDK.authenticate(context, oAuthLoginCallback)
     }
 
+    private fun callUserInfo(context: Context){
+        val retrofitService = Retrofits.getUserService()
+        val call: Call<UserEmail> = retrofitService.getUserInfo()
+
+        call.enqueue(object : Callback<UserEmail> {
+            override fun onResponse(call: Call<UserEmail>, response: Response<UserEmail>) {
+                try {
+                    if (response.isSuccessful){
+                        //유저 정보, 이메일 받아오기
+                        if (response.body()?.userInfo!=null){
+                            startActivity(Intent(context, MainActivity::class.java))
+                        }
+                    }
+                } catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<UserEmail>, t: Throwable) {
+                Log.d("failed", "Shop_failed")
+            }
+        })
+    }
+
     class LoginPagerAdapter(
         fragmentActivity: FragmentActivity,
         private val tabCount: Int
