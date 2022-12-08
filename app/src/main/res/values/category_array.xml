@@ -14,7 +14,18 @@
         <item>비밀게시판</item>
         <item>질문게시판</item>
         <item>문의하기</item>
-        <item>기타</item>
+
+    </string-array>
+
+    <string-array name="sportsList">
+
+        <item>선택</item>
+        <item>구기종목</item>
+        <item>레저</item>
+        <item>해양 스포츠</item>
+        <item>생활 스포츠</item>
+        <item>동계 스포츠</item>
+        <item>E-스포츠</item>
 
     </string-array>
 
