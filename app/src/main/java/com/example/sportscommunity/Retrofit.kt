@@ -324,3 +324,7 @@ interface WriteShopInfo {
         @Body params: HashMap<String, Any>
     ): Call<WriteShop>
 }
+
+var writeFlag = hashMapOf<String,Any>()
+var minNum = hashMapOf<String,Any>()
+var maxNum = hashMapOf<String,Any>()

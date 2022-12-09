@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.sportscommunity.MainActivity
 import com.example.sportscommunity.WriteContentFragment
 import com.example.sportscommunity.databinding.BallCategoryTabBinding
+import com.example.sportscommunity.writeFlag
 
 class BallSportsCategoryFragment : Fragment() {
 
@@ -38,6 +39,7 @@ class BallSportsCategoryFragment : Fragment() {
         binding.write.setOnClickListener {
             mainActivity.changeFragment(0)
             mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"write")
+            writeFlag.put("write",1)
         }
     }
 

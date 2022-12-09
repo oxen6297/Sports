@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -34,7 +35,7 @@ class WriteCommunityFragment : Fragment() {
     private var content = ""
     private var image = ""
     private var writeTime = ""
-
+    private var flag = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +49,8 @@ class WriteCommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        flag = writeFlag["write"].toString().toInt()
+
         val categoryAdapter =
             ArrayAdapter.createFromResource(
                 requireContext(),
@@ -58,9 +61,9 @@ class WriteCommunityFragment : Fragment() {
         categoryAdapter.setDropDownViewResource(R.layout.spinner_item_style)
 
         binding.run {
-            val mainActivity = activity as MainActivity
             categorySpinner.adapter = categoryAdapter
 
+            autoSelectCategory(flag, binding.categorySpinner)
 
             uploadImageBtn.setOnClickListener {
                 imagePickerLauncher.launch(Intent(Intent.ACTION_PICK).apply {
@@ -128,6 +131,9 @@ class WriteCommunityFragment : Fragment() {
 
     private fun communityRetrofit() {
 
+        val sp = requireActivity().getSharedPreferences("userId", Context.MODE_PRIVATE)
+        val id: Int = sp.getInt("id", 0)
+
         when (binding.categorySpinner.selectedItem) {
             "구기종목" -> categoryType = 1
             "레저" -> categoryType = 2
@@ -154,14 +160,14 @@ class WriteCommunityFragment : Fragment() {
 
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
-        Log.d("imageUri",image)
+        Log.d("imageUri", image)
 
         val comwrites = HashMap<String, Any>()
         comwrites["title"] = title
         comwrites["description"] = content
         comwrites["img"] = image
         comwrites["id"] = categoryType.toString()
-        comwrites["userid"] = 3
+        comwrites["userid"] = id
         comwrites["writedate"] = writeTime
 
         val retrofitService = Retrofits.postCommunity()
@@ -187,5 +193,13 @@ class WriteCommunityFragment : Fragment() {
                 Log.e("userInfoPost", t.message.toString())
             }
         })
+    }
+
+    private fun autoSelectCategory(flag: Int, spinner: Spinner) {
+        when (flag) {
+            flag -> {
+                spinner.setSelection(flag)
+            }
+        }
     }
 }
