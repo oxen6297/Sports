@@ -5,17 +5,28 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sportscommunity.Adapter.GroupAdapter
+import com.example.sportscommunity.Adapter.PlayGroupAdapter
 import com.example.sportscommunity.Adapter.backPressed
 import com.example.sportscommunity.databinding.SportsMapGroupFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SportsMapGroupFragment : Fragment() {
 
@@ -25,9 +36,7 @@ class SportsMapGroupFragment : Fragment() {
 
     private var flag = 0
     private var flags = 0
-
-    private var min: String? = null
-    private var max: String? = null
+    private val group = mutableListOf<GroupPlay>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,19 +51,12 @@ class SportsMapGroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val mAdapter = GroupAdapter(requireContext(),group)
+
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        arguments?.let {
-            min = it.getInt("title").toString()
-        }
-        arguments?.let {
-            max = it.getInt("titles").toString()
-        }
-
-        Log.d("minmin", min.toString())
-        Log.d("maxmax", max.toString())
-
+        callGroup()
 
         binding.run {
 
@@ -123,18 +125,15 @@ class SportsMapGroupFragment : Fragment() {
                     bottomSheetDialog, bottomSheetView, R.id.sort_winter, groupSortCategory, "동계"
                 )
                 bottomSheet(
-                    bottomSheetDialog, bottomSheetView, R.id.sort_e_sports, groupSortCategory, "이스포츠"
+                    bottomSheetDialog,
+                    bottomSheetView,
+                    R.id.sort_e_sports,
+                    groupSortCategory,
+                    "이스포츠"
                 )
                 bottomSheet(
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, groupSortCategory, "전체"
                 )
-
-            }
-            val bottomSheetDialogFragment = RangeSlider()
-
-            groupSortNumberMember.setOnClickListener {
-
-                bottomSheetDialogFragment.show(childFragmentManager, bottomSheetDialogFragment.tag)
 
             }
 
@@ -161,20 +160,79 @@ class SportsMapGroupFragment : Fragment() {
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, groupSortManWoman, "전체",
                 )
             }
+
+            /**
+             * 검색기능
+             */
+
+//            groupSearchEdit.addTextChangedListener(object :TextWatcher{
+//                override fun beforeTextChanged(
+//                    s: CharSequence?,
+//                    start: Int,
+//                    count: Int,
+//                    after: Int
+//                ) {
+//                    //nothing
+//                }
+//
+//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                    mAdapter.filter.filter(s)
+//                }
+//
+//                override fun afterTextChanged(s: Editable?) {
+//                    //nothing
+//                }
+//            })
+
+            groupSearchEdit.doOnTextChanged { text, start, before, count ->
+                mAdapter.filter.filter(text)
+            }
+
+            groupSearchBtn.setOnClickListener {
+                groupSearchEdit.doAfterTextChanged {
+                    mAdapter.filter.filter(it)
+                }
+            }
+
+            /**
+             * 검색기능 여기까지
+             */
         }
+    }
+
+    private fun callGroup() {
+        val retrofitService = Retrofits.getGroupPlayService()
+        val call: Call<GroupPlayTab> = retrofitService.getGroupPlay()
+
+        call.enqueue(object : Callback<GroupPlayTab> {
+            override fun onResponse(call: Call<GroupPlayTab>, response: Response<GroupPlayTab>) {
+                try {
+                    if (response.isSuccessful) {
+                        binding.playWithRecycle.apply {
+                            this.adapter =
+                                PlayGroupAdapter(requireContext(), response.body()?.group)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<GroupPlayTab>, t: Throwable) {
+                Log.d("failed", "Shop_failed")
+            }
+        })
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         backPressed(requireContext(), requireActivity())
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "함께해요 (단체)"
-
     }
 
     private fun bottomSheet(
