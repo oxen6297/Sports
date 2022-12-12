@@ -7,6 +7,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -43,7 +44,9 @@ class WriteGroupFragment : Fragment() {
     private var shortContent = ""
     private var content = ""
     private var peopleNum = ""
+    private var nowNum = ""
     private var sex = ""
+    private var nickname = ""
     private var minAge = ""
     private var maxAge = ""
     private var writeTime = ""
@@ -208,6 +211,7 @@ class WriteGroupFragment : Fragment() {
                     it.data?.data?.let {
                         imageName.text = it.lastPathSegment.toString()
                         image = it.toString()
+
                     }
                 }
             saveBtn.setOnClickListener {
@@ -324,6 +328,9 @@ class WriteGroupFragment : Fragment() {
 
     private fun groupRetrofit() {
 
+        val sp = requireActivity().getSharedPreferences("userId", Context.MODE_PRIVATE)
+        val id: Int = sp.getInt("id", 0)
+
         arguments?.let {
             date = it.getString("date").toString()
             time = it.getString("time").toString()
@@ -351,10 +358,11 @@ class WriteGroupFragment : Fragment() {
             "$date $time"
         }
 
-        title = binding.contentTextEdit.text.toString()
+        title = binding.contentTitleEdit.text.toString()
         shortContent = binding.shortTextEdit.text.toString()
         content = binding.contentTextEdit.text.toString()
         peopleNum = binding.numberEdit.text.toString()
+        nowNum = binding.numberEditTwo.text.toString()
         sex = if (binding.sortSexSpinner.selectedItem == "상관없음") {
             "상관없음"
         } else {
@@ -383,19 +391,24 @@ class WriteGroupFragment : Fragment() {
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
 
+        nickname = sp.getString("nickname","none").toString()
+
         val writing = HashMap<String, Any>()
         writing["id"] = categoryType
         writing["local"] = area
         writing["date"] = dateAndTime
         writing["title"] = title
         writing["line"] = shortContent
+        writing["nickname"] = nickname
         writing["description"] = content
         writing["peoplenum"] = peopleNum
+        writing["peoplenownum"] = nowNum
         writing["gender"] = sex
         writing["minage"] = minAge
         writing["maxage"] = maxAge
-        writing["writetime"] = writeTime
+        writing["writedate"] = writeTime
         writing["titleimage"] = image
+        writing["userid"] = 60
 
         val retrofitService = Retrofits.postGroup()
         val call: Call<WriteGroupPlay> = retrofitService.postContent(writing)

@@ -51,10 +51,10 @@ class SportsMapGroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mAdapter = GroupAdapter(requireContext(),group)
-
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
+
+        val playGroupAdapter = PlayGroupAdapter(requireContext(),group)
 
         callGroup()
 
@@ -165,38 +165,43 @@ class SportsMapGroupFragment : Fragment() {
              * 검색기능
              */
 
-//            groupSearchEdit.addTextChangedListener(object :TextWatcher{
-//                override fun beforeTextChanged(
-//                    s: CharSequence?,
-//                    start: Int,
-//                    count: Int,
-//                    after: Int
-//                ) {
-//                    //nothing
-//                }
-//
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                    mAdapter.filter.filter(s)
-//                }
-//
-//                override fun afterTextChanged(s: Editable?) {
-//                    //nothing
-//                }
-//            })
+            groupSearchEdit.addTextChangedListener(object :TextWatcher{
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    //nothing
+                }
 
-            groupSearchEdit.doOnTextChanged { text, start, before, count ->
-                mAdapter.filter.filter(text)
-            }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    playGroupAdapter.filter.filter(s)
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    //nothing
+                }
+            })
+
+//            groupSearchEdit.doOnTextChanged { text, start, before, count ->
+//                playGroupAdapter.filter.filter(text)
+//            }
 
             groupSearchBtn.setOnClickListener {
                 groupSearchEdit.doAfterTextChanged {
-                    mAdapter.filter.filter(it)
+                    playGroupAdapter.filter.filter(it)
                 }
             }
 
             /**
              * 검색기능 여기까지
              */
+            playGroupAdapter.setItemClickListener(object : PlayGroupAdapter.OnItemClickListener{
+                override fun onClick(v: View, position: Int) {
+                    mainActivity.changeFragment(16)
+                }
+            })
         }
     }
 
@@ -210,11 +215,11 @@ class SportsMapGroupFragment : Fragment() {
                     if (response.isSuccessful) {
                         binding.playWithRecycle.apply {
                             this.adapter =
-                                PlayGroupAdapter(requireContext(), response.body()?.group)
+                                PlayGroupAdapter(requireContext(), response.body()?.groupwrite)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
-                                false
+                                true
                             )
                         }
                     }

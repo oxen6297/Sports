@@ -36,8 +36,8 @@
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            app:imageUrl="@{news.urlToImage}"
-            app:error="@{@drawable/picture}"/>
+            app:error="@{@drawable/picture}"
+            app:imageUrl="@{news.urlToImage}" />
 
     </LinearLayout>
 </layout>

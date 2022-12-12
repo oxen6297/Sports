@@ -131,10 +131,10 @@ class WriteContentFragment : Fragment() {
         selectBtn.setTextColor(selectTextColor)
         selectBtn.setBackgroundResource(selectColor)
 
-        button.setTextColor(Color.parseColor("#FF952B"))
+        button.setTextColor(Color.parseColor("#62DEB6"))
         button.setBackgroundResource(color)
 
-        anotherBtn.setTextColor(Color.parseColor("#FF952B"))
+        anotherBtn.setTextColor(Color.parseColor("#62DEB6"))
         anotherBtn.setBackgroundResource(color)
     }
 

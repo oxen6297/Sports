@@ -33,6 +33,7 @@ class WriteCommunityFragment : Fragment() {
     private var categoryType = 0
     private var title = ""
     private var content = ""
+    private var nickname = ""
     private var image = ""
     private var writeTime = ""
     private var flag = 0
@@ -162,12 +163,15 @@ class WriteCommunityFragment : Fragment() {
         Log.d("currentDateTime", writeTime)
         Log.d("imageUri", image)
 
+        nickname = sp.getString("nickname","none").toString()
+
         val comwrites = HashMap<String, Any>()
         comwrites["title"] = title
         comwrites["description"] = content
         comwrites["img"] = image
         comwrites["id"] = categoryType.toString()
-        comwrites["userid"] = id
+        comwrites["nickname"] = nickname
+        comwrites["userid"] = 3
         comwrites["writedate"] = writeTime
 
         val retrofitService = Retrofits.postCommunity()

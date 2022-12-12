@@ -37,11 +37,12 @@ class WriteShopFragment : Fragment() {
     private var shopImage = mutableListOf<Uri>()
     private var imageText = mutableListOf<String>()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
-    var flag = 0
+    private var flag = 0
     private var area = ""
     private var categoryType = 0
     private var title = ""
     private var content = ""
+    private var nickname = ""
     private var writeTime = ""
     private var price = ""
     private var image = ""
@@ -83,29 +84,25 @@ class WriteShopFragment : Fragment() {
 
         writeShopAdapter.setItemClickListener(object : WriteShopAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
+                flag = position
                 imagePickerLauncher.launch(
                     Intent(Intent.ACTION_PICK).apply {
                         this.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         this.action = Intent.ACTION_GET_CONTENT
-                        mainActivity.setDataAtFragment(this@WriteShopFragment, position, "flag")
                     }
                 )
             }
         })
-
 
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 it.data?.data?.let { uri ->
                     val imageUri: Uri? = it.data?.data
 
-                    mainActivity.setDataAtFragmentTwo(this, it.toString(), "imageTwo")
+                    image = uri.toString()
 
                     if (imageUri != null) {
 
-                        arguments.let { bundle ->
-                            flag = bundle!!.getInt("flag")
-                        }
                         shopImage[flag] = imageUri
                         binding.productListview.adapter = writeShopAdapter
                         writeShopAdapter.notifyDataSetChanged()
@@ -232,6 +229,10 @@ class WriteShopFragment : Fragment() {
     }
 
     private fun shopRetrofit() {
+
+        val sp = requireActivity().getSharedPreferences("userId", Context.MODE_PRIVATE)
+        val id: Int = sp.getInt("id", 0)
+
         when (binding.categorySpinner.selectedItem) {
             "구기종목" -> categoryType = 1
             "레저" -> categoryType = 2
@@ -247,12 +248,10 @@ class WriteShopFragment : Fragment() {
             binding.areaSpinner.selectedItem.toString() +
                     binding.areaSpinnerTwo.selectedItem.toString()
         }
-        title = binding.contentTextEdit.text.toString()
+        title = binding.contentTitleEdit.text.toString()
         content = binding.contentTextEdit.text.toString()
         price = binding.priceEdit.text.toString()
-        arguments?.let {
-            image = it.getString("imageTwo").toString()
-        }
+
         val currentDate = LocalDateTime.now()
         val formatter = DateTimeFormatter.ISO_DATE
         val formatted = currentDate.format(formatter)
@@ -265,11 +264,14 @@ class WriteShopFragment : Fragment() {
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
 
+        nickname = sp.getString("nickname","none").toString()
+
         val writing = HashMap<String, Any>()
         writing["id"] = categoryType
         writing["local"] = area
         writing["title"] = title
         writing["description"] = content
+        writing["nickname"] = nickname
         writing["writedate"] = writeTime
         writing["usedimage"] = image
         writing["price"] = price

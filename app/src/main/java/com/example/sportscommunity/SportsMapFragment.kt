@@ -5,22 +5,32 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sportscommunity.Adapter.GroupAdapter
+import com.example.sportscommunity.Adapter.PlayWithAdapter
 import com.example.sportscommunity.Adapter.backPressed
 import com.example.sportscommunity.databinding.SportsMapFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SportsMapFragment : Fragment() {
 
     //개인 탭
     private var mBinding: SportsMapFragmentBinding? = null
     private val binding get() = mBinding!!
+    private val alone = mutableListOf<PlayWith>()
 
     private var flags = 0
 
@@ -39,6 +49,10 @@ class SportsMapFragment : Fragment() {
 
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
+
+        val aloneAdapter = PlayWithAdapter(requireContext(),alone)
+
+        callAlone()
 
         binding.run {
 
@@ -120,8 +134,60 @@ class SportsMapFragment : Fragment() {
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, sortManWoman, "전체",
                 )
             }
+
+            aloneAdapter.setItemClickListener(object : PlayWithAdapter.OnItemClickListener{
+                override fun onClick(v: View, position: Int) {
+                    mainActivity.changeFragment(17)
+                }
+            })
+
+            /**
+             * 검색기능
+             */
+            searchEdit.doOnTextChanged { text, start, before, count ->
+                aloneAdapter.filter.filter(text)
+            }
+
+            searchBtn.setOnClickListener {
+                searchEdit.doAfterTextChanged {
+                    aloneAdapter.filter.filter(it)
+                }
+            }
+            /**
+             * 여기까지
+             */
         }
     }
+
+    private fun callAlone(){
+        val retrofitService = Retrofits.getAlonePlayService()
+        val call: Call<AlonePlay> = retrofitService.getAlonePlay()
+
+        call.enqueue(object : Callback<AlonePlay> {
+            override fun onResponse(call: Call<AlonePlay>, response: Response<AlonePlay>) {
+                try {
+                    if (response.isSuccessful){
+                        binding.groupPlayWithRecycle.apply {
+                            this.adapter =
+                                PlayWithAdapter(requireContext(), response.body()?.individualwrite)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                true
+                            )
+                        }
+                    }
+                } catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<AlonePlay>, t: Throwable) {
+                Log.d("failed", "Shop_failed")
+            }
+        })
+    }
+
     private fun bottomSheet(
         bottomSheetDialog: BottomSheetDialog,
         view: View,
@@ -142,12 +208,6 @@ class SportsMapFragment : Fragment() {
         super.onAttach(context)
 
         backPressed(requireContext(), requireActivity())
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "함께해요 (개인)"
     }
 
     override fun onDestroy() {

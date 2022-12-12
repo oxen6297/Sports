@@ -26,49 +26,49 @@ object Retrofits {
         return createRetrofit("https://newsapi.org/").create(NewsService::class.java)
     }
 
-    //유저정보
-    fun getUserService(): UserService {
-        return createRetrofit("http://172.30.1.24:8080/").create(UserService::class.java)
-    }
+//    //유저정보
+//    fun getUserService(): UserService {
+//        return createRetrofit("http://172.30.1.24:8080/").create(UserService::class.java)
+//    }
 
     //함께해요 단체 및 홈화면
     fun getGroupPlayService(): GroupPlayService {
-        return createRetrofit("http://172.30.1.24:8080/").create(GroupPlayService::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(GroupPlayService::class.java)
     }
 
     //함께해요 개인
     fun getAlonePlayService(): AlonePlayService {
-        return createRetrofit("http://172.30.1.24:8080/").create(AlonePlayService::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(AlonePlayService::class.java)
     }
 
     //커뮤니티
     fun getCommunityService(): CommunityService {
-        return createRetrofit("http://172.30.1.24:8080/").create(CommunityService::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(CommunityService::class.java)
     }
 
     //중고거래
     fun getShopService(): ShopService {
-        return createRetrofit("http://172.30.1.24:8080/").create(ShopService::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(ShopService::class.java)
     }
 
     fun postUserInfo(): UserInfo {
-        return createRetrofit("http://172.30.1.24:8080/").create(UserInfo::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(UserInfo::class.java)
     }
 
     fun postCommunity(): WriteCommunity {
-        return createRetrofit("http://172.30.1.24:8080/").create(WriteCommunity::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(WriteCommunity::class.java)
     }
 
     fun postGroup(): WriteGroup {
-        return createRetrofit("http://172.30.1.24:8080/").create(WriteGroup::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(WriteGroup::class.java)
     }
 
     fun postAlone(): WriteAlone {
-        return createRetrofit("http://172.30.1.24:8080/").create(WriteAlone::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(WriteAlone::class.java)
     }
 
     fun postShop(): WriteShopInfo {
-        return createRetrofit("http://172.30.1.24:8080/").create(WriteShopInfo::class.java)
+        return createRetrofit("http://192.168.0.3:8080/").create(WriteShopInfo::class.java)
     }
 }
 
@@ -97,21 +97,27 @@ class User(
     var gender: String?
 )
 
-data class UserId(
-    var id: Int,
-    var email: String
-)
+//data class UserId(
+//    var id: Int,
+//    var email: String
+//)
 
 //함께해요 단체
 data class GroupPlay(
-    var groupImg: String?,
-    var groupTitle: String?,
-    var groupCategory: String?,
-    var groupArea: String?,
-    var content: String?,
-    var groupComment: String?,
-    var groupMemberNumber: String?,
-    var groupTime: String?
+    var id:Int?,
+    var local: String?,
+    var title: String?,
+    var line: String?,
+    var description: String?,
+    var peoplenum: String?,
+    var peoplenownum: String?,
+    var gender: String?,
+    var nickname: String?,
+    var minage: String?,
+    var titleimage: String?,
+    var userid: Int?,
+    var maxage: String?,
+    var writedate: String?
 )
 
 //함께해요 단체 글 작성
@@ -135,16 +141,18 @@ class WriteGroupPlay(
 
 //함께해요 개인
 data class PlayWith(
-    var userImg: String?,
-    var playTitle: String?,
-    var userId: String?,
-    var userArea: String?,
-    var time: String?,
-    var playCategory: String?,
-    var content: String?,
-    var manWoman: String?,
-    var like: String?,
-    var chat: String
+    var userimage: String?,
+    var title: String?,
+    var userid: Int?,
+    var local: String?,
+    var writedate: String?,
+    var date: String?,
+    var id:Int?,
+    var nickname: String?,
+    var description: String?,
+    var minage: String?,
+    var maxage: String?,
+    var gender: String?,
 )
 
 //함께해요 개인 글 작성
@@ -164,14 +172,14 @@ class WritePlayWith(
 
 //커뮤니티
 data class Content(
-    var categoryId: Int?,
+    var id:Int?,
     var title: String?,
-    var time: String?,
-    var profileImage: String?,
-    var userId: String?,
-    var content: String?,
-    var like: String?,
-    var chat: String?
+    var writedate: String?,
+    var profileimage: String?,
+    var nickname: String?,
+    var img: String?,
+    var userid: Int?,
+    var description: String?
 )
 
 //커뮤니티 글 작성
@@ -184,23 +192,17 @@ class WriteContent(
     var titleimage: String?,
     var writedate: String?
 )
-//{
-//    constructor(
-//        categoryid: Int?, title: String?, description: String?, titleimage: String?, writedate: String?
-//    ) : this(5, categoryid, title, description, titleimage, writedate)
-//}
 
 //중고거래탭
 data class Shop(
     var title: String?,
-    var content: String?,
-    var image: String,
-    var writer: String?,
-    var chat: String?,
-    var like: String?,
-    var timeText: String?,
-    var area: String?,
-    var category: String?,
+    var description: String?,
+    var usedimage: String,
+    var userid: Int,
+    var nickname: String?,
+    var writedate: String?,
+    var local: String?,
+    var id:Int?,
     var price: String?
 )
 
@@ -221,29 +223,29 @@ class NewsList {
     var articles: MutableList<News>? = null
 }
 
-//유저 정보
-class UserEmail {
-    var userInfo: MutableList<UserId>? = null
-}
+////유저 정보
+//class UserEmail {
+//    var userInfo: MutableList<UserId>? = null
+//}
 
 //함께해요 단체 및 홈화면
 class GroupPlayTab {
-    var group: MutableList<GroupPlay>? = null
+    var groupwrite: MutableList<GroupPlay>? = null
 }
 
 //함께해요 개인
 class AlonePlay {
-    var alone: MutableList<PlayWith>? = null
+    var individualwrite: MutableList<PlayWith>? = null
 }
 
 //커뮤니티
 class CommunityTab {
-    var community: MutableList<Content>? = null
+    var boardwrite: MutableList<Content>? = null
 }
 
 //중고거래
 class ShopTab {
-    var shop: MutableList<Shop>? = null
+    var usedwrite: MutableList<Shop>? = null
 }
 
 /**
@@ -255,21 +257,21 @@ interface NewsService {
     fun getNewsList(): Call<NewsList>
 }
 
-//유저정보
-interface UserService {
-    @GET("php")
-    fun getUserInfo(): Call<UserEmail>
-}
+////유저정보
+//interface UserService {
+//    @GET("php")
+//    fun getUserInfo(): Call<UserEmail>
+//}
 
 //함께해요 단체면 및 홈화면
 interface GroupPlayService {
-    @GET("php")
+    @GET("ribbon/.idea/server/apis/groupwritedb.php")
     fun getGroupPlay(): Call<GroupPlayTab>
 }
 
 //함께해요 개인
 interface AlonePlayService {
-    @GET("php")
+    @GET("ribbon/.idea/server/apis/individualdb.php")
     fun getAlonePlay(): Call<AlonePlay>
 }
 
@@ -281,7 +283,7 @@ interface CommunityService {
 
 //중고거래
 interface ShopService {
-    @GET("php")
+    @GET("ribbon/.idea/server/apis/usedwritedb.php")
     fun getShop(): Call<ShopTab>
 }
 
@@ -298,28 +300,28 @@ interface UserInfo {
 }
 
 interface WriteCommunity {
-    @POST("ribbon/.idea/server/apis/boards.php")
+    @POST("ribbon/.idea/server/apis/boardwrite.php")
     fun postContent(
         @Body params: HashMap<String, Any>
     ): Call<WriteContent>
 }
 
 interface WriteGroup {
-    @POST("ribbon/.idea/server/apis/group.php")
+    @POST("ribbon/.idea/server/apis/groupwrite.php")
     fun postContent(
         @Body params: HashMap<String, Any>
     ): Call<WriteGroupPlay>
 }
 
 interface WriteAlone {
-    @POST("ribbon/.idea/server/apis/alone.php")
+    @POST("ribbon/.idea/server/apis/individualwrite.php")
     fun postContent(
         @Body params: HashMap<String, Any>
     ): Call<WritePlayWith>
 }
 
 interface WriteShopInfo {
-    @POST("ribbon/.idea/server/apis/used.php")
+    @POST("ribbon/.idea/server/apis/usedwrite.php")
     fun postContent(
         @Body params: HashMap<String, Any>
     ): Call<WriteShop>

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sportscommunity.Adapter.GroupAdapter
 import com.example.sportscommunity.Adapter.backPressed
 import com.example.sportscommunity.databinding.SportsHomeFragmentBinding
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +23,7 @@ import retrofit2.Response
 class SportsHomeFragment : Fragment() {
 
     lateinit var binding: SportsHomeFragmentBinding
-
+    private val groups = mutableListOf<GroupPlay>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,9 +42,17 @@ class SportsHomeFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
+        val groupAdapter = GroupAdapter(requireContext(),groups)
+
+        groupAdapter.setItemClickListener(object :GroupAdapter.OnItemClickListener{
+            override fun onClick(v: View, position: Int) {
+                mainActivity.changeFragment(16)
+            }
+        })
 
         CoroutineScope(Dispatchers.IO).launch {
             callNews()
+            callGroup()
         }
 
         binding.swipe.setOnRefreshListener {
@@ -116,6 +125,35 @@ class SportsHomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun callGroup(){
+        val retrofitService = Retrofits.getGroupPlayService()
+        val call: Call<GroupPlayTab> = retrofitService.getGroupPlay()
+
+        call.enqueue(object : Callback<GroupPlayTab> {
+            override fun onResponse(call: Call<GroupPlayTab>, response: Response<GroupPlayTab>) {
+                try {
+                    if (response.isSuccessful){
+                        binding.groupRecycle.apply {
+                            this.adapter =
+                                GroupAdapter(requireContext(), response.body()?.groupwrite)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                true
+                            )
+                        }
+                    }
+                } catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<GroupPlayTab>, t: Throwable) {
+                Log.d("failed", "Shop_failed")
+            }
+        })
     }
 
     override fun onAttach(context: Context) {

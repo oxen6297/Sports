@@ -11,12 +11,12 @@
     <EditText
         android:id="@+id/group_search_edit"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/edit_text_background"
+        android:background="@drawable/search_background"
         android:hint="검색어를 입력하세요."
         android:paddingStart="25dp"
-        android:textSize="14dp"
+        android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,8 +24,8 @@
 
     <Button
         android:id="@+id/group_search_btn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/search"
         app:layout_constraintBottom_toBottomOf="@+id/group_search_edit"
@@ -38,10 +38,10 @@
         android:layout_height="40dp"
         android:layout_marginTop="13dp"
         android:background="@drawable/group_background"
-        android:textColor="@color/white"
         android:text="단체"
-        android:textStyle="bold"
+        android:textColor="@color/white"
         android:textSize="14dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/alone_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
@@ -50,14 +50,14 @@
         android:id="@+id/alone_btn"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text="개인"
-        android:textSize="14dp"
         android:layout_marginTop="13dp"
         android:background="@drawable/alone_background"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/group_search_edit"
+        android:text="개인"
+        android:textColor="@color/white"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/group_btn"/>
+        app:layout_constraintStart_toEndOf="@+id/group_btn"
+        app:layout_constraintTop_toBottomOf="@+id/group_search_edit" />
 
     <TextView
         android:id="@+id/group_sort_time"
@@ -86,25 +86,10 @@
         android:text="종목"
         android:textColor="@color/black"
         android:textSize="10dp"
-        app:layout_constraintEnd_toStartOf="@id/group_sort_number_member"
+        app:layout_constraintEnd_toStartOf="@id/group_sort_area"
         app:layout_constraintStart_toEndOf="@+id/group_sort_time"
         app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
-    <TextView
-        android:id="@+id/group_sort_number_member"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_marginTop="13dp"
-        android:background="@drawable/edit_text_background"
-        android:gravity="center"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:text="인원수"
-        android:textColor="@color/black"
-        android:textSize="10dp"
-        app:layout_constraintEnd_toStartOf="@+id/group_sort_area"
-        app:layout_constraintStart_toEndOf="@+id/group_sort_category"
-        app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
     <TextView
         android:id="@+id/group_sort_area"
@@ -119,7 +104,7 @@
         android:textColor="@color/black"
         android:textSize="10dp"
         app:layout_constraintEnd_toStartOf="@+id/group_sort_man_woman"
-        app:layout_constraintStart_toEndOf="@+id/group_sort_number_member"
+        app:layout_constraintStart_toEndOf="@+id/group_sort_category"
         app:layout_constraintTop_toBottomOf="@+id/group_btn" />
 
     <TextView
@@ -140,8 +125,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/play_with_recycle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/group_sort_time" />

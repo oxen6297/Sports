@@ -35,6 +35,7 @@ class WriteAloneFragment : Fragment() {
     private var dateAndTime = ""
     private var title = ""
     private var content = ""
+    private var nickname = ""
     private var sex = ""
     private var minAge = ""
     private var maxAge = ""
@@ -127,11 +128,11 @@ class WriteAloneFragment : Fragment() {
                     dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
                     daySpinner.text = dateString
                     daySpinner.setTextColor(Color.parseColor("#1F1F1F"))
-                    mainActivity.setDataAtFragmentTwo(
-                        this@WriteAloneFragment,
-                        dateString,
-                        "dateTwo"
-                    )
+//                    mainActivity.setDataAtFragmentTwo(
+//                        this@WriteAloneFragment,
+//                        dateString,
+//                        "dateTwo"
+//                    )
                 }
                 DatePickerDialog(
                     requireContext(),
@@ -149,11 +150,11 @@ class WriteAloneFragment : Fragment() {
                     timeString = "${hourOfDay}시 ${minute}분"
                     hourSpinner.text = timeString
                     hourSpinner.setTextColor(Color.parseColor("#1F1F1F"))
-                    mainActivity.setDataAtFragmentTwo(
-                        this@WriteAloneFragment,
-                        timeString,
-                        "timeTwo"
-                    )
+//                    mainActivity.setDataAtFragmentTwo(
+//                        this@WriteAloneFragment,
+//                        timeString,
+//                        "timeTwo"
+//                    )
                 }
                 TimePickerDialog(
                     requireContext(),
@@ -249,6 +250,10 @@ class WriteAloneFragment : Fragment() {
     }
 
     private fun aloneRetrofit() {
+
+        val sp = requireActivity().getSharedPreferences("userId", Context.MODE_PRIVATE)
+        val id: Int = sp.getInt("id", 0)
+
         arguments?.let {
             date = it.getString("dateTwo").toString()
             time = it.getString("timeTwo").toString()
@@ -302,16 +307,20 @@ class WriteAloneFragment : Fragment() {
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
 
+        nickname = sp.getString("nickname","none").toString()
+
         val writing = HashMap<String, Any>()
         writing["id"] = categoryType
         writing["local"] = area
         writing["date"] = dateAndTime
+        writing["nickname"] = nickname
         writing["title"] = title
         writing["description"] = content
         writing["gender"] = sex
         writing["minage"] = minAge
         writing["maxage"] = maxAge
-        writing["writetime"] = writeTime
+        writing["writedate"] = writeTime
+        writing["userid"] = 3
 
         val retrofitService = Retrofits.postAlone()
         val call: Call<WritePlayWith> = retrofitService.postContent(writing)
