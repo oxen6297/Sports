@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.WriteContentFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sportscommunity.*
+import com.example.sportscommunity.Adapter.QuestionBoardAdapter
+import com.example.sportscommunity.Adapter.WaterSportsAdapter
 import com.example.sportscommunity.databinding.WaterSportsCategoryTabBinding
-import com.example.sportscommunity.writeFlag
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class WaterSportsCategoryFragment: Fragment() {
 
@@ -31,6 +36,8 @@ class WaterSportsCategoryFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+
+        getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -56,5 +63,33 @@ class WaterSportsCategoryFragment: Fragment() {
         super.onResume()
 
         (activity as AppCompatActivity).supportActionBar?.title = "해양 스포츠"
+    }
+
+    private fun getCommunityRetrofit() {
+        val retrofitService = Retrofits.getWaterSportsService()
+        val call: Call<WaterSportsTab> = retrofitService.getCommunity()
+
+        call.enqueue(object : Callback<WaterSportsTab> {
+            override fun onResponse(call: Call<WaterSportsTab>, response: Response<WaterSportsTab>) {
+                try {
+                    if (response.isSuccessful) {
+                        binding.waterSportsBoardRecycle.apply {
+                            this.adapter = WaterSportsAdapter(response.body()?.boardwrite3)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                true
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<WaterSportsTab>, t: Throwable) {
+                call.cancel()
+            }
+        })
     }
 }

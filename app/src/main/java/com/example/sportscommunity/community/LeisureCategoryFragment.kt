@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.WriteContentFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sportscommunity.*
+import com.example.sportscommunity.Adapter.FreeBoardAdapter
+import com.example.sportscommunity.Adapter.LeisureSportsAdpater
 import com.example.sportscommunity.databinding.LeisureCategoryTabBinding
-import com.example.sportscommunity.writeFlag
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LeisureCategoryFragment:Fragment() {
 
@@ -31,6 +36,8 @@ class LeisureCategoryFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+
+        getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -59,5 +66,33 @@ class LeisureCategoryFragment:Fragment() {
         super.onResume()
 
         (activity as AppCompatActivity).supportActionBar?.title = "레져"
+    }
+
+    private fun getCommunityRetrofit() {
+        val retrofitService = Retrofits.getLeisureSportsService()
+        val call: Call<LeisureTab> = retrofitService.getCommunity()
+
+        call.enqueue(object : Callback<LeisureTab> {
+            override fun onResponse(call: Call<LeisureTab>, response: Response<LeisureTab>) {
+                try {
+                    if (response.isSuccessful) {
+                        binding.leisureBoardRecycle.apply {
+                            this.adapter = LeisureSportsAdpater(response.body()?.boardwrite2)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                true
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<LeisureTab>, t: Throwable) {
+                call.cancel()
+            }
+        })
     }
 }

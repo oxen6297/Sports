@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.WriteContentFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sportscommunity.*
+import com.example.sportscommunity.Adapter.BallSportsAdapter
+import com.example.sportscommunity.Adapter.ESportsAdapter
 import com.example.sportscommunity.databinding.ESportsFragmentBinding
-import com.example.sportscommunity.writeFlag
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ESportsCategoryFragment : Fragment() {
 
@@ -31,6 +36,8 @@ class ESportsCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+
+        getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -56,5 +63,33 @@ class ESportsCategoryFragment : Fragment() {
         super.onResume()
 
         (activity as AppCompatActivity).supportActionBar?.title = "E-스포츠"
+    }
+
+    private fun getCommunityRetrofit() {
+        val retrofitService = Retrofits.getESportsService()
+        val call: Call<ESportsTab> = retrofitService.getCommunity()
+
+        call.enqueue(object : Callback<ESportsTab> {
+            override fun onResponse(call: Call<ESportsTab>, response: Response<ESportsTab>) {
+                try {
+                    if (response.isSuccessful) {
+                        binding.gameBoardRecycle.apply {
+                            this.adapter = ESportsAdapter(response.body()?.boardwrite6)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                true
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<ESportsTab>, t: Throwable) {
+                call.cancel()
+            }
+        })
     }
 }

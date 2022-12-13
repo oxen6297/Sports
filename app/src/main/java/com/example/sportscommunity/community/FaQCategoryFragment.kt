@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.WriteContentFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sportscommunity.*
+import com.example.sportscommunity.Adapter.ESportsAdapter
+import com.example.sportscommunity.Adapter.FaqBoardAdapter
 import com.example.sportscommunity.databinding.FaqCategoryTabBinding
-import com.example.sportscommunity.writeFlag
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class FaQCategoryFragment:Fragment() {
 
@@ -31,6 +36,8 @@ class FaQCategoryFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+
+        getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -56,5 +63,33 @@ class FaQCategoryFragment:Fragment() {
         super.onResume()
 
         (activity as AppCompatActivity).supportActionBar?.title = "문의 게시판"
+    }
+
+    private fun getCommunityRetrofit() {
+        val retrofitService = Retrofits.getFaqBoardService()
+        val call: Call<FaqBoardTab> = retrofitService.getCommunity()
+
+        call.enqueue(object : Callback<FaqBoardTab> {
+            override fun onResponse(call: Call<FaqBoardTab>, response: Response<FaqBoardTab>) {
+                try {
+                    if (response.isSuccessful) {
+                        binding.faqBoardRecycle.apply {
+                            this.adapter = FaqBoardAdapter(response.body()?.boardwrite10)
+                            this.layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                true
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<FaqBoardTab>, t: Throwable) {
+                call.cancel()
+            }
+        })
     }
 }
