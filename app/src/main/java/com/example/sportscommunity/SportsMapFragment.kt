@@ -2,21 +2,18 @@ package com.example.sportscommunity
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportscommunity.Adapter.GroupAdapter
 import com.example.sportscommunity.Adapter.PlayWithAdapter
 import com.example.sportscommunity.Adapter.backPressed
 import com.example.sportscommunity.databinding.SportsMapFragmentBinding
@@ -50,12 +47,13 @@ class SportsMapFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        val aloneAdapter = PlayWithAdapter(requireContext(),alone)
+        val aloneAdapter = PlayWithAdapter(requireContext(), alone, mainActivity)
 
         callAlone()
 
         binding.run {
 
+            groupPlayWithRecycle.scrollToPosition(alone.size-1)
             groupBtn.setOnClickListener {
                 mainActivity.changeFragment(3)
             }
@@ -75,7 +73,7 @@ class SportsMapFragment : Fragment() {
 
             writeBtn.setOnClickListener {
                 mainActivity.changeFragment(0)
-                mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"writeTwo")
+                mainActivity.setDataAtFragment(WriteContentFragment(), 1, "writeTwo")
             }
 
             sortCategory.setOnClickListener {
@@ -105,7 +103,8 @@ class SportsMapFragment : Fragment() {
                 bottomSheet(
                     bottomSheetDialog, bottomSheetView, R.id.sort_winter, sortCategory, "동계",
                 )
-                bottomSheet(bottomSheetDialog, bottomSheetView, R.id.sort_e_sports, sortCategory, "이스포츠",
+                bottomSheet(
+                    bottomSheetDialog, bottomSheetView, R.id.sort_e_sports, sortCategory, "이스포츠",
                 )
                 bottomSheet(
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, sortCategory, "전체",
@@ -135,12 +134,6 @@ class SportsMapFragment : Fragment() {
                 )
             }
 
-            aloneAdapter.setItemClickListener(object : PlayWithAdapter.OnItemClickListener{
-                override fun onClick(v: View, position: Int) {
-                    mainActivity.changeFragment(17)
-                }
-            })
-
             /**
              * 검색기능
              */
@@ -159,17 +152,22 @@ class SportsMapFragment : Fragment() {
         }
     }
 
-    private fun callAlone(){
+    private fun callAlone() {
         val retrofitService = Retrofits.getAlonePlayService()
         val call: Call<AlonePlay> = retrofitService.getAlonePlay()
+        val mainActivity = (activity as MainActivity)
 
         call.enqueue(object : Callback<AlonePlay> {
             override fun onResponse(call: Call<AlonePlay>, response: Response<AlonePlay>) {
                 try {
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         binding.groupPlayWithRecycle.apply {
                             this.adapter =
-                                PlayWithAdapter(requireContext(), response.body()?.individualwrite)
+                                PlayWithAdapter(
+                                    requireContext(),
+                                    response.body()?.individualwrite,
+                                    mainActivity
+                                )
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
@@ -177,7 +175,7 @@ class SportsMapFragment : Fragment() {
                             )
                         }
                     }
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }

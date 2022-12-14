@@ -7,14 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.sportscommunity.GroupPlay
+import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.GroupItemListBinding
 
 class GroupAdapter(
-    private val context: Context, private val groupList: MutableList<GroupPlay>?
+    private val context: Context,
+    private val groupList: MutableList<GroupPlay>?,
+    val mainActivity: MainActivity
 ) : RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
-
-    private lateinit var itemClickListener: GroupAdapter.OnItemClickListener
 
     class ViewHolder(val binding: GroupItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -34,16 +34,30 @@ class GroupAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.onBind(groupList!![position])
-
-        holder.binding.groupLayout.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
+        val item = groupList[position]
 
         Glide.with(context).load(groupList[position].titleimage).centerCrop()
             .into(holder.binding.groupItemImage)
 
         holder.binding.numberMember.text =
             groupList[position].peoplenownum.toString() + "/" + groupList[position].peoplenum.toString()
+
+        holder.binding.groupLayout.setOnClickListener {
+            titleHash.put("title", item.title.toString())
+            categoryHash.put("category", holder.binding.groupItemName.text.toString())
+            onceHash.put("once", item.once.toString())
+            localHash.put("local", item.local.toString())
+            lineHash.put("line", item.line.toString())
+            descriptionHash.put("description", item.description.toString())
+            nownumHash.put("nownum", item.peoplenownum.toString())
+            peoplenumHash.put("peoplenum", item.peoplenum.toString())
+            genderHash.put("gender", item.gender.toString())
+            minageHash.put("minage", item.minage.toString())
+            maxageHash.put("maxage", item.maxage.toString())
+            titleImageHash.put("image", item.titleimage.toString())
+
+            mainActivity.changeFragment(16)
+        }
 
         when (groupList[position].id) {
             1 -> {
@@ -69,10 +83,6 @@ class GroupAdapter(
 
     interface OnItemClickListener {
         fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
     }
 
     override fun getItemCount(): Int = groupList!!.size

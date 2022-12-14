@@ -33,42 +33,82 @@ object Retrofits {
 
     //함께해요 단체 및 홈화면
     fun getGroupPlayService(): GroupPlayService {
-        return createRetrofit("http://192.168.0.3:8080/").create(GroupPlayService::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(GroupPlayService::class.java)
     }
 
     //함께해요 개인
     fun getAlonePlayService(): AlonePlayService {
-        return createRetrofit("http://192.168.0.3:8080/").create(AlonePlayService::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(AlonePlayService::class.java)
     }
 
-    //커뮤니티
-    fun getCommunityService(): CommunityService {
-        return createRetrofit("http://192.168.0.3:8080/").create(CommunityService::class.java)
+    //커뮤니티 자유게시판
+    fun getFreeBoardService(): FreeBoardService {
+        return createRetrofit("http://172.30.1.18:8080/").create(FreeBoardService::class.java)
+    }
+
+    //커뮤니티 질문게시판
+    fun getQuestionBoardService(): QuestionService {
+        return createRetrofit("http://172.30.1.18:8080/").create(QuestionService::class.java)
+    }
+
+    //커뮤니티 문의게시판
+    fun getFaqBoardService(): FaqService {
+        return createRetrofit("http://172.30.1.18:8080/").create(FaqService::class.java)
+    }
+
+    //커뮤니티 구기종목
+    fun getBallSportsService(): BallSportsService {
+        return createRetrofit("http://172.30.1.18:8080/").create(BallSportsService::class.java)
+    }
+
+    //커뮤니티 레져스포츠
+    fun getLeisureSportsService(): LeisureSportsService {
+        return createRetrofit("http://172.30.1.18:8080/").create(LeisureSportsService::class.java)
+    }
+
+    //커뮤니티 생활스포츠
+    fun getLifeSportsService(): LifeSportsService {
+        return createRetrofit("http://172.30.1.18:8080/").create(LifeSportsService::class.java)
+    }
+
+    //커뮤니티 동계스포츠
+    fun getWinterSportsService(): WinterSportsService {
+        return createRetrofit("http://172.30.1.18:8080/").create(WinterSportsService::class.java)
+    }
+
+    //커뮤니티 해양스포츠
+    fun getWaterSportsService(): WaterSportsService {
+        return createRetrofit("http://172.30.1.18:8080/").create(WaterSportsService::class.java)
+    }
+
+    //커뮤니티 이스포츠
+    fun getESportsService(): ESportsService {
+        return createRetrofit("http://172.30.1.18:8080/").create(ESportsService::class.java)
     }
 
     //중고거래
     fun getShopService(): ShopService {
-        return createRetrofit("http://192.168.0.3:8080/").create(ShopService::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(ShopService::class.java)
     }
 
     fun postUserInfo(): UserInfo {
-        return createRetrofit("http://192.168.0.3:8080/").create(UserInfo::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(UserInfo::class.java)
     }
 
     fun postCommunity(): WriteCommunity {
-        return createRetrofit("http://192.168.0.3:8080/").create(WriteCommunity::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(WriteCommunity::class.java)
     }
 
     fun postGroup(): WriteGroup {
-        return createRetrofit("http://192.168.0.3:8080/").create(WriteGroup::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(WriteGroup::class.java)
     }
 
     fun postAlone(): WriteAlone {
-        return createRetrofit("http://192.168.0.3:8080/").create(WriteAlone::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(WriteAlone::class.java)
     }
 
     fun postShop(): WriteShopInfo {
-        return createRetrofit("http://192.168.0.3:8080/").create(WriteShopInfo::class.java)
+        return createRetrofit("http://172.30.1.18:8080/").create(WriteShopInfo::class.java)
     }
 }
 
@@ -104,7 +144,8 @@ class User(
 
 //함께해요 단체
 data class GroupPlay(
-    var id:Int?,
+    var id: Int?,
+    var once: String?,
     var local: String?,
     var title: String?,
     var line: String?,
@@ -147,7 +188,7 @@ data class PlayWith(
     var local: String?,
     var writedate: String?,
     var date: String?,
-    var id:Int?,
+    var id: Int?,
     var nickname: String?,
     var description: String?,
     var minage: String?,
@@ -172,12 +213,12 @@ class WritePlayWith(
 
 //커뮤니티
 data class Content(
-    var id:Int?,
     var title: String?,
     var writedate: String?,
     var profileimage: String?,
     var nickname: String?,
     var img: String?,
+    var id: Int?,
     var userid: Int?,
     var description: String?
 )
@@ -197,13 +238,18 @@ class WriteContent(
 data class Shop(
     var title: String?,
     var description: String?,
-    var usedimage: String,
+    var usedimage1: String,
+    var usedimage2: String,
+    var usedimage3: String,
+    var usedimage4: String,
+    var usedimage5: String,
     var userid: Int,
     var nickname: String?,
     var writedate: String?,
     var local: String?,
-    var id:Int?,
-    var price: String?
+    var id: Int?,
+    var price: String?,
+    var userimage: String?
 )
 
 //중고거래 글 작성
@@ -239,8 +285,48 @@ class AlonePlay {
 }
 
 //커뮤니티
-class CommunityTab {
-    var boardwrite: MutableList<Content>? = null
+class FreeBoardTab {
+    var boardwrite7: MutableList<Content>? = null
+}
+
+//커뮤니티
+class FaqBoardTab {
+    var boardwrite10: MutableList<Content>? = null
+}
+
+//커뮤니티
+class QuestionBoardTab {
+    var boardwrite9: MutableList<Content>? = null
+}
+
+//커뮤니티
+class BallSportsTab {
+    var boardwrite1: MutableList<Content>? = null
+}
+
+//커뮤니티
+class LeisureTab {
+    var boardwrite2: MutableList<Content>? = null
+}
+
+//커뮤니티
+class LifeSportsTab {
+    var boardwrite4: MutableList<Content>? = null
+}
+
+//커뮤니티
+class WinterSportsTab {
+    var boardwrite5: MutableList<Content>? = null
+}
+
+//커뮤니티
+class WaterSportsTab {
+    var boardwrite3: MutableList<Content>? = null
+}
+
+//커뮤니티
+class ESportsTab {
+    var boardwrite6: MutableList<Content>? = null
 }
 
 //중고거래
@@ -275,10 +361,58 @@ interface AlonePlayService {
     fun getAlonePlay(): Call<AlonePlay>
 }
 
-//커뮤니티
-interface CommunityService {
-    @GET("php")
-    fun getCommunity(): Call<CommunityTab>
+//커뮤니티 자유게시판
+interface FreeBoardService {
+    @GET("ribbon/.idea/server/apis/category7board.php")
+    fun getCommunity(): Call<FreeBoardTab>
+}
+
+//커뮤니티 질문게시판
+interface QuestionService {
+    @GET("ribbon/.idea/server/apis/category9board.php")
+    fun getCommunity(): Call<QuestionBoardTab>
+}
+
+//커뮤니티 문의게시판
+interface FaqService {
+    @GET("ribbon/.idea/server/apis/category10board.php")
+    fun getCommunity(): Call<FaqBoardTab>
+}
+
+//커뮤니티 구기종목
+interface BallSportsService {
+    @GET("ribbon/.idea/server/apis/category1board.php")
+    fun getCommunity(): Call<BallSportsTab>
+}
+
+//커뮤니티 레져스포츠
+interface LeisureSportsService {
+    @GET("ribbon/.idea/server/apis/category2board.php")
+    fun getCommunity(): Call<LeisureTab>
+}
+
+//커뮤니티 생활스포츠
+interface LifeSportsService {
+    @GET("ribbon/.idea/server/apis/category4board.php")
+    fun getCommunity(): Call<LifeSportsTab>
+}
+
+//커뮤니티 동계스포츠
+interface WinterSportsService {
+    @GET("ribbon/.idea/server/apis/category5board.php")
+    fun getCommunity(): Call<WinterSportsTab>
+}
+
+//커뮤니티 해양스포츠
+interface WaterSportsService {
+    @GET("ribbon/.idea/server/apis/category3board.php")
+    fun getCommunity(): Call<WaterSportsTab>
+}
+
+//커뮤니티 이스포츠
+interface ESportsService {
+    @GET("ribbon/.idea/server/apis/category6board.php")
+    fun getCommunity(): Call<ESportsTab>
 }
 
 //중고거래
@@ -327,6 +461,27 @@ interface WriteShopInfo {
     ): Call<WriteShop>
 }
 
-var writeFlag = hashMapOf<String,Any>()
-var minNum = hashMapOf<String,Any>()
-var maxNum = hashMapOf<String,Any>()
+var writeFlag = hashMapOf<String, Any>()
+
+var titleHash = hashMapOf<String?, Any>()
+var categoryHash = hashMapOf<String?, Any>()
+var onceHash = hashMapOf<String?, Any>()
+var localHash = hashMapOf<String?, Any>()
+var lineHash = hashMapOf<String?, Any>()
+var descriptionHash = hashMapOf<String?, Any>()
+var nownumHash = hashMapOf<String?, Any>()
+var peoplenumHash = hashMapOf<String?, Any>()
+var genderHash = hashMapOf<String?, Any>()
+var minageHash = hashMapOf<String?, Any>()
+var maxageHash = hashMapOf<String?, Any>()
+var titleImageHash = hashMapOf<String?, Any>()
+var nicknameHash = hashMapOf<String?, Any>()
+var writedateHash = hashMapOf<String?, Any>()
+var userImageHash = hashMapOf<String?, Any>()
+var priceHash = hashMapOf<String?, Any>()
+var shopImageHash = hashMapOf<String?,Any>()
+var shopImageHashTwo = hashMapOf<String?,Any>()
+var shopImageHashThree = hashMapOf<String?,Any>()
+var shopImageHashFour = hashMapOf<String?,Any>()
+var shopImageHashFive = hashMapOf<String?,Any>()
+

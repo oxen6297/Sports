@@ -42,13 +42,7 @@ class SportsHomeFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        val groupAdapter = GroupAdapter(requireContext(),groups)
-
-        groupAdapter.setItemClickListener(object :GroupAdapter.OnItemClickListener{
-            override fun onClick(v: View, position: Int) {
-                mainActivity.changeFragment(16)
-            }
-        })
+        val groupAdapter = GroupAdapter(requireContext(), groups, mainActivity)
 
         CoroutineScope(Dispatchers.IO).launch {
             callNews()
@@ -127,17 +121,22 @@ class SportsHomeFragment : Fragment() {
         }
     }
 
-    private fun callGroup(){
+    private fun callGroup() {
         val retrofitService = Retrofits.getGroupPlayService()
         val call: Call<GroupPlayTab> = retrofitService.getGroupPlay()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<GroupPlayTab> {
             override fun onResponse(call: Call<GroupPlayTab>, response: Response<GroupPlayTab>) {
                 try {
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         binding.groupRecycle.apply {
                             this.adapter =
-                                GroupAdapter(requireContext(), response.body()?.groupwrite)
+                                GroupAdapter(
+                                    requireContext(),
+                                    response.body()?.groupwrite,
+                                    mainActivity
+                                )
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.HORIZONTAL,
@@ -145,7 +144,7 @@ class SportsHomeFragment : Fragment() {
                             )
                         }
                     }
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }

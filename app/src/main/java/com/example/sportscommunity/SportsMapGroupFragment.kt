@@ -27,6 +27,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SportsMapGroupFragment : Fragment() {
 
@@ -37,6 +39,7 @@ class SportsMapGroupFragment : Fragment() {
     private var flag = 0
     private var flags = 0
     private val group = mutableListOf<GroupPlay>()
+    var activitys: MainActivity? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,30 +50,30 @@ class SportsMapGroupFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint("ResourceAsColor", "SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
-        mainActivity.hideBottomNavigationView(false)
+        activitys?.hideBottomNavigationView(false)
 
-        val playGroupAdapter = PlayGroupAdapter(requireContext(),group)
+        val playGroupAdapter = PlayGroupAdapter(requireContext(), group,mainActivity)
 
         callGroup()
 
         binding.run {
 
+            playWithRecycle.scrollToPosition(group.size-1)
             writeBtn.setOnClickListener {
-                mainActivity.changeFragment(0)
-                mainActivity.setDataAtFragment(WriteContentFragment(), 1, "writeThree")
+                activitys?.changeFragment(0)
+                activitys?.setDataAtFragment(WriteContentFragment(), 1, "writeThree")
             }
 
             aloneBtn.setOnClickListener {
-                mainActivity.changeFragment(2)
+                activitys?.changeFragment(2)
             }
 
             groupSortTime.setOnClickListener {
-
                 if (flag == 0) {
                     groupSortTime.setBackgroundResource(R.drawable.select_background)
                     groupSortTime.setTextColor(Color.WHITE)
@@ -164,8 +167,7 @@ class SportsMapGroupFragment : Fragment() {
             /**
              * 검색기능
              */
-
-            groupSearchEdit.addTextChangedListener(object :TextWatcher{
+            groupSearchEdit.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -176,32 +178,29 @@ class SportsMapGroupFragment : Fragment() {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    playGroupAdapter.filter.filter(s)
+                    playGroupAdapter.filter.filter(s.toString())
+                    Log.d("textChanged", "ok")
                 }
 
                 override fun afterTextChanged(s: Editable?) {
                     //nothing
+
+                    playGroupAdapter.filter.filter(s.toString())
+                    Log.d("textChanged3", "ok")
+
                 }
             })
 
-//            groupSearchEdit.doOnTextChanged { text, start, before, count ->
-//                playGroupAdapter.filter.filter(text)
-//            }
-
             groupSearchBtn.setOnClickListener {
+                Log.d("textChanged2", "ok")
                 groupSearchEdit.doAfterTextChanged {
-                    playGroupAdapter.filter.filter(it)
+                    playGroupAdapter.filter.filter(it.toString())
+                    Log.d("textChanged3", "ok")
                 }
             }
-
             /**
              * 검색기능 여기까지
              */
-            playGroupAdapter.setItemClickListener(object : PlayGroupAdapter.OnItemClickListener{
-                override fun onClick(v: View, position: Int) {
-                    mainActivity.changeFragment(16)
-                }
-            })
         }
     }
 
@@ -209,13 +208,16 @@ class SportsMapGroupFragment : Fragment() {
         val retrofitService = Retrofits.getGroupPlayService()
         val call: Call<GroupPlayTab> = retrofitService.getGroupPlay()
 
+        val mainActivity = activity as MainActivity
+
         call.enqueue(object : Callback<GroupPlayTab> {
             override fun onResponse(call: Call<GroupPlayTab>, response: Response<GroupPlayTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.playWithRecycle.apply {
                             this.adapter =
-                                PlayGroupAdapter(requireContext(), response.body()?.groupwrite)
+                                PlayGroupAdapter(requireContext(), response.body()?.groupwrite,mainActivity)
+                            this.setHasFixedSize(true)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
@@ -238,6 +240,12 @@ class SportsMapGroupFragment : Fragment() {
         super.onAttach(context)
 
         backPressed(requireContext(), requireActivity())
+        activitys = activity as MainActivity
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        activitys = null
     }
 
     private fun bottomSheet(

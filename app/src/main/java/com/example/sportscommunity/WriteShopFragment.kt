@@ -46,6 +46,11 @@ class WriteShopFragment : Fragment() {
     private var writeTime = ""
     private var price = ""
     private var image = ""
+    private var imageTwo = ""
+    private var imageThree = ""
+    private var imageFour = ""
+    private var imageFive = ""
+    private var userimage = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -274,7 +279,12 @@ class WriteShopFragment : Fragment() {
         writing["nickname"] = nickname
         writing["writedate"] = writeTime
         writing["usedimage"] = image
+        writing["usedimageTwo"] = imageTwo
+        writing["usedimageThree"] = imageThree
+        writing["usedimageFour"] = imageFour
+        writing["usedimageFive"] = imageFive
         writing["price"] = price
+        writing["userimage"] = userimage
         writing["userid"] = 3
 
         val retrofitService = Retrofits.postShop()

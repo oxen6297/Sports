@@ -53,10 +53,11 @@ class SportsShopFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        val shopAdapter = ShopAdapter(requireContext(),shop)
+        val shopAdapter = ShopAdapter(requireContext(), shop, mainActivity)
 
         binding.run {
 
+            shopRecycle.scrollToPosition(shop.size-1)
             writeBtn.setOnClickListener {
                 mainActivity.changeFragment(14)
             }
@@ -122,11 +123,6 @@ class SportsShopFragment : Fragment() {
                     shopSortArea.setTextColor(R.color.black)
                 }
             }
-            shopAdapter.setItemClickListener(object : ShopAdapter.OnItemClickListener{
-                override fun onClick(v: View, position: Int) {
-                    mainActivity.changeFragment(18)
-                }
-            })
 
             /**
              * 검색기능
@@ -146,17 +142,22 @@ class SportsShopFragment : Fragment() {
         }
     }
 
-    private fun callShop(){
+    private fun callShop() {
         val retrofitService = Retrofits.getShopService()
         val call: Call<ShopTab> = retrofitService.getShop()
+        val mainActivity = (activity as MainActivity)
 
-        call.enqueue(object : Callback<ShopTab>{
+        call.enqueue(object : Callback<ShopTab> {
             override fun onResponse(call: Call<ShopTab>, response: Response<ShopTab>) {
                 try {
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         binding.shopRecycle.apply {
                             this.adapter =
-                                ShopAdapter(requireContext(), response.body()?.usedwrite)
+                                ShopAdapter(
+                                    requireContext(),
+                                    response.body()?.usedwrite,
+                                    mainActivity
+                                )
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
@@ -164,7 +165,7 @@ class SportsShopFragment : Fragment() {
                             )
                         }
                     }
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }

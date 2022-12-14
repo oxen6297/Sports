@@ -8,25 +8,24 @@ import android.view.ViewGroup
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.sportscommunity.GroupPlay
-import com.example.sportscommunity.PlayWith
-import com.example.sportscommunity.R
+import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.PlayWithItemListBinding
 
 class PlayWithAdapter(
-    private val context: Context, private val playWith: MutableList<PlayWith>?
-) : RecyclerView.Adapter<PlayWithAdapter.ViewHolder>(),Filterable {
+    private val context: Context,
+    private val playWith: MutableList<PlayWith>?,
+    val mainActivity: MainActivity
+) : RecyclerView.Adapter<PlayWithAdapter.ViewHolder>(), Filterable {
 
-    private lateinit var itemClickListener: OnItemClickListener
     private var files = playWith
     private var unfiles = playWith
 
     inner class ViewHolder(val binding: PlayWithItemListBinding) :
-        RecyclerView.ViewHolder(binding.root){
-            fun onBind(data: PlayWith){
-                binding.alone = data
-            }
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(data: PlayWith) {
+            binding.alone = data
         }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayWithAdapter.ViewHolder {
         val binding =
@@ -39,8 +38,21 @@ class PlayWithAdapter(
 
         holder.onBind(playWith!![position])
 
+        val item = playWith[position]
+
         holder.binding.aloneLayout.setOnClickListener {
-            itemClickListener.onClick(it, position)
+            titleHash.put("title", item.title.toString())
+            categoryHash.put("category", holder.binding.playCategory.text.toString())
+            localHash.put("local", item.local.toString())
+            descriptionHash.put("description", item.description.toString())
+            genderHash.put("gender", item.gender.toString())
+            minageHash.put("minage", item.minage.toString())
+            maxageHash.put("maxage", item.maxage.toString())
+            userImageHash.put("image", item.userimage.toString())
+            nicknameHash.put("nickname", item.nickname.toString())
+            writedateHash.put("writedate", item.writedate.toString())
+
+            mainActivity.changeFragment(17)
         }
 
         when (playWith[position].id) {
@@ -66,14 +78,14 @@ class PlayWithAdapter(
     }
 
     override fun getFilter(): android.widget.Filter {
-        return object : android.widget.Filter(){
+        return object : android.widget.Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charString = constraint.toString()
-                files = if (charString.isEmpty()){
+                files = if (charString.isEmpty()) {
                     unfiles
                 } else {
                     val filterList = mutableListOf<PlayWith>()
-                    for (item in unfiles!!){
+                    for (item in unfiles!!) {
                         if (item.title == charString) filterList.add(item)
                     }
                     filterList
@@ -89,14 +101,6 @@ class PlayWithAdapter(
                 notifyDataSetChanged()
             }
         }
-    }
-
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
     }
 
     override fun getItemCount(): Int = playWith!!.size

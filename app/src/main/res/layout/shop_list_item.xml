@@ -22,7 +22,7 @@
             android:layout_height="88dp"
             android:src="@drawable/login_btn"
             app:error="@{@drawable/login_btn}"
-            app:imageUrl="@{shop.usedimage}"
+            app:imageUrl="@{shop.usedimage1}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

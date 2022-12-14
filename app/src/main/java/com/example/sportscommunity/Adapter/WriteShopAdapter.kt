@@ -10,7 +10,7 @@ import android.view.animation.TranslateAnimation
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.sportscommunity.R
+import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.WriteShopListItemBinding
 
 class WriteShopAdapter(
@@ -20,7 +20,6 @@ class WriteShopAdapter(
 ) : RecyclerView.Adapter<WriteShopAdapter.ViewHolder>() {
 
     private lateinit var itemClickListener: OnItemClickListener
-    private lateinit var itemClickListeners: OnItemClickListener
     private val imageUri = "drawable://" + R.drawable.add_image_background
 
     class ViewHolder(val binding: WriteShopListItemBinding) :
@@ -43,10 +42,6 @@ class WriteShopAdapter(
 
         holder.binding.listImg.setOnClickListener {
             itemClickListener.onClick(it, position)
-        }
-
-        holder.binding.deleteBtn.setOnClickListener {
-            itemClickListeners.onClick(it, position)
         }
 
         holder.binding.listImg.setOnLongClickListener {

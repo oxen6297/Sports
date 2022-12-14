@@ -53,6 +53,7 @@ class WriteGroupFragment : Fragment() {
     private var image = ""
     private var date = ""
     private var time = ""
+    private var once = ""
 
 
     override fun onCreateView(
@@ -387,7 +388,6 @@ class WriteGroupFragment : Fragment() {
         val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
         val formattedTime = currentDate.format(formatterTwo)
         Log.d("currentTime", formattedTime.toString())
-
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
 
@@ -408,7 +408,14 @@ class WriteGroupFragment : Fragment() {
         writing["maxage"] = maxAge
         writing["writedate"] = writeTime
         writing["titleimage"] = image
-        writing["userid"] = 60
+        writing["userid"] = 3
+        if (binding.oneCheckBox.isChecked){
+            writing["once"] = "다회성"
+        } else if(binding.twoCheckBox.isChecked){
+            writing["once"] = "일회성"
+        }
+
+
 
         val retrofitService = Retrofits.postGroup()
         val call: Call<WriteGroupPlay> = retrofitService.postContent(writing)

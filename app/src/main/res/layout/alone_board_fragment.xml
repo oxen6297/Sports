@@ -23,9 +23,15 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/alone_layout"
+                android:id="@+id/alone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/alone_layout"
+                    android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/user_profile_img"
@@ -107,8 +113,8 @@
                     android:id="@+id/man_woman"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="제한"
+                    android:layout_marginTop="5dp"
+                    android:text="성별"
                     android:textColor="@color/black"
                     android:textSize="11dp"
                     android:textStyle="bold"
@@ -126,6 +132,29 @@
                     app:layout_constraintTop_toBottomOf="@id/play_category"
                     app:layout_constraintTop_toTopOf="@+id/man_woman" />
 
+                    <TextView
+                        android:id="@+id/age_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="나이"
+                        android:textColor="@color/black"
+                        android:textSize="11dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/category"
+                        app:layout_constraintTop_toBottomOf="@+id/man_woman" />
+
+                    <TextView
+                        android:id="@+id/age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="상관없음"
+                        android:textColor="@color/black"
+                        android:textSize="11dp"
+                        app:layout_constraintStart_toStartOf="@id/play_category"
+                        app:layout_constraintTop_toBottomOf="@id/man_woman"
+                        app:layout_constraintTop_toTopOf="@+id/age_title" />
+
                 <TextView
                     android:id="@+id/user_comment"
                     android:layout_width="match_parent"
@@ -139,7 +168,9 @@
                     android:textSize="11dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/category"
-                    app:layout_constraintTop_toBottomOf="@+id/user_select_man_woman" />
+                    app:layout_constraintTop_toBottomOf="@+id/age" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/bottom_layout"
@@ -149,7 +180,7 @@
                     android:padding="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/user_comment">
+                    app:layout_constraintTop_toBottomOf="@+id/alone_layout">
 
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -172,7 +203,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="2dp"
-                            android:text="13"
+                            android:text="좋아요"
                             android:textColor="@color/black"
                             android:textSize="12sp" />
 
@@ -208,7 +239,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="2dp"
-                            android:text="3"
+                            android:text="댓글"
                             android:textColor="@color/black"
                             android:textSize="12sp" />
 

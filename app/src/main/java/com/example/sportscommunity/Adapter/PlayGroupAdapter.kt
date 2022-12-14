@@ -2,27 +2,23 @@ package com.example.sportscommunity.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.format.DateFormat
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.sportscommunity.GroupPlay
-import com.example.sportscommunity.R
+import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.PlayGroupItemListBinding
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.logging.SimpleFormatter
-import kotlin.collections.ArrayList
 
 class PlayGroupAdapter(
-    private val context: Context, private val playGroup: MutableList<GroupPlay>?
+    private val context: Context,
+    private val playGroup: MutableList<GroupPlay>?,
+    val mainActivity: MainActivity
 ) : RecyclerView.Adapter<PlayGroupAdapter.ViewHolder>(), Filterable {
 
-    private lateinit var itemClickListener: PlayGroupAdapter.OnItemClickListener
     private var files = playGroup
     private var unfiles = playGroup
 
@@ -47,6 +43,24 @@ class PlayGroupAdapter(
 
         val item = playGroup[position]
 
+        holder.binding.groupLayout.setOnClickListener {
+
+            titleHash.put("title", item.title.toString())
+            categoryHash.put("category", holder.binding.groupCategory.text.toString())
+            onceHash.put("once", item.once.toString())
+            localHash.put("local", item.local.toString())
+            lineHash.put("line", item.line.toString())
+            descriptionHash.put("description", item.description.toString())
+            nownumHash.put("nownum", item.peoplenownum.toString())
+            peoplenumHash.put("peoplenum", item.peoplenum.toString())
+            genderHash.put("gender", item.gender.toString())
+            minageHash.put("minage", item.minage.toString())
+            maxageHash.put("maxage", item.maxage.toString())
+            titleImageHash.put("image", item.titleimage.toString())
+
+            mainActivity.changeFragment(16)
+        }
+
         when (item.id) {
             1 -> {
                 holder.binding.groupCategory.text = "구기종목"
@@ -68,37 +82,39 @@ class PlayGroupAdapter(
             }
         }
 
+//        holder.itemView.setOnClickListener {
+//            activity.changeFragment(16)
+////            activity.setDataAtFragmentThree(GroupBoardFragment(),item,"title")
+//
+//        }
+
         val formatter = SimpleDateFormat("yyyyMMddHHmmss")
         var date: Date? = null
 
-        date = formatter.parse(item.writedate)
-        val curTime = System.currentTimeMillis()
-        val regTime = date?.time
+        date = formatter.parse(item.writedate.toString())
+        val curTime = System.currentTimeMillis().toDouble()
+        val regTime = date?.time?.toDouble()
         val diffTime = (curTime - regTime!!) / 1000
 
-        val a = diffTime/60
-        val b = diffTime/60
-        val c = diffTime/24
+        val a = diffTime / 60
+        val b = diffTime / 60
+        val c = diffTime / 24
 
         if (diffTime < 60) {
             holder.binding.groupTime.text = "방금전"
-        } else if (a<60){
+        } else if (a < 60) {
             holder.binding.groupTime.text = diffTime.toString() + "분 전"
-        } else if(b<24){
+        } else if (b < 24) {
             holder.binding.groupTime.text = diffTime.toString() + "시간 전"
-        } else if(c<7){
+        } else if (c < 7) {
             holder.binding.groupTime.text = diffTime.toString() + "일 전"
         }
 
-        holder.binding.groupLayout.setOnClickListener {
-            itemClickListener.onClick(it, position)
-        }
         holder.binding.numberMember.text =
             item.peoplenownum.toString() + "/" + item.peoplenum.toString()
 
         Glide.with(context).load(item.titleimage).centerCrop()
             .into(holder.binding.groupProfileImg)
-
     }
 
     override fun getFilter(): android.widget.Filter {
@@ -110,7 +126,9 @@ class PlayGroupAdapter(
                 } else {
                     val filterList = ArrayList<GroupPlay>()
                     for (item in unfiles!!) {
-                        if (item.title == charString) filterList.add(item)
+                        if (item.title == charString) {
+                            filterList.add(item)
+                        }
                     }
                     filterList
                 }
@@ -121,18 +139,10 @@ class PlayGroupAdapter(
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                files = results?.values as ArrayList<GroupPlay>
+                files = results?.values as MutableList<GroupPlay>
                 notifyDataSetChanged()
             }
         }
-    }
-
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
-    }
-
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
     }
 
     override fun getItemCount(): Int = playGroup!!.size
