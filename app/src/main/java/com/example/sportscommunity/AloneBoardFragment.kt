@@ -51,7 +51,11 @@ class AloneBoardFragment : Fragment() {
             userArea.text = locals
             userComment.text = descriptions
             userSelectManWoman.text = genders
-            age.text = minages + "세" + " ~ " + maxages + "세"
+            if (minages =="상관없음"){
+                age.text = "상관없음"
+            } else{
+                age.text = minages + "세" + " ~ " + maxages + "세"
+            }
             Glide.with(requireContext()).load(images).fitCenter().error(R.color.orange)
                 .into(userProfileImg)
             userId.text = nicknames
