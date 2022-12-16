@@ -9,9 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.sportscommunity.*
-import com.example.sportscommunity.Adapter.BallSportsAdapter
 import com.example.sportscommunity.Adapter.ESportsAdapter
 import com.example.sportscommunity.databinding.ESportsFragmentBinding
 import retrofit2.Call
@@ -22,6 +20,7 @@ class ESportsCategoryFragment : Fragment() {
 
     private var mBinding: ESportsFragmentBinding? = null
     private val binding get() = mBinding!!
+    private val esportsList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,14 +36,17 @@ class ESportsCategoryFragment : Fragment() {
 
         val mainActivity = (activity as MainActivity)
 
+        binding.run {
+            gameBoardRecycle.scrollToPosition(esportsList.size-1)
+        }
         getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
 
         binding.write.setOnClickListener {
             mainActivity.changeFragment(0)
-            mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"write")
-            writeFlag.put("write",6)
+            mainActivity.setDataAtFragment(WriteContentFragment(), 1, "write")
+            writeFlag.put("write", 6)
         }
     }
 
@@ -59,22 +61,18 @@ class ESportsCategoryFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "E-스포츠"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getESportsService()
         val call: Call<ESportsTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<ESportsTab> {
             override fun onResponse(call: Call<ESportsTab>, response: Response<ESportsTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.gameBoardRecycle.apply {
-                            this.adapter = ESportsAdapter(response.body()?.boardwrite6)
+                            this.adapter =
+                                ESportsAdapter(response.body()?.boardwrite6, mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,

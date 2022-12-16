@@ -22,6 +22,7 @@ class LeisureCategoryFragment:Fragment() {
 
     private var mBinding: LeisureCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val contentList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +41,10 @@ class LeisureCategoryFragment:Fragment() {
         getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
+
+        binding.run {
+            leisureBoardRecycle.scrollToPosition(contentList.size-1)
+        }
 
         binding.write.setOnClickListener {
             mainActivity.changeFragment(0)
@@ -62,22 +67,17 @@ class LeisureCategoryFragment:Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "레져"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getLeisureSportsService()
         val call: Call<LeisureTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<LeisureTab> {
             override fun onResponse(call: Call<LeisureTab>, response: Response<LeisureTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.leisureBoardRecycle.apply {
-                            this.adapter = LeisureSportsAdpater(response.body()?.boardwrite2)
+                            this.adapter = LeisureSportsAdpater(response.body()?.boardwrite2,mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,

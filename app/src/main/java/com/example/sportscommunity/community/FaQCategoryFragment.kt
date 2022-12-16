@@ -22,6 +22,7 @@ class FaQCategoryFragment:Fragment() {
 
     private var mBinding: FaqCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val contentList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +37,10 @@ class FaQCategoryFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+
+        binding.run {
+            faqBoardRecycle.scrollToPosition(contentList.size-1)
+        }
 
         getCommunityRetrofit()
 
@@ -59,22 +64,17 @@ class FaQCategoryFragment:Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "문의 게시판"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getFaqBoardService()
         val call: Call<FaqBoardTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<FaqBoardTab> {
             override fun onResponse(call: Call<FaqBoardTab>, response: Response<FaqBoardTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.faqBoardRecycle.apply {
-                            this.adapter = FaqBoardAdapter(response.body()?.boardwrite10)
+                            this.adapter = FaqBoardAdapter(response.body()?.boardwrite10,mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,

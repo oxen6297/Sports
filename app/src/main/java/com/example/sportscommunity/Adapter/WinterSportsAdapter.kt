@@ -3,11 +3,11 @@ package com.example.sportscommunity.Adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sportscommunity.Content
+import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.CommunityItemListBinding
 
 class WinterSportsAdapter(
-    private val communityList: MutableList<Content>?
+    private val communityList: MutableList<Content>?, val mainActivity: MainActivity
 ) : RecyclerView.Adapter<WinterSportsAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: CommunityItemListBinding) :
@@ -26,6 +26,17 @@ class WinterSportsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.onBind(communityList!![position])
+        val item = communityList[position]
+        //제목, 프사, 닉네임, 시간, 내용
+        holder.binding.communityLayout.setOnClickListener {
+            titleHash.put("title", item.title.toString())
+            descriptionHash.put("description", item.description.toString())
+            userImageHash.put("image", item.profileimage.toString())
+            nicknameHash.put("nickname", item.nickname.toString())
+            writedateHash.put("writedate", holder.binding.writedate.text.toString())
+
+            mainActivity.changeFragment(19)
+        }
     }
 
     override fun getItemCount(): Int = communityList!!.size

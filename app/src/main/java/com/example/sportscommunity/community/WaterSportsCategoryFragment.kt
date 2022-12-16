@@ -18,10 +18,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WaterSportsCategoryFragment: Fragment() {
+class WaterSportsCategoryFragment : Fragment() {
 
     private var mBinding: WaterSportsCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val contentList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,12 +40,17 @@ class WaterSportsCategoryFragment: Fragment() {
 
         getCommunityRetrofit()
 
+        binding.run {
+            waterSportsBoardRecycle.scrollToPosition(contentList.size - 1)
+        }
+
+
         mainActivity.hideBottomNavigationView(true)
 
         binding.write.setOnClickListener {
             mainActivity.changeFragment(0)
-            mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"write")
-            writeFlag.put("write",3)
+            mainActivity.setDataAtFragment(WriteContentFragment(), 1, "write")
+            writeFlag.put("write", 3)
         }
     }
 
@@ -59,22 +65,21 @@ class WaterSportsCategoryFragment: Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "해양 스포츠"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getWaterSportsService()
         val call: Call<WaterSportsTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<WaterSportsTab> {
-            override fun onResponse(call: Call<WaterSportsTab>, response: Response<WaterSportsTab>) {
+            override fun onResponse(
+                call: Call<WaterSportsTab>,
+                response: Response<WaterSportsTab>
+            ) {
                 try {
                     if (response.isSuccessful) {
                         binding.waterSportsBoardRecycle.apply {
-                            this.adapter = WaterSportsAdapter(response.body()?.boardwrite3)
+                            this.adapter =
+                                WaterSportsAdapter(response.body()?.boardwrite3, mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,

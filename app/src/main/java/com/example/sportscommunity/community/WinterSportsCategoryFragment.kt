@@ -22,6 +22,7 @@ class WinterSportsCategoryFragment : Fragment() {
 
     private var mBinding: WinterSportsCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val contentList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +39,10 @@ class WinterSportsCategoryFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
 
         getCommunityRetrofit()
+
+        binding.run {
+            winterSportsBoardRecycle.scrollToPosition(contentList.size-1)
+        }
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -59,22 +64,17 @@ class WinterSportsCategoryFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "동계 스포츠"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getWinterSportsService()
         val call: Call<WinterSportsTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<WinterSportsTab> {
             override fun onResponse(call: Call<WinterSportsTab>, response: Response<WinterSportsTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.winterSportsBoardRecycle.apply {
-                            this.adapter = WinterSportsAdapter(response.body()?.boardwrite5)
+                            this.adapter = WinterSportsAdapter(response.body()?.boardwrite5,mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,

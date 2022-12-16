@@ -22,6 +22,7 @@ class QuestionCategoryFragment: Fragment() {
 
     private var mBinding: QuestionCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val contentList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +39,10 @@ class QuestionCategoryFragment: Fragment() {
         val mainActivity = (activity as MainActivity)
 
         getCommunityRetrofit()
+
+        binding.run {
+            questionBoardRecycle.scrollToPosition(contentList.size-1)
+        }
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -59,22 +64,17 @@ class QuestionCategoryFragment: Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "질문 게시판"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getQuestionBoardService()
         val call: Call<QuestionBoardTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<QuestionBoardTab> {
             override fun onResponse(call: Call<QuestionBoardTab>, response: Response<QuestionBoardTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.questionBoardRecycle.apply {
-                            this.adapter = QuestionBoardAdapter(response.body()?.boardwrite9)
+                            this.adapter = QuestionBoardAdapter(response.body()?.boardwrite9,mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,

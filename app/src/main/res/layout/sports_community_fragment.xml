@@ -40,34 +40,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/secret_img"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/secret"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/free_img" />
-
-            <TextView
-                android:id="@+id/secret_board_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="30dp"
-                android:text="비밀 게시판"
-                android:textColor="@color/black"
-                android:textSize="15dp"
-                app:layout_constraintStart_toEndOf="@+id/secret_img"
-                app:layout_constraintTop_toBottomOf="@+id/free_img" />
-
-            <ImageView
                 android:id="@+id/question_img"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="30dp"
                 android:src="@drawable/question"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/secret_img" />
+                app:layout_constraintTop_toBottomOf="@+id/free_img" />
 
             <TextView
                 android:id="@+id/question_text"
@@ -79,7 +58,7 @@
                 android:textColor="@color/black"
                 android:textSize="15dp"
                 app:layout_constraintStart_toEndOf="@+id/question_img"
-                app:layout_constraintTop_toBottomOf="@+id/secret_img" />
+                app:layout_constraintTop_toBottomOf="@+id/free_img" />
 
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -17,10 +17,7 @@ class PlayGroupAdapter(
     private val context: Context,
     private val playGroup: MutableList<GroupPlay>?,
     val mainActivity: MainActivity
-) : RecyclerView.Adapter<PlayGroupAdapter.ViewHolder>(), Filterable {
-
-    private var files = playGroup
-    private var unfiles = playGroup
+) : RecyclerView.Adapter<PlayGroupAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: PlayGroupItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -117,33 +114,6 @@ class PlayGroupAdapter(
             .into(holder.binding.groupProfileImg)
     }
 
-    override fun getFilter(): android.widget.Filter {
-        return object : android.widget.Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charString = constraint.toString()
-                files = if (charString.isEmpty()) {
-                    unfiles
-                } else {
-                    val filterList = ArrayList<GroupPlay>()
-                    for (item in unfiles!!) {
-                        if (item.title == charString) {
-                            filterList.add(item)
-                        }
-                    }
-                    filterList
-                }
-                val filterResult = FilterResults()
-                filterResult.values = files
-                return filterResult
-            }
-
-            @SuppressLint("NotifyDataSetChanged")
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                files = results?.values as MutableList<GroupPlay>
-                notifyDataSetChanged()
-            }
-        }
-    }
 
     override fun getItemCount(): Int = playGroup!!.size
 }

@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.sportscommunity.*
 import com.example.sportscommunity.Adapter.BallSportsAdapter
 import com.example.sportscommunity.databinding.BallCategoryTabBinding
@@ -21,6 +19,7 @@ class BallSportsCategoryFragment : Fragment() {
 
     private var mBinding: BallCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val ballList = mutableListOf<Content>()
 
     lateinit var callback: OnBackPressedCallback
 
@@ -42,6 +41,10 @@ class BallSportsCategoryFragment : Fragment() {
 
         mainActivity.hideBottomNavigationView(true)
 
+        binding.run {
+            ballBoardRecycle.scrollToPosition(ballList.size-1)
+        }
+
         binding.write.setOnClickListener {
             mainActivity.changeFragment(0)
             mainActivity.setDataAtFragment(WriteContentFragment(), 1, "write")
@@ -61,22 +64,17 @@ class BallSportsCategoryFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "구기종목"
-    }
-
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getBallSportsService()
         val call: Call<BallSportsTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<BallSportsTab> {
             override fun onResponse(call: Call<BallSportsTab>, response: Response<BallSportsTab>) {
                 try {
                     if (response.isSuccessful) {
                         binding.ballBoardRecycle.apply {
-                            this.adapter = BallSportsAdapter(response.body()?.boardwrite1)
+                            this.adapter = BallSportsAdapter(response.body()?.boardwrite1,mainActivity)
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
@@ -93,5 +91,10 @@ class BallSportsCategoryFragment : Fragment() {
                 call.cancel()
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mBinding = null
     }
 }

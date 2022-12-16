@@ -2,6 +2,7 @@ package com.example.sportscommunity.community
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.sportscommunity.*
 import com.example.sportscommunity.Adapter.FaqBoardAdapter
 import com.example.sportscommunity.Adapter.FreeBoardAdapter
 import com.example.sportscommunity.databinding.FreeCategoryTabBinding
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +24,7 @@ class FreeCategoryFragment:Fragment() {
 
     private var mBinding: FreeCategoryTabBinding? = null
     private val binding get() = mBinding!!
+    private val contentList = mutableListOf<Content>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +42,10 @@ class FreeCategoryFragment:Fragment() {
 
         getCommunityRetrofit()
 
+
+        binding.run {
+//            freeBoardRecycle.scrollToPosition(contentList.size-1)
+        }
         mainActivity.hideBottomNavigationView(true)
 
         binding.write.setOnClickListener {
@@ -65,31 +72,32 @@ class FreeCategoryFragment:Fragment() {
         mBinding = null
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as AppCompatActivity).supportActionBar?.title = "자유 게시판"
-    }
 
     private fun getCommunityRetrofit() {
         val retrofitService = Retrofits.getFreeBoardService()
         val call: Call<FreeBoardTab> = retrofitService.getCommunity()
+        val mainActivity = activity as MainActivity
 
         call.enqueue(object : Callback<FreeBoardTab> {
             override fun onResponse(call: Call<FreeBoardTab>, response: Response<FreeBoardTab>) {
                 try {
                     if (response.isSuccessful) {
+
+                        val freeBoardAdapter = FreeBoardAdapter(response.body()?.boardwrite7,mainActivity)
+
                         binding.freeBoardRecycle.apply {
-                            this.adapter = FreeBoardAdapter(response.body()?.boardwrite7)
+                            this.adapter = freeBoardAdapter
                             this.layoutManager = LinearLayoutManager(
                                 requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 true
                             )
                         }
+                        Log.d("responses",response.headers().name(0).toString())
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    Log.d("responses","error")
                 }
             }
 

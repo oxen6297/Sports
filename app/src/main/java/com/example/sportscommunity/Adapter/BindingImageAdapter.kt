@@ -11,6 +11,6 @@ object BindingImageAdapter{
     @JvmStatic
     fun loadImage(imageView: ImageView, url: String?, error: Drawable) {
 
-        Glide.with(imageView.context).load(url).fitCenter().error(error).into(imageView)
+        Glide.with(imageView.context).load(url).centerCrop().error(error).into(imageView)
     }
 }
