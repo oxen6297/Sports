@@ -49,6 +49,7 @@ class ShopAdapter(
             shopImageHashFive.put("imageFive", item.usedimage5)
             priceHash.put("price", item.price.toString())
             userImageHash.put("userimage",item.userimage.toString())
+            ShopBoardId.put("shop",item.usedid.toString())
 
             mainActivity.changeFragment(18)
         }

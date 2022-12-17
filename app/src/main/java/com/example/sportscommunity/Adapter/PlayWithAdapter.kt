@@ -2,6 +2,7 @@ package com.example.sportscommunity.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +52,9 @@ class PlayWithAdapter(
             userImageHash.put("image", item.userimage.toString())
             nicknameHash.put("nickname", item.nickname.toString())
             writedateHash.put("writedate", item.writedate.toString())
+            AloneBoardId.put("alone",item.individualid.toString())
+            AloneCategoryHash.put("categoryid",item.id.toString())
+
 
             mainActivity.changeFragment(17)
         }

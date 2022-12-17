@@ -34,6 +34,9 @@ class WaterSportsAdapter(
             userImageHash.put("image", item.profileimage.toString())
             nicknameHash.put("nickname", item.nickname.toString())
             writedateHash.put("writedate", holder.binding.writedate.text.toString())
+            FreeBoardId.put("boardId",item.boardid.toString())
+            categoryHash.put("categoryId",item.categoryid.toString())
+            WaterBoardId.put("boardId",item.boardid.toString())
 
             mainActivity.changeFragment(19)
         }

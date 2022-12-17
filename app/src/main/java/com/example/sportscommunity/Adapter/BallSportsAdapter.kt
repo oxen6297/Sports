@@ -35,6 +35,9 @@ class BallSportsAdapter(
             userImageHash.put("image", item.profileimage.toString())
             nicknameHash.put("nickname", item.nickname.toString())
             writedateHash.put("writedate", holder.binding.writedate.text.toString())
+            FreeBoardId.put("boardId",item.boardid.toString())
+            categoryHash.put("categoryId",item.categoryid.toString())
+            BallBoardId.put("boardId",item.boardid.toString())
 
             mainActivity.changeFragment(19)
         }
