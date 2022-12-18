@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.databinding.CommunityBoardFragmentBinding
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -126,21 +127,28 @@ class CommunityBoardFragment : Fragment() {
         unLike["userid"] = 3
 
         val retrofitService = Retrofits.communityDeleteLikeNumber()
-        val call: Call<Like> = retrofitService.comDeleteLike(unLike)
+        val call: Call<String> = retrofitService.comDeleteLike(unLike)
 
-        call.enqueue(object : Callback<Like> {
-            override fun onResponse(call: Call<Like>, response: Response<Like>) {
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 try {
                     if (response.isSuccessful) {
+
+                        val num = binding.likeNum.text.toString().toInt() - 1
+                        if (num < 0){
+                            binding.likeNum.text = "0"
+                        } else if (num >= 0){
+                            binding.likeNum.text = num.toString()
+                        }
                         Log.d("success", "success")
                     }
                 } catch (e: Exception) {
-                    Log.d("error", e.toString())
+                    Log.d("unerror", e.toString())
                 }
             }
 
-            override fun onFailure(call: Call<Like>, t: Throwable) {
-                Log.d("failed", t.message.toString())
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("unfailed", t.message.toString())
             }
         })
     }
@@ -153,20 +161,30 @@ class CommunityBoardFragment : Fragment() {
         like["userid"] = 3
 
         val retrofitService = Retrofits.postLikeNumber()
-        val call: Call<Like> = retrofitService.postLike(like)
+        val call: Call<String> = retrofitService.postLike(like)
 
-        call.enqueue(object : Callback<Like> {
-            override fun onResponse(call: Call<Like>, response: Response<Like>) {
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 try {
+
                     if (response.isSuccessful) {
-                        Log.d("success", "success")
+                        val body = response.body().toString()
+
+                        val likeNumber = JSONObject(body).getJSONObject("likedcount")
+                        val likeCounts = likeNumber.getString("likedcount").toString()
+                        if (likeCounts.isEmpty()) {
+                            binding.likeNum.text = "0"
+                        } else {
+                            binding.likeNum.text = likeCounts
+                        }
+
                     }
                 } catch (e: Exception) {
                     Log.d("error", e.toString())
                 }
             }
 
-            override fun onFailure(call: Call<Like>, t: Throwable) {
+            override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.d("failed", t.message.toString())
             }
         })
@@ -179,49 +197,56 @@ class CommunityBoardFragment : Fragment() {
         likeCount["categoryid"] = categoryId.toInt()
 
         val retrofitService = Retrofits.postComLikeCount()
-        val call: Call<LikeCountNum> = retrofitService.postLikeCount(likeCount)
+        val call: Call<String> = retrofitService.postLikeCount(likeCount)
 
-        call.enqueue(object : Callback<LikeCountNum> {
-            override fun onResponse(call: Call<LikeCountNum>, response: Response<LikeCountNum>) {
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 try {
                     if (response.isSuccessful) {
-                        Log.d("success", "success")
-                        getLikeCount()
+
+                        val body = response.body().toString()
+
+                        val likeNumber = JSONObject(body).getJSONObject("likedcount")
+                        val likeCounts = likeNumber.getString("likedcount")
+                        binding.likeNum.text = likeCounts.toString()
+
+                        Log.d("likedCount", likeCounts)
                     }
                 } catch (e: Exception) {
-                    Log.d("error", e.toString())
+                    Log.d("errordd", e.toString())
                 }
             }
 
-            override fun onFailure(call: Call<LikeCountNum>, t: Throwable) {
-                Log.d("failed", t.message.toString())
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("faileddd", t.message.toString())
             }
         })
     }
-
-    private fun getLikeCount() {
-
-        val retrofitService = Retrofits.getLikeCountService()
-        val call: Call<GetLikeCount> =
-            retrofitService.getLikeCount()
-
-        call.enqueue(object : Callback<GetLikeCount> {
-            override fun onResponse(call: Call<GetLikeCount>, response: Response<GetLikeCount>) {
-                try {
-                    if (response.isSuccessful) {
-                        Log.d("success", "success")
-                        Log.d("jebal", response.body()?.likeCount.toString())
-                        Log.d("responseBody",response.body().toString())
-                        Log.d("ress",response.body()?.likeCount?.get(0)?.likedCount.toString())
-                        binding.likeNum.text = response.body()?.likeCount?.get(0)?.likedCount.toString()
-                    }
-                } catch (e: Exception) {
-                    Log.d("error", e.toString())
-                }
-            }
-            override fun onFailure(call: Call<GetLikeCount>, t: Throwable) {
-                Log.d("failed", t.message.toString())
-            }
-        })
-    }
+//
+//    private fun getLikeCount() {
+//
+//        val retrofitService = Retrofits.getLikeCountService()
+//        val call: Call<GetLikeCount> =
+//            retrofitService.getLikeCount()
+//
+//        call.enqueue(object : Callback<GetLikeCount> {
+//            override fun onResponse(call: Call<GetLikeCount>, response: Response<GetLikeCount>) {
+//                try {
+//                    if (response.isSuccessful) {
+//                        Log.d("successs", "successs")
+//                        Log.d("jebal", response.body()?.likedcount.toString())
+//                        Log.d("ress",response.body()?.likedcount?.get(0)?.likedCount.toString())
+//                        binding.likeNum.text = response.body()?.likedcount?.get(0)?.likedCount.toString()
+//                    }
+//                } catch (e: Exception) {
+//                    Log.d("errorss", e.toString())
+//                    Log.d("successs", "successs123")
+//                }
+//            }
+//            override fun onFailure(call: Call<GetLikeCount>, t: Throwable) {
+//                Log.d("faileddd", t.message.toString())
+//                Log.d("successs", "successs123")
+//            }
+//        })
+//    }
 }

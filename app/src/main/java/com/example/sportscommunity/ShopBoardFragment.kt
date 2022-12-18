@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.databinding.ShopBoardFragmentBinding
-import org.apache.log4j.chainsaw.Main
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,6 +48,8 @@ class ShopBoardFragment : Fragment() {
     @SuppressLint("CommitPrefEdits", "UseCompatLoadingForDrawables", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postLikeCount()
 
         val mainActivity = activity as MainActivity
         mainActivity.hideBottomNavigationView(true)
@@ -148,6 +150,12 @@ class ShopBoardFragment : Fragment() {
             override fun onResponse(call: Call<Like>, response: Response<Like>) {
                 try {
                     if (response.isSuccessful) {
+                        val num = binding.likeNum.text.toString().toInt() - 1
+                        if (num < 0){
+                            binding.likeNum.text = "0"
+                        } else if (num >= 0){
+                            binding.likeNum.text = num.toString()
+                        }
                         Log.d("success", "success")
                     }
                 } catch (e: Exception) {
@@ -169,22 +177,64 @@ class ShopBoardFragment : Fragment() {
         like["userid"] = 3
 
         val retrofitService = Retrofits.postShopLikeNumber()
-        val call: Call<Like> = retrofitService.postLike(like)
+        val call: Call<String> = retrofitService.postLike(like)
 
-        call.enqueue(object : Callback<Like> {
+        call.enqueue(object : Callback<String> {
             @SuppressLint("CommitPrefEdits")
-            override fun onResponse(call: Call<Like>, response: Response<Like>) {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 try {
                     if (response.isSuccessful) {
-                        Log.d("success", "success")
+                        val body = response.body().toString()
+
+                        val likeNumber = JSONObject(body).getJSONObject("likedcount")
+                        val likeCounts = likeNumber.getString("likedcount").toString()
+                        if (likeCounts.isEmpty()) {
+                            binding.likeNum.text = "0"
+                        } else {
+                            binding.likeNum.text = likeCounts
+                        }
+
                     }
                 } catch (e: Exception) {
                     Log.d("error", e.toString())
                 }
             }
 
-            override fun onFailure(call: Call<Like>, t: Throwable) {
+            override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.d("failed", t.message.toString())
+            }
+        })
+    }
+
+    private fun postLikeCount() {
+        val likeCount = HashMap<String, Any>()
+
+        likeCount["inherentid"] = boardId.toInt()
+        likeCount["categoryid"] = categorys
+
+        val retrofitService = Retrofits.postShopLikeCount()
+        val call: Call<String> = retrofitService.postLikeCount(likeCount)
+
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                try {
+                    if (response.isSuccessful) {
+
+                        val body = response.body().toString()
+
+                        val likeNumber = JSONObject(body).getJSONObject("likedcount")
+                        val likeCounts = likeNumber.getString("likedcount")
+                        binding.likeNum.text = likeCounts.toString()
+
+                        Log.d("likedCount", likeCounts)
+                    }
+                } catch (e: Exception) {
+                    Log.d("errordd", e.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("faileddd", t.message.toString())
             }
         })
     }
