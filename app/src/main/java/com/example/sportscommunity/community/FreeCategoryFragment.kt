@@ -87,21 +87,16 @@ class FreeCategoryFragment:Fragment() {
 
                         binding.freeBoardRecycle.apply {
                             this.adapter = freeBoardAdapter
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
-                        Log.d("responses",response.headers().name(0).toString())
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.d("responses","error")
+                    Log.d("responsess","error")
                 }
             }
 
             override fun onFailure(call: Call<FreeBoardTab>, t: Throwable) {
+                Log.d("getCom","failed")
                 call.cancel()
             }
         })

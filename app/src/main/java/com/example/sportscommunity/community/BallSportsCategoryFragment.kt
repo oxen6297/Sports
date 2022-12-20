@@ -75,11 +75,6 @@ class BallSportsCategoryFragment : Fragment() {
                     if (response.isSuccessful) {
                         binding.ballBoardRecycle.apply {
                             this.adapter = BallSportsAdapter(response.body()?.boardwrite1,mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

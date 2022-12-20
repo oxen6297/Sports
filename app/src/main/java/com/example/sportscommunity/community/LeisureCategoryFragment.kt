@@ -78,11 +78,6 @@ class LeisureCategoryFragment:Fragment() {
                     if (response.isSuccessful) {
                         binding.leisureBoardRecycle.apply {
                             this.adapter = LeisureSportsAdpater(response.body()?.boardwrite2,mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

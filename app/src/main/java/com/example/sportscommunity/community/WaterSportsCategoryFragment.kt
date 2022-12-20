@@ -80,11 +80,6 @@ class WaterSportsCategoryFragment : Fragment() {
                         binding.waterSportsBoardRecycle.apply {
                             this.adapter =
                                 WaterSportsAdapter(response.body()?.boardwrite3, mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

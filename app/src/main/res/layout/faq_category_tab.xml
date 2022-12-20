@@ -10,20 +10,20 @@
         android:id="@+id/back_press"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/title_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_text"
-        app:layout_constraintBottom_toBottomOf="@+id/title_text" >
+        app:layout_constraintTop_toTopOf="@+id/title_text">
 
         <Button
             android:layout_width="13dp"
             android:layout_height="13dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/left_arrow"
             android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -76,18 +76,22 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/faq_board_recycle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_edit" />
+        app:layout_constraintTop_toBottomOf="@id/search_edit"
+        app:reverseLayout="true"
+        app:stackFromEnd="true" />
 
     <Button
         android:id="@+id/write"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
         android:background="@drawable/login_btn"
-        android:text="글쓰기"
+        android:text="등록"
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

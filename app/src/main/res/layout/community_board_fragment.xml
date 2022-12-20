@@ -180,7 +180,10 @@
                         android:id="@+id/chat_recycle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:reverseLayout="true"
+                        app:stackFromEnd="true" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

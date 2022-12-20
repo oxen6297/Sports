@@ -8,7 +8,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:paddingRight="20dp"
+    android:paddingBottom="20dp">
 
     <EditText
         android:id="@+id/group_search_edit"
@@ -127,19 +128,24 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/play_with_recycle"
         android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/group_sort_time" />
+        app:layout_constraintTop_toBottomOf="@+id/group_sort_time"
+        app:reverseLayout="true"
+        app:stackFromEnd="true" />
 
     <Button
         android:id="@+id/write_btn"
-        android:layout_width="40dp"
+        android:layout_width="60dp"
         android:layout_height="40dp"
-        android:layout_margin="20dp"
-        android:background="@drawable/plus"
+        android:background="@drawable/login_btn"
+        android:text="등록"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

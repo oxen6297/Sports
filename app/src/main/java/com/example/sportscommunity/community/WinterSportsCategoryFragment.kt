@@ -75,11 +75,6 @@ class WinterSportsCategoryFragment : Fragment() {
                     if (response.isSuccessful) {
                         binding.winterSportsBoardRecycle.apply {
                             this.adapter = WinterSportsAdapter(response.body()?.boardwrite5,mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

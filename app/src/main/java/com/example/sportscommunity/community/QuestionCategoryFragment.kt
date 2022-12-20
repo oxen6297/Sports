@@ -75,11 +75,6 @@ class QuestionCategoryFragment: Fragment() {
                     if (response.isSuccessful) {
                         binding.questionBoardRecycle.apply {
                             this.adapter = QuestionBoardAdapter(response.body()?.boardwrite9,mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

@@ -75,11 +75,6 @@ class FaQCategoryFragment:Fragment() {
                     if (response.isSuccessful) {
                         binding.faqBoardRecycle.apply {
                             this.adapter = FaqBoardAdapter(response.body()?.boardwrite10,mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

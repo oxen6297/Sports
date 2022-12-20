@@ -73,11 +73,6 @@ class ESportsCategoryFragment : Fragment() {
                         binding.gameBoardRecycle.apply {
                             this.adapter =
                                 ESportsAdapter(response.body()?.boardwrite6, mainActivity)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
                         }
                     }
                 } catch (e: Exception) {

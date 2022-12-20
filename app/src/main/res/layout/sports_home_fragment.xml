@@ -10,6 +10,10 @@
             name="onclick"
             type="com.example.sportscommunity.SportsHomeFragment" />
 
+        <variable
+            name="bestBoard"
+            type="com.example.sportscommunity.BestBoard" />
+
     </data>
 
     <LinearLayout
@@ -75,60 +79,12 @@
 
                             <ImageView
                                 android:id="@+id/ball_img"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
                                 android:onClick="@{onclick::onClick}"
                                 android:src="@drawable/sports"
+                                app:layout_constraintEnd_toStartOf="@+id/leisure_img"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <ImageView
-                                android:id="@+id/leisure_img"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:onClick="@{onclick::onClick}"
-                                android:src="@drawable/kitesurf"
-                                app:layout_constraintEnd_toStartOf="@+id/wave"
-                                app:layout_constraintStart_toEndOf="@+id/ball_img"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <ImageView
-                                android:id="@+id/wave"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:onClick="@{onclick::onClick}"
-                                android:src="@drawable/wave"
-                                app:layout_constraintEnd_toStartOf="@+id/life_sports"
-                                app:layout_constraintStart_toEndOf="@+id/leisure_img"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <ImageView
-                                android:id="@+id/life_sports"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:onClick="@{onclick::onClick}"
-                                android:src="@drawable/run"
-                                app:layout_constraintEnd_toStartOf="@+id/winter_sports"
-                                app:layout_constraintStart_toEndOf="@id/wave"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <ImageView
-                                android:id="@+id/winter_sports"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:onClick="@{onclick::onClick}"
-                                android:src="@drawable/snowboarder"
-                                app:layout_constraintEnd_toStartOf="@+id/e_sports"
-                                app:layout_constraintStart_toEndOf="@id/life_sports"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <ImageView
-                                android:id="@+id/e_sports"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:onClick="@{onclick::onClick}"
-                                android:src="@drawable/e_sports"
-                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
@@ -140,10 +96,22 @@
                                 android:onClick="@{onclick::onClick}"
                                 android:text="구기"
                                 android:textColor="@color/black"
-                                android:textSize="11dp"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/ball_img"
                                 app:layout_constraintStart_toStartOf="@+id/ball_img"
                                 app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+
+                            <ImageView
+                                android:id="@+id/leisure_img"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:onClick="@{onclick::onClick}"
+                                android:src="@drawable/kitesurf"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/ball_img"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/leisure_text"
@@ -154,10 +122,22 @@
                                 android:onClick="@{onclick::onClick}"
                                 android:text="레져"
                                 android:textColor="@color/black"
-                                android:textSize="11dp"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/leisure_img"
                                 app:layout_constraintStart_toStartOf="@+id/leisure_img"
                                 app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+
+                            <ImageView
+                                android:id="@+id/wave"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="15dp"
+                                android:onClick="@{onclick::onClick}"
+                                android:src="@drawable/wave"
+                                app:layout_constraintEnd_toStartOf="@+id/life_sports"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/ball_text" />
 
                             <TextView
                                 android:id="@+id/water_text"
@@ -168,10 +148,24 @@
                                 android:onClick="@{onclick::onClick}"
                                 android:text="해양"
                                 android:textColor="@color/black"
-                                android:textSize="11dp"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@id/wave"
                                 app:layout_constraintStart_toStartOf="@+id/wave"
-                                app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                                app:layout_constraintTop_toBottomOf="@+id/wave" />
+
+
+                            <ImageView
+                                android:id="@+id/life_sports"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="15dp"
+                                android:onClick="@{onclick::onClick}"
+                                android:src="@drawable/run"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/wave"
+                                app:layout_constraintTop_toBottomOf="@id/leisure_text" />
+
 
                             <TextView
                                 android:id="@+id/life_text"
@@ -182,10 +176,23 @@
                                 android:onClick="@{onclick::onClick}"
                                 android:text="생활"
                                 android:textColor="@color/black"
-                                android:textSize="11dp"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@id/life_sports"
                                 app:layout_constraintStart_toStartOf="@+id/life_sports"
-                                app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                                app:layout_constraintTop_toBottomOf="@+id/life_sports" />
+
+
+                            <ImageView
+                                android:id="@+id/winter_sports"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="15dp"
+                                android:onClick="@{onclick::onClick}"
+                                android:src="@drawable/snowboarder"
+                                app:layout_constraintEnd_toStartOf="@id/e_sports"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/water_text" />
 
                             <TextView
                                 android:id="@+id/winter_text"
@@ -196,10 +203,22 @@
                                 android:onClick="@{onclick::onClick}"
                                 android:text="동계"
                                 android:textColor="@color/black"
-                                android:textSize="11dp"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/winter_sports"
                                 app:layout_constraintStart_toStartOf="@+id/winter_sports"
-                                app:layout_constraintTop_toBottomOf="@+id/ball_img" />
+                                app:layout_constraintTop_toBottomOf="@+id/winter_sports" />
+
+                            <ImageView
+                                android:id="@+id/e_sports"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="15dp"
+                                android:onClick="@{onclick::onClick}"
+                                android:src="@drawable/e_sports"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/winter_sports"
+                                app:layout_constraintTop_toBottomOf="@+id/life_text" />
 
                             <TextView
                                 android:id="@+id/game_text"
@@ -210,7 +229,8 @@
                                 android:onClick="@{onclick::onClick}"
                                 android:text="게임"
                                 android:textColor="@color/black"
-                                android:textSize="11dp"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/e_sports"
                                 app:layout_constraintStart_toStartOf="@+id/e_sports"
                                 app:layout_constraintTop_toBottomOf="@+id/e_sports" />
@@ -235,21 +255,80 @@
                             android:id="@+id/up_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="실시간 급상승"
+                            android:text="베스트 게시물"
                             android:textColor="@color/black"
                             android:textSize="18dp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/up_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="160dp"
-                            android:layout_marginTop="13dp"
-                            android:background="@drawable/email_edit_background"
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/user_img"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="15dp"
+                            android:src="@color/orange"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/up_title" />
+
+                        <TextView
+                            android:id="@+id/user_nickname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:textColor="@color/black"
+                            android:textSize="13dp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@id/user_img"
+                            app:layout_constraintStart_toEndOf="@+id/user_img"
+                            app:layout_constraintTop_toTopOf="@+id/user_img" />
+
+                        <TextView
+                            android:id="@+id/best_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="13dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/user_nickname"
+                            app:layout_constraintTop_toTopOf="@id/user_nickname" />
+
+                        <TextView
+                            android:id="@+id/user_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="4"
+                            android:layout_marginTop="15dp"
+                            android:textColor="@color/black"
+                            android:textSize="12dp"
+                            app:layout_constraintStart_toStartOf="@id/user_nickname"
+                            app:layout_constraintTop_toBottomOf="@+id/user_nickname" />
+
+                        <ImageView
+                            android:id="@+id/like_img"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_marginEnd="3dp"
+                            android:src="@drawable/red_heart"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/like_num" />
+
+                        <TextView
+                            android:id="@+id/like_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="11dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <TextView
+                            android:id="@+id/write_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="11dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -259,7 +338,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/layout_background"
-                        android:padding="20dp"
+                        android:paddingStart="20dp"
+                        android:paddingTop="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/hot_layout">
@@ -293,10 +375,68 @@
                             android:id="@+id/group_recycle"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:orientation="horizontal"
+                            app:stackFromEnd="true"
+                            app:reverseLayout="true"
                             android:layout_marginTop="13dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/group_title" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/alone_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/layout_background"
+                        android:paddingStart="20dp"
+                        android:paddingTop="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/group_layout">
+
+
+                        <TextView
+                            android:id="@+id/alone_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{onclick::onClick}"
+                            android:text="같이 해요"
+                            android:textColor="@color/black"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/go_alone_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{onclick::onClick}"
+                            android:text=">"
+                            android:textColor="@color/black"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/alone_recycle"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:orientation="horizontal"
+                            app:stackFromEnd="true"
+                            app:reverseLayout="true"
+                            android:layout_marginTop="13dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/alone_title" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -309,7 +449,7 @@
                         android:padding="20dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/group_layout">
+                        app:layout_constraintTop_toBottomOf="@+id/alone_layout">
 
                         <TextView
                             android:id="@+id/reservation"
