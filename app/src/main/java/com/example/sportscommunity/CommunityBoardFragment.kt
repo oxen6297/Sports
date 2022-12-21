@@ -1,21 +1,32 @@
 package com.example.sportscommunity
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.sportscommunity.Adapter.ChatAdapter
 import com.example.sportscommunity.databinding.CommunityBoardFragmentBinding
+import com.example.sportscommunity.databinding.SportsHomeFragmentBindingImpl
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class CommunityBoardFragment : Fragment() {
 
@@ -27,6 +38,10 @@ class CommunityBoardFragment : Fragment() {
     private val nickname = nicknameHash["nickname"].toString()
     private val writedates = writedateHash["writedate"].toString()
     private val categoryId = categoryHash["categoryId"].toString()
+    private var flag = 0
+    private var commentList = mutableListOf<Comment>()
+    private val chatAdpater = ChatAdapter(commentList)
+    private var commentFlag = 0
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreateView(
@@ -43,6 +58,11 @@ class CommunityBoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postLikeCount()
+        getChat()
+        getReChat()
+
+        binding.chatRecycle.adapter = chatAdpater
+        commentFlag = 0
 
         val mainActivity = activity as MainActivity
         mainActivity.hideBottomNavigationView(true)
@@ -53,7 +73,7 @@ class CommunityBoardFragment : Fragment() {
 
         binding.run {
 
-            var flag = sharedPreferences.getInt(boardId, 0)
+            flag = sharedPreferences.getInt(boardId, 0)
 
             heartLayout.setOnClickListener {
                 if (flag == 0) {
@@ -106,6 +126,29 @@ class CommunityBoardFragment : Fragment() {
             Glide.with(requireContext()).load(images).fitCenter().error(R.color.orange)
                 .into(contentProfileImg)
         }
+
+
+        binding.sendBtn.setOnClickListener {
+            postChat()
+            binding.chatEdit.text = null
+            softkeyboardHide()
+        }
+
+        chatAdpater.setItemClickListener(object : ChatAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                binding.sendBtnTwo.visibility = View.VISIBLE
+                binding.sendBtn.visibility = View.GONE
+                softkeyboard()
+                binding.sendBtnTwo.setOnClickListener {
+                    postReChat(position)
+                    Log.d("rootViewBottom", position.toString())
+                    binding.chatEdit.text = null
+                    softkeyboardHide()
+                    it.visibility = View.GONE
+                    binding.sendBtn.visibility = View.VISIBLE
+                }
+            }
+        })
     }
 
     override fun onAttach(context: Context) {
@@ -135,9 +178,9 @@ class CommunityBoardFragment : Fragment() {
                     if (response.isSuccessful) {
 
                         val num = binding.likeNum.text.toString().toInt() - 1
-                        if (num < 0){
+                        if (num < 0) {
                             binding.likeNum.text = "0"
-                        } else if (num >= 0){
+                        } else if (num >= 0) {
                             binding.likeNum.text = num.toString()
                         }
                         Log.d("success", "success")
@@ -149,6 +192,138 @@ class CommunityBoardFragment : Fragment() {
 
             override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.d("unfailed", t.message.toString())
+            }
+        })
+    }
+
+    private fun postReChat(position: Int) {
+        val chat = HashMap<String, Any>()
+
+        val description = binding.chatEdit.text.toString()
+
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        val writeTime = "$formatted $formattedTime"
+
+        chat["nickname"] = nickname
+        chat["description"] = description
+        chat["userid"] = 3
+        chat["categoryid"] = categoryId.toInt()
+        chat["inherentid"] = boardId.toInt()
+        chat["writedate"] = writeTime
+        chat["profileimage"] = images
+
+        commentList.add(
+            position,
+            Comment(
+                nickname,
+                description,
+                writeTime,
+                boardId.toInt(),
+                categoryId.toInt(),
+                3,
+                images,
+                1,
+                null
+            )
+        )
+
+
+        val retrofitService = Retrofits.postReComments()
+        val call: Call<String> = retrofitService.postReComment(chat)
+
+        call.enqueue(object : Callback<String> {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                try {
+
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+
+                        val chatNumber = JSONObject(body).getJSONObject("replycount")
+                        val chatCounts = chatNumber.getString("replycount").toString()
+
+                        binding.chatNum.text = chatCounts
+                        binding.chatRecycle.setHasFixedSize(true)
+                        chatAdpater.notifyDataSetChanged()
+                    }
+                } catch (e: Exception) {
+                    Log.d("error", e.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("failed", t.message.toString())
+            }
+        })
+    }
+
+    private fun postChat() {
+        val chat = HashMap<String, Any>()
+
+        val description = binding.chatEdit.text.toString()
+
+        val currentDate = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE
+        val formatted = currentDate.format(formatter)
+        val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentDate.format(formatterTwo)
+        val writeTime = "$formatted $formattedTime"
+
+        chat["nickname"] = nickname
+        chat["description"] = description
+        chat["userid"] = 3
+        chat["categoryid"] = categoryId.toInt()
+        chat["inherentid"] = boardId.toInt()
+        chat["writedate"] = writeTime
+        chat["profileimage"] = images
+
+        commentList.add(
+            Comment(
+                nickname,
+                description,
+                writeTime,
+                boardId.toInt(),
+                categoryId.toInt(),
+                3,
+                images,
+                2,
+                null
+            )
+        )
+
+        val retrofitService = Retrofits.postComments()
+        val call: Call<String> = retrofitService.postComment(chat)
+
+        call.enqueue(object : Callback<String> {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                try {
+
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+
+                        val chatNumber = JSONObject(body).getJSONObject("commentcount")
+                        val chatCounts = chatNumber.getString("commentcount").toString()
+                        if (chatCounts.isEmpty()) {
+                            binding.chatNum.text = "0"
+                        } else {
+                            binding.chatNum.text = chatCounts
+                        }
+
+                        binding.chatRecycle.setHasFixedSize(true)
+                        chatAdpater.notifyDataSetChanged()
+                    }
+                } catch (e: Exception) {
+                    Log.d("error", e.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("failed", t.message.toString())
             }
         })
     }
@@ -222,31 +397,125 @@ class CommunityBoardFragment : Fragment() {
             }
         })
     }
-//
-//    private fun getLikeCount() {
-//
-//        val retrofitService = Retrofits.getLikeCountService()
-//        val call: Call<GetLikeCount> =
-//            retrofitService.getLikeCount()
-//
-//        call.enqueue(object : Callback<GetLikeCount> {
-//            override fun onResponse(call: Call<GetLikeCount>, response: Response<GetLikeCount>) {
-//                try {
-//                    if (response.isSuccessful) {
-//                        Log.d("successs", "successs")
-//                        Log.d("jebal", response.body()?.likedcount.toString())
-//                        Log.d("ress",response.body()?.likedcount?.get(0)?.likedCount.toString())
-//                        binding.likeNum.text = response.body()?.likedcount?.get(0)?.likedCount.toString()
-//                    }
-//                } catch (e: Exception) {
-//                    Log.d("errorss", e.toString())
-//                    Log.d("successs", "successs123")
-//                }
-//            }
-//            override fun onFailure(call: Call<GetLikeCount>, t: Throwable) {
-//                Log.d("faileddd", t.message.toString())
-//                Log.d("successs", "successs123")
-//            }
-//        })
-//    }
+
+    private fun softkeyboardHide() {
+        val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.chatEdit.windowToken, 0)
+    }
+
+    private fun softkeyboard() {
+        val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.chatEdit, 0)
+
+    }
+
+    private fun getChat() {
+        val retrofitService = Retrofits.getCommentService()
+        val call: Call<String> = retrofitService.getComment()
+
+        call.enqueue(object : Callback<String> {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                try {
+                    if (response.isSuccessful) {
+                        val res = response.body()
+                        val chatInfo = JSONObject(res.toString())
+                        val chatArray = chatInfo.optJSONArray("comment")
+                        var i = 0
+                        if (chatArray != null) {
+                            while (i < chatArray.length()) {
+                                val jsonObject = chatArray.getJSONObject(i)
+                                val nickname = jsonObject.getString("nickname")
+                                val description = jsonObject.getString("description")
+                                val writedate = jsonObject.getString("writedate")
+                                val profileimage = jsonObject.getString("profileimage")
+                                val isrecomment = jsonObject.getString("isrecomment").toInt()
+                                val inherentid = jsonObject.getString("inherentid").toInt()
+                                val categoryid = jsonObject.getString("categoryid").toInt()
+                                val userid = jsonObject.getString("userid").toInt()
+
+
+                                commentList.add(
+                                    Comment(
+                                        nickname,
+                                        description,
+                                        writedate,
+                                        inherentid,
+                                        categoryid,
+                                        userid,
+                                        profileimage,
+                                        isrecomment,
+                                        null
+                                    )
+                                )
+                                i++
+                                chatAdpater.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.d("error", e.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("failed", t.message.toString())
+            }
+        })
+    }
+
+    private fun getReChat() {
+        val retrofitService = Retrofits.getReCommentService()
+        val call: Call<String> = retrofitService.getComment()
+
+        call.enqueue(object : Callback<String> {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                try {
+                    if (response.isSuccessful) {
+                        val res = response.body()
+                        Log.d("resssssss",res.toString())
+                        val chatInfo = JSONObject(res.toString())
+                        val chatArray = chatInfo.optJSONArray("reply")
+                        var i = 0
+                        if (chatArray != null) {
+                            while (i < chatArray.length()) {
+                                val jsonObject = chatArray.getJSONObject(i)
+                                val nickname = jsonObject.getString("nickname")
+                                val description = jsonObject.getString("description")
+                                val writedate = jsonObject.getString("writedate")
+                                val profileimage = jsonObject.getString("profileimage")
+                                val isrecomment = jsonObject.getString("isrecomment").toInt()
+                                val inherentid = jsonObject.getString("inherentid").toInt()
+                                val categoryid = jsonObject.getString("categoryid").toInt()
+                                val userid = jsonObject.getString("userid").toInt()
+
+                                commentList.add(
+                                    Comment(
+                                        nickname,
+                                        description,
+                                        writedate,
+                                        inherentid,
+                                        categoryid,
+                                        userid,
+                                        profileimage,
+                                        isrecomment,
+                                        null
+                                    )
+                                )
+                                i++
+                                chatAdpater.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.d("error", e.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("failed", t.message.toString())
+            }
+        })
+    }
 }
