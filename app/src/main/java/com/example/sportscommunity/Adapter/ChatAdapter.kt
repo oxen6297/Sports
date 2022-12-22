@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportscommunity.Comment
+import com.example.sportscommunity.commentsId
 import com.example.sportscommunity.databinding.ChatItemListBinding
 import com.example.sportscommunity.databinding.ReChatItemListBinding
 
@@ -47,6 +48,7 @@ class ChatAdapter(
             ReChatItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return when (viewType) {
             1 -> ReViewHolder(bindingRe)
+            2 -> ViewHolder(binding)
             else -> ViewHolder(binding)
         }
     }
@@ -62,12 +64,15 @@ class ChatAdapter(
                 holder.onBind(commentList[position])
                 holder.binding.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
+                    commentsId.put("commentsId",binding.inherentid.text.toString())
+
                 }
             }
             1 -> (holder as ReViewHolder).apply {
                 holder.onBind(commentList[position])
                 holder.bindingTwo.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
+                    commentsId.put("commentsId",bindingTwo.inherentid.text.toString())
                 }
             }
         }

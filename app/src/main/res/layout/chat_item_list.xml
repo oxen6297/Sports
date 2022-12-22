@@ -33,8 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:textColor="@color/black"
             android:text="@{comment.nickname}"
+            android:textColor="@color/black"
             android:textSize="12dp"
             app:layout_constraintStart_toEndOf="@+id/profile_img"
             app:layout_constraintTop_toTopOf="parent" />
@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:text="0"
+            android:text="@{Integer.toString(comment.likedcount)}"
             android:textSize="11dp"
             app:layout_constraintBottom_toBottomOf="@+id/heart_img"
             app:layout_constraintStart_toEndOf="@id/heart_img"
@@ -109,6 +109,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chat_text" />
+
+        <TextView
+            android:id="@+id/inherentid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="@{Integer.toString(comment.commentsid)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

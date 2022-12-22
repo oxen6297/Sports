@@ -41,7 +41,6 @@ class CommunityBoardFragment : Fragment() {
     private var flag = 0
     private var commentList = mutableListOf<Comment>()
     private val chatAdpater = ChatAdapter(commentList)
-    private var commentFlag = 0
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreateView(
@@ -57,12 +56,10 @@ class CommunityBoardFragment : Fragment() {
     @SuppressLint("UseCompatLoadingForDrawables", "CommitPrefEdits", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.chatRecycle.adapter = chatAdpater
         postLikeCount()
         getChat()
         getReChat()
-
-        binding.chatRecycle.adapter = chatAdpater
-        commentFlag = 0
 
         val mainActivity = activity as MainActivity
         mainActivity.hideBottomNavigationView(true)
@@ -140,8 +137,8 @@ class CommunityBoardFragment : Fragment() {
                 binding.sendBtn.visibility = View.GONE
                 softkeyboard()
                 binding.sendBtnTwo.setOnClickListener {
-                    postReChat(position)
-                    Log.d("rootViewBottom", position.toString())
+                    val commentsId = commentsId["commentsId"].toString().toInt()
+                    postReChat(position, commentsId)
                     binding.chatEdit.text = null
                     softkeyboardHide()
                     it.visibility = View.GONE
@@ -196,7 +193,7 @@ class CommunityBoardFragment : Fragment() {
         })
     }
 
-    private fun postReChat(position: Int) {
+    private fun postReChat(position: Int, commentId: Int) {
         val chat = HashMap<String, Any>()
 
         val description = binding.chatEdit.text.toString()
@@ -215,22 +212,7 @@ class CommunityBoardFragment : Fragment() {
         chat["inherentid"] = boardId.toInt()
         chat["writedate"] = writeTime
         chat["profileimage"] = images
-
-        commentList.add(
-            position,
-            Comment(
-                nickname,
-                description,
-                writeTime,
-                boardId.toInt(),
-                categoryId.toInt(),
-                3,
-                images,
-                1,
-                null
-            )
-        )
-
+        chat["inherentcommentsid"] = commentId
 
         val retrofitService = Retrofits.postReComments()
         val call: Call<String> = retrofitService.postReComment(chat)
@@ -245,6 +227,24 @@ class CommunityBoardFragment : Fragment() {
 
                         val chatNumber = JSONObject(body).getJSONObject("replycount")
                         val chatCounts = chatNumber.getString("replycount").toString()
+                        val commentsid = chatNumber.getString("replyid").toString()
+
+                        commentList.add(
+                            position,
+                            Comment(
+                                nickname,
+                                description,
+                                writeTime,
+                                boardId.toInt(),
+                                categoryId.toInt(),
+                                3,
+                                images,
+                                1,
+                                commentsid.toInt(),
+                                0,
+                                null
+                            )
+                        )
 
                         binding.chatNum.text = chatCounts
                         binding.chatRecycle.setHasFixedSize(true)
@@ -281,20 +281,6 @@ class CommunityBoardFragment : Fragment() {
         chat["writedate"] = writeTime
         chat["profileimage"] = images
 
-        commentList.add(
-            Comment(
-                nickname,
-                description,
-                writeTime,
-                boardId.toInt(),
-                categoryId.toInt(),
-                3,
-                images,
-                2,
-                null
-            )
-        )
-
         val retrofitService = Retrofits.postComments()
         val call: Call<String> = retrofitService.postComment(chat)
 
@@ -304,16 +290,33 @@ class CommunityBoardFragment : Fragment() {
                 try {
 
                     if (response.isSuccessful) {
-                        val body = response.body().toString()
 
-                        val chatNumber = JSONObject(body).getJSONObject("commentcount")
+                        val chatNumber =
+                            JSONObject(response.body().toString()).getJSONObject("commentcount")
                         val chatCounts = chatNumber.getString("commentcount").toString()
+                        val commentsid = chatNumber.getString("commentsid").toString()
+
+                        commentList.add(
+                            Comment(
+                                nickname,
+                                description,
+                                writeTime,
+                                boardId.toInt(),
+                                categoryId.toInt(),
+                                3,
+                                images,
+                                2,
+                                commentsid.toInt(),
+                                0,
+                                null
+                            )
+                        )
+
                         if (chatCounts.isEmpty()) {
                             binding.chatNum.text = "0"
                         } else {
                             binding.chatNum.text = chatCounts
                         }
-
                         binding.chatRecycle.setHasFixedSize(true)
                         chatAdpater.notifyDataSetChanged()
                     }
@@ -433,7 +436,8 @@ class CommunityBoardFragment : Fragment() {
                                 val inherentid = jsonObject.getString("inherentid").toInt()
                                 val categoryid = jsonObject.getString("categoryid").toInt()
                                 val userid = jsonObject.getString("userid").toInt()
-
+                                val inherentCommentsid = jsonObject.getString("commentsid").toInt()
+                                val likedCount = jsonObject.getString("likedcount").toInt()
 
                                 commentList.add(
                                     Comment(
@@ -445,10 +449,13 @@ class CommunityBoardFragment : Fragment() {
                                         userid,
                                         profileimage,
                                         isrecomment,
+                                        inherentCommentsid,
+                                        likedCount,
                                         null
                                     )
                                 )
                                 i++
+                                commentList.sortBy { it.commentsid }
                                 chatAdpater.notifyDataSetChanged()
                             }
                         }
@@ -474,7 +481,7 @@ class CommunityBoardFragment : Fragment() {
                 try {
                     if (response.isSuccessful) {
                         val res = response.body()
-                        Log.d("resssssss",res.toString())
+                        Log.d("resssssss", res.toString())
                         val chatInfo = JSONObject(res.toString())
                         val chatArray = chatInfo.optJSONArray("reply")
                         var i = 0
@@ -489,6 +496,10 @@ class CommunityBoardFragment : Fragment() {
                                 val inherentid = jsonObject.getString("inherentid").toInt()
                                 val categoryid = jsonObject.getString("categoryid").toInt()
                                 val userid = jsonObject.getString("userid").toInt()
+                                val inherentCommentsid =
+                                    jsonObject.getString("inherentcommentsid").toInt()
+                                val likedCount = jsonObject.getString("likedcount").toInt()
+                                val replyId = jsonObject.getString("replyid").toInt()
 
                                 commentList.add(
                                     Comment(
@@ -500,10 +511,14 @@ class CommunityBoardFragment : Fragment() {
                                         userid,
                                         profileimage,
                                         isrecomment,
-                                        null
+                                        inherentCommentsid,
+                                        likedCount,
+                                        replyId
                                     )
                                 )
                                 i++
+                                commentList.sortBy { it.replyid }
+                                commentList.reverse()
                                 chatAdpater.notifyDataSetChanged()
                             }
                         }
