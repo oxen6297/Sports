@@ -8,7 +8,7 @@ import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.CommunityItemListBinding
 
 class FreeBoardAdapter(
-    private val communityList: MutableList<Content>?,val mainActivity: MainActivity
+    private val communityList: MutableList<Content>?, val mainActivity: MainActivity
 ) : RecyclerView.Adapter<FreeBoardAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: CommunityItemListBinding) :
@@ -37,12 +37,12 @@ class FreeBoardAdapter(
             userImageHash.put("image", item.profileimage.toString())
             nicknameHash.put("nickname", item.nickname.toString())
             writedateHash.put("writedate", holder.binding.writedate.text.toString())
-            FreeBoardId.put("boardId",item.boardid.toString())
-            categoryHash.put("categoryId",item.categoryid.toString())
+            FreeBoardId.put("boardId", item.boardid.toString())
+            categoryHash.put("categoryId", item.categoryid.toString())
 
             mainActivity.changeFragment(19)
         }
     }
 
-    override fun getItemCount(): Int = communityList!!.size
+    override fun getItemCount(): Int = communityList?.size ?: 0
 }

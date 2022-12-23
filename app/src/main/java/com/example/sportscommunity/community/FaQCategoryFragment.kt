@@ -2,27 +2,29 @@ package com.example.sportscommunity.community
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.sportscommunity.*
-import com.example.sportscommunity.Adapter.ESportsAdapter
-import com.example.sportscommunity.Adapter.FaqBoardAdapter
+import androidx.lifecycle.ViewModelProvider
+import com.example.sportscommunity.Adapter.FreeBoardAdapter
+import com.example.sportscommunity.Content
+import com.example.sportscommunity.MainActivity
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.WriteContentFragment
 import com.example.sportscommunity.databinding.FaqCategoryTabBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.sportscommunity.writeFlag
 
 class FaQCategoryFragment:Fragment() {
 
     private var mBinding: FaqCategoryTabBinding? = null
     private val binding get() = mBinding!!
     private val contentList = mutableListOf<Content>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,14 +38,26 @@ class FaQCategoryFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
         val mainActivity = (activity as MainActivity)
 
-        binding.run {
-            faqBoardRecycle.scrollToPosition(contentList.size-1)
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
+
+        mainViewModel.getCommunity("10")
+        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite10, mainActivity)
+                freeBoardAdapter.setHasStableIds(true)
+                binding.faqBoardRecycle.adapter = freeBoardAdapter
+
+            } else {
+                Log.d("comError", it.errorBody().toString())
+            }
         }
-
-        getCommunityRetrofit()
-
         mainActivity.hideBottomNavigationView(true)
 
         binding.write.setOnClickListener {
@@ -62,29 +76,5 @@ class FaQCategoryFragment:Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun getCommunityRetrofit() {
-        val retrofitService = Retrofits.getFaqBoardService()
-        val call: Call<FaqBoardTab> = retrofitService.getCommunity()
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<FaqBoardTab> {
-            override fun onResponse(call: Call<FaqBoardTab>, response: Response<FaqBoardTab>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.faqBoardRecycle.apply {
-                            this.adapter = FaqBoardAdapter(response.body()?.boardwrite10,mainActivity)
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<FaqBoardTab>, t: Throwable) {
-                call.cancel()
-            }
-        })
     }
 }

@@ -14,9 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportscommunity.Adapter.ShopAdapter
 import com.example.sportscommunity.Adapter.backPressed
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsShopFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
@@ -30,6 +34,7 @@ class SportsShopFragment : Fragment() {
     private var flag = 0
     private var flags = 0
     private val shop = mutableListOf<Shop>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,16 +49,34 @@ class SportsShopFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        callShop()
+        val mainActivity = (activity as MainActivity)
+
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
+
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
+
+        mainViewModel.getShop()
+
+        mainViewModel.shopResponse.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                val shopAdapter = ShopAdapter(requireContext(),it.body()?.usedwrite, mainActivity)
+                shopAdapter.setHasStableIds(true)
+                binding.shopRecycle.adapter = shopAdapter
+                binding.shopRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("ShopError",it.errorBody().toString())
+            }
+        }
 
         arguments?.let {
             flags = it.getInt("flags")
         }
 
-        val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
-
-        val shopAdapter = ShopAdapter(requireContext(), shop, mainActivity)
 
         binding.run {
 
@@ -123,57 +146,7 @@ class SportsShopFragment : Fragment() {
                     shopSortArea.setTextColor(R.color.black)
                 }
             }
-
-            /**
-             * 검색기능
-             */
-            shopSearchEdit.doOnTextChanged { text, start, before, count ->
-                shopAdapter.filter.filter(text)
-            }
-
-            shopSearchBtn.setOnClickListener {
-                shopSearchEdit.doAfterTextChanged {
-                    shopAdapter.filter.filter(it)
-                }
-            }
-            /**
-             * 검색기능 여기까지
-             */
         }
-    }
-
-    private fun callShop() {
-        val retrofitService = Retrofits.getShopService()
-        val call: Call<ShopTab> = retrofitService.getShop()
-        val mainActivity = (activity as MainActivity)
-
-        call.enqueue(object : Callback<ShopTab> {
-            override fun onResponse(call: Call<ShopTab>, response: Response<ShopTab>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.shopRecycle.apply {
-                            this.adapter =
-                                ShopAdapter(
-                                    requireContext(),
-                                    response.body()?.usedwrite,
-                                    mainActivity
-                                )
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<ShopTab>, t: Throwable) {
-                Log.d("failed", "Shop_failed")
-            }
-        })
     }
 
     override fun onAttach(context: Context) {

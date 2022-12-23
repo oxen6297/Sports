@@ -2,27 +2,29 @@ package com.example.sportscommunity.community
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.sportscommunity.*
-import com.example.sportscommunity.Adapter.LeisureSportsAdpater
-import com.example.sportscommunity.Adapter.QuestionBoardAdapter
+import androidx.lifecycle.ViewModelProvider
+import com.example.sportscommunity.Adapter.FreeBoardAdapter
+import com.example.sportscommunity.Content
+import com.example.sportscommunity.MainActivity
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.WriteContentFragment
 import com.example.sportscommunity.databinding.QuestionCategoryTabBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.sportscommunity.writeFlag
 
 class QuestionCategoryFragment: Fragment() {
 
     private var mBinding: QuestionCategoryTabBinding? = null
     private val binding get() = mBinding!!
     private val contentList = mutableListOf<Content>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,11 +39,24 @@ class QuestionCategoryFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
 
-        getCommunityRetrofit()
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
 
-        binding.run {
-            questionBoardRecycle.scrollToPosition(contentList.size-1)
+        mainViewModel.getCommunity("9")
+        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite9, mainActivity)
+                freeBoardAdapter.setHasStableIds(true)
+                binding.questionBoardRecycle.adapter = freeBoardAdapter
+
+            } else {
+                Log.d("comError", it.errorBody().toString())
+            }
         }
 
         mainActivity.hideBottomNavigationView(true)
@@ -62,29 +77,5 @@ class QuestionCategoryFragment: Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun getCommunityRetrofit() {
-        val retrofitService = Retrofits.getQuestionBoardService()
-        val call: Call<QuestionBoardTab> = retrofitService.getCommunity()
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<QuestionBoardTab> {
-            override fun onResponse(call: Call<QuestionBoardTab>, response: Response<QuestionBoardTab>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.questionBoardRecycle.apply {
-                            this.adapter = QuestionBoardAdapter(response.body()?.boardwrite9,mainActivity)
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<QuestionBoardTab>, t: Throwable) {
-                call.cancel()
-            }
-        })
     }
 }

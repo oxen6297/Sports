@@ -2,42 +2,32 @@ package com.example.sportscommunity
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
-import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportscommunity.Adapter.GroupAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.example.sportscommunity.Adapter.PlayGroupAdapter
 import com.example.sportscommunity.Adapter.backPressed
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsMapGroupFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.*
 
 class SportsMapGroupFragment : Fragment() {
 
     //그룹 모집 탭
     private var mBinding: SportsMapGroupFragmentBinding? = null
+    private lateinit var mainViewModel: MainViewModel
     private val binding get() = mBinding!!
 
     private var flag = 0
     private var flags = 0
+    private var homeFlag = 0
     private val group = mutableListOf<GroupPlay>()
     var activitys: MainActivity? = null
 
@@ -54,16 +44,43 @@ class SportsMapGroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainActivity = (activity as MainActivity)
+        val mainActivity = activity as MainActivity
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
+
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
+
+        mainViewModel.getGroup()
+        mainViewModel.groupResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val playGroupAdapter = PlayGroupAdapter(
+                    requireContext(),
+                    it.body()?.groupwrite,
+                    mainActivity
+                )
+                playGroupAdapter.setHasStableIds(true)
+                binding.playWithRecycle.adapter = playGroupAdapter
+                binding.playWithRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("GroupError", it.errorBody().toString())
+            }
+        }
+
         activitys?.hideBottomNavigationView(false)
 
-        val playGroupAdapter = PlayGroupAdapter(requireContext(), group,mainActivity)
+        arguments?.let {
+            homeFlag = it.getInt("alone")
+        }
+        if (homeFlag == 1) {
+            activitys?.changeFragment(20)
+        }
 
-        callGroup()
 
         binding.run {
 
-            playWithRecycle.scrollToPosition(group.size-1)
             writeBtn.setOnClickListener {
                 activitys?.changeFragment(0)
                 activitys?.setDataAtFragment(WriteContentFragment(), 1, "writeThree")
@@ -163,77 +180,7 @@ class SportsMapGroupFragment : Fragment() {
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, groupSortManWoman, "전체",
                 )
             }
-
-            /**
-             * 검색기능
-             */
-            groupSearchEdit.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    //nothing
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    playGroupAdapter.filter.filter(s.toString())
-                    Log.d("textChanged", "ok")
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    //nothing
-
-                    playGroupAdapter.filter.filter(s.toString())
-                    Log.d("textChanged3", "ok")
-
-                }
-            })
-
-            groupSearchBtn.setOnClickListener {
-                Log.d("textChanged2", "ok")
-                groupSearchEdit.doAfterTextChanged {
-                    playGroupAdapter.filter.filter(it.toString())
-                    Log.d("textChanged3", "ok")
-                }
-            }
-            /**
-             * 검색기능 여기까지
-             */
         }
-    }
-
-    private fun callGroup() {
-        val retrofitService = Retrofits.getGroupPlayService()
-        val call: Call<GroupPlayTab> = retrofitService.getGroupPlay()
-
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<GroupPlayTab> {
-            override fun onResponse(call: Call<GroupPlayTab>, response: Response<GroupPlayTab>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.playWithRecycle.apply {
-                            this.adapter =
-                                PlayGroupAdapter(requireContext(), response.body()?.groupwrite,mainActivity)
-                            this.setHasFixedSize(true)
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<GroupPlayTab>, t: Throwable) {
-                Log.d("failed", "Shop_failed")
-            }
-        })
     }
 
     override fun onAttach(context: Context) {
@@ -246,6 +193,11 @@ class SportsMapGroupFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         activitys = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.playWithRecycle.scrollToPosition(group.size - 1)
     }
 
     private fun bottomSheet(

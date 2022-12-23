@@ -2,25 +2,29 @@ package com.example.sportscommunity.community
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportscommunity.*
-import com.example.sportscommunity.Adapter.ESportsAdapter
+import androidx.lifecycle.ViewModelProvider
+import com.example.sportscommunity.Adapter.FreeBoardAdapter
+import com.example.sportscommunity.Content
+import com.example.sportscommunity.MainActivity
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.WriteContentFragment
 import com.example.sportscommunity.databinding.ESportsFragmentBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.sportscommunity.writeFlag
 
 class ESportsCategoryFragment : Fragment() {
 
     private var mBinding: ESportsFragmentBinding? = null
     private val binding get() = mBinding!!
     private val esportsList = mutableListOf<Content>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,12 +38,26 @@ class ESportsCategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
         val mainActivity = (activity as MainActivity)
 
-        binding.run {
-            gameBoardRecycle.scrollToPosition(esportsList.size-1)
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
+
+        mainViewModel.getCommunity("6")
+        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite6, mainActivity)
+                freeBoardAdapter.setHasStableIds(true)
+                binding.gameBoardRecycle.adapter = freeBoardAdapter
+
+            } else {
+                Log.d("comError", it.errorBody().toString())
+            }
         }
-        getCommunityRetrofit()
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -59,30 +77,5 @@ class ESportsCategoryFragment : Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun getCommunityRetrofit() {
-        val retrofitService = Retrofits.getESportsService()
-        val call: Call<ESportsTab> = retrofitService.getCommunity()
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<ESportsTab> {
-            override fun onResponse(call: Call<ESportsTab>, response: Response<ESportsTab>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.gameBoardRecycle.apply {
-                            this.adapter =
-                                ESportsAdapter(response.body()?.boardwrite6, mainActivity)
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<ESportsTab>, t: Throwable) {
-                call.cancel()
-            }
-        })
     }
 }

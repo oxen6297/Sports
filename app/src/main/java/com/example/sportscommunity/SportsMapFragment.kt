@@ -13,9 +13,15 @@ import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sportscommunity.Adapter.AloneAdapter
 import com.example.sportscommunity.Adapter.PlayWithAdapter
 import com.example.sportscommunity.Adapter.backPressed
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsMapFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
@@ -28,6 +34,7 @@ class SportsMapFragment : Fragment() {
     private var mBinding: SportsMapFragmentBinding? = null
     private val binding get() = mBinding!!
     private val alone = mutableListOf<PlayWith>()
+    private lateinit var mainViewModel: MainViewModel
 
     private var flags = 0
 
@@ -47,13 +54,29 @@ class SportsMapFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        val aloneAdapter = PlayWithAdapter(requireContext(), alone, mainActivity)
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
 
-        callAlone()
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
+
+        mainViewModel.getAlone()
+        mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val aloneAdapter =
+                    PlayWithAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
+                aloneAdapter.setHasStableIds(true)
+                binding.groupPlayWithRecycle.adapter = aloneAdapter
+                binding.groupPlayWithRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("AloneError", it.errorBody().toString())
+            }
+        }
 
         binding.run {
 
-            groupPlayWithRecycle.scrollToPosition(alone.size-1)
             groupBtn.setOnClickListener {
                 mainActivity.changeFragment(3)
             }
@@ -133,58 +156,9 @@ class SportsMapFragment : Fragment() {
                     bottomSheetDialog, bottomSheetView, R.id.sort_all, sortManWoman, "전체",
                 )
             }
-
-            /**
-             * 검색기능
-             */
-            searchEdit.doOnTextChanged { text, start, before, count ->
-                aloneAdapter.filter.filter(text)
-            }
-
-            searchBtn.setOnClickListener {
-                searchEdit.doAfterTextChanged {
-                    aloneAdapter.filter.filter(it)
-                }
-            }
-            /**
-             * 여기까지
-             */
         }
     }
 
-    private fun callAlone() {
-        val retrofitService = Retrofits.getAlonePlayService()
-        val call: Call<AlonePlay> = retrofitService.getAlonePlay()
-        val mainActivity = (activity as MainActivity)
-
-        call.enqueue(object : Callback<AlonePlay> {
-            override fun onResponse(call: Call<AlonePlay>, response: Response<AlonePlay>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.groupPlayWithRecycle.apply {
-                            this.adapter =
-                                PlayWithAdapter(
-                                    requireContext(),
-                                    response.body()?.individualwrite,
-                                    mainActivity
-                                )
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.VERTICAL,
-                                true
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<AlonePlay>, t: Throwable) {
-                Log.d("failed", "Shop_failed")
-            }
-        })
-    }
 
     private fun bottomSheet(
         bottomSheetDialog: BottomSheetDialog,

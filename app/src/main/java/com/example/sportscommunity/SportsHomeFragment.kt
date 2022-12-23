@@ -9,9 +9,17 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.sportscommunity.Adapter.AloneAdapter
 import com.example.sportscommunity.Adapter.GroupAdapter
 import com.example.sportscommunity.Adapter.backPressed
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsHomeFragmentBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +31,7 @@ import retrofit2.Response
 class SportsHomeFragment : Fragment() {
 
     lateinit var binding: SportsHomeFragmentBinding
-    private val groups = mutableListOf<GroupPlay>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,60 +44,103 @@ class SportsHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
+        val mainActivity = activity as MainActivity
+
+        mainViewModel = ViewModelProvider(
+            this@SportsHomeFragment,
+            viewModelFactory
+        )[MainViewModel::class.java]
 
         binding.onclick = this
-
-        val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        val groupAdapter = GroupAdapter(requireContext(), groups, mainActivity)
+        mainViewModel.getNews()
+        mainViewModel.getGroup()
+        mainViewModel.getAlone()
+        mainViewModel.getBestBoard()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            callNews()
-            callGroup()
+        mainViewModel.bestBoardResponse.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                it.body()?.bestwrite?.forEach {  best ->
+                    binding.run {
+                        bestTitle.text = best.title.toString()
+                        userNickname.text = best.nickname.toString()
+                        userContent.text = best.description.toString()
+                        writeDate.text = best.writedate.toString()
+                        likeNum.text = best.likedcount.toString()
+                        Glide.with(requireContext())
+                            .load(best.profileimage.toString())
+                            .error(R.color.orange).centerCrop().into(userImg)
+
+                        hotLayout.setOnClickListener {
+                            titleHash.put("title", best.title.toString())
+                            descriptionHash.put(
+                                "description",
+                                userContent.text.toString()
+                            )
+                            userImageHash.put("image", best.profileimage.toString())
+                            nicknameHash.put("nickname", best.nickname.toString())
+                            writedateHash.put(
+                                "writedate",
+                                best.writedate.toString()
+                            )
+                            FreeBoardId.put("boardId", best.boardid.toString())
+                            categoryHash.put("categoryId", best.id.toString())
+
+                            mainActivity.changeFragment(19)
+                        }
+                    }
+                }
+            } else {
+                Log.d("error",it.errorBody().toString())
+            }
+        }
+
+        mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val aloneAdapter =
+                    AloneAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
+                aloneAdapter.setHasStableIds(true)
+                binding.aloneRecycle.adapter = aloneAdapter
+                binding.aloneRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("AloneError", it.errorBody().toString())
+            }
+        }
+
+        mainViewModel.groupResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val groupAdapter =
+                    GroupAdapter(requireContext(), it.body()?.groupwrite, mainActivity)
+                groupAdapter.setHasStableIds(true)
+                binding.groupRecycle.adapter = groupAdapter
+                binding.groupRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("GroupError", it.errorBody().toString())
+            }
+        }
+
+        mainViewModel.newsResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val newsAdapter = ListSourceAdapter(requireContext(), it.body()?.articles)
+                newsAdapter.setHasStableIds(true)
+                binding.newsRecycle.apply {
+                    this.adapter = newsAdapter
+                }
+            } else {
+                Log.d("NewsError", it.errorBody().toString())
+            }
         }
 
         binding.swipe.setOnRefreshListener {
             binding.swipe.isRefreshing = false
-            callNews()
+            mainViewModel.getBestBoard()
+            mainViewModel.getNews()
+            mainViewModel.getGroup()
+            mainViewModel.getAlone()
         }
-    }
-
-    private fun callNews() {
-        val retrofitService = Retrofits.getNewsService()
-        val call: Call<NewsList> = retrofitService.getNewsList()
-
-        call.enqueue(object : Callback<NewsList> {
-            override fun onResponse(
-                call: Call<NewsList>,
-                response: Response<NewsList>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-
-                        binding.newsRecycle.apply {
-                            this.adapter = ListSourceAdapter(
-                                requireContext(),
-                                response.body()?.articles
-                            )
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                            )
-                            Log.d("success", "loadSuccess")
-                            Log.d("loadNews", response.body()?.articles.toString())
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<NewsList>, t: Throwable) {
-                Log.d("failed", "failed")
-            }
-        })
     }
 
     fun onClick(v: View?) {
@@ -117,42 +168,21 @@ class SportsHomeFragment : Fragment() {
                 goGroupBtn.id -> mainActivity.changeFragment(13).apply {
                     mainActivity.itemSelected()
                 }
+                aloneTitle.id -> mainActivity.changeFragment(20).apply {
+                    mainActivity.itemSelected()
+                    mainActivity.setDataAtFragment(SportsMapGroupFragment(), 1, "alone")
+                }
+                aloneRecycle.id -> mainActivity.changeFragment(20).apply {
+                    mainActivity.itemSelected()
+                    mainActivity.setDataAtFragment(SportsMapGroupFragment(), 1, "alone")
+                }
+                goAloneBtn.id -> mainActivity.changeFragment(20).apply {
+                    mainActivity.itemSelected()
+                    mainActivity.setDataAtFragment(SportsMapGroupFragment(), 1, "alone")
+                }
+
             }
         }
-    }
-
-    private fun callGroup() {
-        val retrofitService = Retrofits.getGroupPlayService()
-        val call: Call<GroupPlayTab> = retrofitService.getGroupPlay()
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<GroupPlayTab> {
-            override fun onResponse(call: Call<GroupPlayTab>, response: Response<GroupPlayTab>) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.groupRecycle.apply {
-                            this.adapter =
-                                GroupAdapter(
-                                    requireContext(),
-                                    response.body()?.groupwrite,
-                                    mainActivity
-                                )
-                            this.layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                true
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<GroupPlayTab>, t: Throwable) {
-                Log.d("failed", "Shop_failed")
-            }
-        })
     }
 
     override fun onAttach(context: Context) {

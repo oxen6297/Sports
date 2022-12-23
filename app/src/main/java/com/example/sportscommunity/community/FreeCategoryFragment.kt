@@ -7,24 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.sportscommunity.*
-import com.example.sportscommunity.Adapter.FaqBoardAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.example.sportscommunity.Adapter.FreeBoardAdapter
+import com.example.sportscommunity.MainActivity
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.WriteContentFragment
 import com.example.sportscommunity.databinding.FreeCategoryTabBinding
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.sportscommunity.writeFlag
 
-class FreeCategoryFragment:Fragment() {
+class FreeCategoryFragment : Fragment() {
 
     private var mBinding: FreeCategoryTabBinding? = null
     private val binding get() = mBinding!!
-    private val contentList = mutableListOf<Content>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,19 +37,32 @@ class FreeCategoryFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
 
-        getCommunityRetrofit()
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
 
+        mainViewModel.getCommunity("7")
+        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite7, mainActivity)
+                freeBoardAdapter.setHasStableIds(true)
+                binding.freeBoardRecycle.adapter = freeBoardAdapter
 
-        binding.run {
-//            freeBoardRecycle.scrollToPosition(contentList.size-1)
+            } else {
+                Log.d("comError", it.errorBody().toString())
+            }
         }
+
         mainActivity.hideBottomNavigationView(true)
 
         binding.write.setOnClickListener {
             mainActivity.changeFragment(0)
-            mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"write")
-            writeFlag.put("write",7)
+            mainActivity.setDataAtFragment(WriteContentFragment(), 1, "write")
+            writeFlag.put("write", 7)
         }
     }
 
@@ -70,35 +81,5 @@ class FreeCategoryFragment:Fragment() {
         super.onDestroy()
 
         mBinding = null
-    }
-
-
-    private fun getCommunityRetrofit() {
-        val retrofitService = Retrofits.getFreeBoardService()
-        val call: Call<FreeBoardTab> = retrofitService.getCommunity()
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<FreeBoardTab> {
-            override fun onResponse(call: Call<FreeBoardTab>, response: Response<FreeBoardTab>) {
-                try {
-                    if (response.isSuccessful) {
-
-                        val freeBoardAdapter = FreeBoardAdapter(response.body()?.boardwrite7,mainActivity)
-
-                        binding.freeBoardRecycle.apply {
-                            this.adapter = freeBoardAdapter
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Log.d("responsess","error")
-                }
-            }
-
-            override fun onFailure(call: Call<FreeBoardTab>, t: Throwable) {
-                Log.d("getCom","failed")
-                call.cancel()
-            }
-        })
     }
 }

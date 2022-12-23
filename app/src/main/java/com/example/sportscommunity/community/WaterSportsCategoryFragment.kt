@@ -2,27 +2,27 @@ package com.example.sportscommunity.community
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.sportscommunity.*
-import com.example.sportscommunity.Adapter.QuestionBoardAdapter
-import com.example.sportscommunity.Adapter.WaterSportsAdapter
+import androidx.lifecycle.ViewModelProvider
+import com.example.sportscommunity.Adapter.FreeBoardAdapter
+import com.example.sportscommunity.MainActivity
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.WriteContentFragment
 import com.example.sportscommunity.databinding.WaterSportsCategoryTabBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.sportscommunity.writeFlag
 
 class WaterSportsCategoryFragment : Fragment() {
 
     private var mBinding: WaterSportsCategoryTabBinding? = null
     private val binding get() = mBinding!!
-    private val contentList = mutableListOf<Content>()
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,13 +37,25 @@ class WaterSportsCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
 
-        getCommunityRetrofit()
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
 
-        binding.run {
-            waterSportsBoardRecycle.scrollToPosition(contentList.size - 1)
+        mainViewModel.getCommunity("3")
+        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite3, mainActivity)
+                freeBoardAdapter.setHasStableIds(true)
+                binding.waterSportsBoardRecycle.adapter = freeBoardAdapter
+
+            } else {
+                Log.d("comError", it.errorBody().toString())
+            }
         }
-
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -63,33 +75,5 @@ class WaterSportsCategoryFragment : Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-
-    private fun getCommunityRetrofit() {
-        val retrofitService = Retrofits.getWaterSportsService()
-        val call: Call<WaterSportsTab> = retrofitService.getCommunity()
-        val mainActivity = activity as MainActivity
-
-        call.enqueue(object : Callback<WaterSportsTab> {
-            override fun onResponse(
-                call: Call<WaterSportsTab>,
-                response: Response<WaterSportsTab>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-                        binding.waterSportsBoardRecycle.apply {
-                            this.adapter =
-                                WaterSportsAdapter(response.body()?.boardwrite3, mainActivity)
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onFailure(call: Call<WaterSportsTab>, t: Throwable) {
-                call.cancel()
-            }
-        })
     }
 }
