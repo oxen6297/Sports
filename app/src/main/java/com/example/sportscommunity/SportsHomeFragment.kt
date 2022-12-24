@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -28,10 +30,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SportsHomeFragment : Fragment() {
+class SportsHomeFragment : Fragment(){
 
     lateinit var binding: SportsHomeFragmentBinding
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,14 +46,12 @@ class SportsHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
         val mainActivity = activity as MainActivity
 
-        mainViewModel = ViewModelProvider(
-            this@SportsHomeFragment,
-            viewModelFactory
-        )[MainViewModel::class.java]
+        getAlone(mainActivity)
+        getGroup(mainActivity)
+        getNews()
+        getBestBoard(mainActivity)
 
         binding.onclick = this
         mainActivity.hideBottomNavigationView(false)
@@ -60,79 +60,6 @@ class SportsHomeFragment : Fragment() {
         mainViewModel.getGroup()
         mainViewModel.getAlone()
         mainViewModel.getBestBoard()
-
-        mainViewModel.bestBoardResponse.observe(viewLifecycleOwner){
-            if (it.isSuccessful){
-                it.body()?.bestwrite?.forEach {  best ->
-                    binding.run {
-                        bestTitle.text = best.title.toString()
-                        userNickname.text = best.nickname.toString()
-                        userContent.text = best.description.toString()
-                        writeDate.text = best.writedate.toString()
-                        likeNum.text = best.likedcount.toString()
-                        Glide.with(requireContext())
-                            .load(best.profileimage.toString())
-                            .error(R.color.orange).centerCrop().into(userImg)
-
-                        hotLayout.setOnClickListener {
-                            titleHash.put("title", best.title.toString())
-                            descriptionHash.put(
-                                "description",
-                                userContent.text.toString()
-                            )
-                            userImageHash.put("image", best.profileimage.toString())
-                            nicknameHash.put("nickname", best.nickname.toString())
-                            writedateHash.put(
-                                "writedate",
-                                best.writedate.toString()
-                            )
-                            FreeBoardId.put("boardId", best.boardid.toString())
-                            categoryHash.put("categoryId", best.id.toString())
-
-                            mainActivity.changeFragment(19)
-                        }
-                    }
-                }
-            } else {
-                Log.d("error",it.errorBody().toString())
-            }
-        }
-
-        mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
-                val aloneAdapter =
-                    AloneAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
-                aloneAdapter.setHasStableIds(true)
-                binding.aloneRecycle.adapter = aloneAdapter
-                binding.aloneRecycle.setHasFixedSize(true)
-            } else {
-                Log.d("AloneError", it.errorBody().toString())
-            }
-        }
-
-        mainViewModel.groupResponse.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
-                val groupAdapter =
-                    GroupAdapter(requireContext(), it.body()?.groupwrite, mainActivity)
-                groupAdapter.setHasStableIds(true)
-                binding.groupRecycle.adapter = groupAdapter
-                binding.groupRecycle.setHasFixedSize(true)
-            } else {
-                Log.d("GroupError", it.errorBody().toString())
-            }
-        }
-
-        mainViewModel.newsResponse.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
-                val newsAdapter = ListSourceAdapter(requireContext(), it.body()?.articles)
-                newsAdapter.setHasStableIds(true)
-                binding.newsRecycle.apply {
-                    this.adapter = newsAdapter
-                }
-            } else {
-                Log.d("NewsError", it.errorBody().toString())
-            }
-        }
 
         binding.swipe.setOnRefreshListener {
             binding.swipe.isRefreshing = false
@@ -185,15 +112,94 @@ class SportsHomeFragment : Fragment() {
         }
     }
 
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         backPressed(requireContext(), requireActivity())
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun getAlone(mainActivity: MainActivity) {
+        mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val aloneAdapter =
+                    AloneAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
+                aloneAdapter.setHasStableIds(true)
+                binding.aloneRecycle.adapter = aloneAdapter
+                binding.aloneRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("AloneError", it.errorBody().toString())
+            }
+        }
+    }
 
-        (activity as AppCompatActivity).supportActionBar?.title = "홈"
+    private fun getGroup(mainActivity: MainActivity) {
+        mainViewModel.groupResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val groupAdapter =
+                    GroupAdapter(requireContext(), it.body()?.groupwrite, mainActivity)
+                groupAdapter.setHasStableIds(true)
+                binding.groupRecycle.adapter = groupAdapter
+                binding.groupRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("GroupError", it.errorBody().toString())
+            }
+        }
+    }
+
+    private fun getNews() {
+        mainViewModel.newsResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val newsAdapter = ListSourceAdapter(requireContext(), it.body()?.articles)
+                newsAdapter.setHasStableIds(true)
+                binding.newsRecycle.apply {
+                    this.adapter = newsAdapter
+                }
+            } else {
+                Log.d("NewsError", it.errorBody().toString())
+            }
+        }
+    }
+
+    private fun getBestBoard(mainActivity: MainActivity) {
+        mainViewModel.bestBoardResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                it.body()?.bestwrite?.forEach { best ->
+                    binding.run {
+                        bestTitle.text = best.title.toString()
+                        userNickname.text = best.nickname.toString()
+                        userContent.text = best.description.toString()
+                        writeDate.text = best.writedate.toString()
+                        likeNum.text = best.likedcount.toString()
+                        Glide.with(requireContext())
+                            .load(best.profileimage.toString())
+                            .error(R.color.orange).centerCrop().into(userImg)
+
+                        hotLayout.setOnClickListener {
+                            titleHash.put("title", best.title.toString())
+                            descriptionHash.put(
+                                "description",
+                                userContent.text.toString()
+                            )
+                            userImageHash.put("image", best.profileimage.toString())
+                            nicknameHash.put("nickname", best.nickname.toString())
+                            writedateHash.put(
+                                "writedate",
+                                best.writedate.toString()
+                            )
+                            FreeBoardId.put("boardId", best.boardid.toString())
+                            categoryHash.put("categoryId", best.id.toString())
+
+                            mainActivity.changeFragment(19)
+                        }
+                    }
+                }
+            } else {
+                Log.d("error", it.errorBody().toString())
+            }
+        }
     }
 }
+
+
+

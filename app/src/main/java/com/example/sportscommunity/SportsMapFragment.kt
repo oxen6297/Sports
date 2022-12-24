@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,7 @@ class SportsMapFragment : Fragment() {
     private var mBinding: SportsMapFragmentBinding? = null
     private val binding get() = mBinding!!
     private val alone = mutableListOf<PlayWith>()
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
 
     private var flags = 0
 
@@ -54,26 +55,7 @@ class SportsMapFragment : Fragment() {
         val mainActivity = (activity as MainActivity)
         mainActivity.hideBottomNavigationView(false)
 
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
-
-        mainViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
-
-        mainViewModel.getAlone()
-        mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
-                val aloneAdapter =
-                    PlayWithAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
-                aloneAdapter.setHasStableIds(true)
-                binding.groupPlayWithRecycle.adapter = aloneAdapter
-                binding.groupPlayWithRecycle.setHasFixedSize(true)
-            } else {
-                Log.d("AloneError", it.errorBody().toString())
-            }
-        }
+        getAlone(mainActivity)
 
         binding.run {
 
@@ -157,6 +139,21 @@ class SportsMapFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun getAlone(mainActivity:MainActivity){
+        mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val aloneAdapter =
+                    PlayWithAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
+                aloneAdapter.setHasStableIds(true)
+                binding.groupPlayWithRecycle.adapter = aloneAdapter
+                binding.groupPlayWithRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("AloneError", it.errorBody().toString())
+            }
+        }
+        mainViewModel.getAlone()
     }
 
 

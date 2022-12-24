@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportscommunity.Adapter.ShopAdapter
@@ -34,7 +35,7 @@ class SportsShopFragment : Fragment() {
     private var flag = 0
     private var flags = 0
     private val shop = mutableListOf<Shop>()
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,27 +51,7 @@ class SportsShopFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
-
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
-
-        mainViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
-
-        mainViewModel.getShop()
-
-        mainViewModel.shopResponse.observe(viewLifecycleOwner){
-            if (it.isSuccessful){
-                val shopAdapter = ShopAdapter(requireContext(),it.body()?.usedwrite, mainActivity)
-                shopAdapter.setHasStableIds(true)
-                binding.shopRecycle.adapter = shopAdapter
-                binding.shopRecycle.setHasFixedSize(true)
-            } else {
-                Log.d("ShopError",it.errorBody().toString())
-            }
-        }
+        getShop(mainActivity)
 
         arguments?.let {
             flags = it.getInt("flags")
@@ -80,7 +61,6 @@ class SportsShopFragment : Fragment() {
 
         binding.run {
 
-            shopRecycle.scrollToPosition(shop.size-1)
             writeBtn.setOnClickListener {
                 mainActivity.changeFragment(14)
             }
@@ -147,6 +127,20 @@ class SportsShopFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun getShop(mainActivity: MainActivity){
+        mainViewModel.shopResponse.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                val shopAdapter = ShopAdapter(requireContext(),it.body()?.usedwrite, mainActivity)
+                shopAdapter.setHasStableIds(true)
+                binding.shopRecycle.adapter = shopAdapter
+                binding.shopRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("ShopError",it.errorBody().toString())
+            }
+        }
+        mainViewModel.getShop()
     }
 
     override fun onAttach(context: Context) {

@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.sportscommunity.Adapter.PlayGroupAdapter
 import com.example.sportscommunity.Adapter.backPressed
@@ -22,7 +23,7 @@ class SportsMapGroupFragment : Fragment() {
 
     //그룹 모집 탭
     private var mBinding: SportsMapGroupFragmentBinding? = null
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
     private val binding get() = mBinding!!
 
     private var flag = 0
@@ -45,29 +46,8 @@ class SportsMapGroupFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = activity as MainActivity
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
+        getGroup(mainActivity)
 
-        mainViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
-
-        mainViewModel.getGroup()
-        mainViewModel.groupResponse.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
-                val playGroupAdapter = PlayGroupAdapter(
-                    requireContext(),
-                    it.body()?.groupwrite,
-                    mainActivity
-                )
-                playGroupAdapter.setHasStableIds(true)
-                binding.playWithRecycle.adapter = playGroupAdapter
-                binding.playWithRecycle.setHasFixedSize(true)
-            } else {
-                Log.d("GroupError", it.errorBody().toString())
-            }
-        }
 
         activitys?.hideBottomNavigationView(false)
 
@@ -181,6 +161,24 @@ class SportsMapGroupFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun getGroup(mainActivity: MainActivity){
+        mainViewModel.groupResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val playGroupAdapter = PlayGroupAdapter(
+                    requireContext(),
+                    it.body()?.groupwrite,
+                    mainActivity
+                )
+                playGroupAdapter.setHasStableIds(true)
+                binding.playWithRecycle.adapter = playGroupAdapter
+                binding.playWithRecycle.setHasFixedSize(true)
+            } else {
+                Log.d("GroupError", it.errorBody().toString())
+            }
+        }
+        mainViewModel.getGroup()
     }
 
     override fun onAttach(context: Context) {

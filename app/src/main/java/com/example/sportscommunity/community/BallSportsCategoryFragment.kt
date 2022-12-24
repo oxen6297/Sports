@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.sportscommunity.Adapter.FreeBoardAdapter
 import com.example.sportscommunity.Content
@@ -24,7 +25,7 @@ class BallSportsCategoryFragment : Fragment() {
     private var mBinding: BallCategoryTabBinding? = null
     private val binding get() = mBinding!!
     private val ballList = mutableListOf<Content>()
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
     lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(
@@ -39,26 +40,9 @@ class BallSportsCategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
         val mainActivity = (activity as MainActivity)
 
-        mainViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
-
-        mainViewModel.getCommunity("1")
-        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
-            if (it.isSuccessful) {
-                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite1, mainActivity)
-                freeBoardAdapter.setHasStableIds(true)
-                binding.ballBoardRecycle.adapter = freeBoardAdapter
-
-            } else {
-                Log.d("comError", it.errorBody().toString())
-            }
-        }
+        getCom(mainActivity)
 
         mainActivity.hideBottomNavigationView(true)
 
@@ -73,6 +57,19 @@ class BallSportsCategoryFragment : Fragment() {
         }
     }
 
+    private fun getCom(mainActivity: MainActivity){
+        mainViewModel.communityResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite1, mainActivity)
+                freeBoardAdapter.setHasStableIds(true)
+                binding.ballBoardRecycle.adapter = freeBoardAdapter
+
+            } else {
+                Log.d("comError", it.errorBody().toString())
+            }
+        }
+        mainViewModel.getCommunity("1")
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

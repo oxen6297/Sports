@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.sportscommunity.Adapter.FreeBoardAdapter
 import com.example.sportscommunity.Content
@@ -24,7 +25,7 @@ class QuestionCategoryFragment: Fragment() {
     private var mBinding: QuestionCategoryTabBinding? = null
     private val binding get() = mBinding!!
     private val contentList = mutableListOf<Content>()
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,15 +40,18 @@ class QuestionCategoryFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainActivity = (activity as MainActivity)
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
+        getCom(mainActivity)
 
-        mainViewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
+        mainActivity.hideBottomNavigationView(true)
 
-        mainViewModel.getCommunity("9")
+        binding.write.setOnClickListener {
+            mainActivity.changeFragment(0)
+            mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"write")
+            writeFlag.put("write",9)
+        }
+    }
+
+    private fun getCom(mainActivity: MainActivity){
         mainViewModel.communityResponse.observe(viewLifecycleOwner) {
             if (it.isSuccessful) {
                 val freeBoardAdapter = FreeBoardAdapter(it.body()?.boardwrite9, mainActivity)
@@ -58,14 +62,7 @@ class QuestionCategoryFragment: Fragment() {
                 Log.d("comError", it.errorBody().toString())
             }
         }
-
-        mainActivity.hideBottomNavigationView(true)
-
-        binding.write.setOnClickListener {
-            mainActivity.changeFragment(0)
-            mainActivity.setDataAtFragment(WriteContentFragment(),1 ,"write")
-            writeFlag.put("write",9)
-        }
+        mainViewModel.getCommunity("9")
     }
 
     override fun onAttach(context: Context) {
