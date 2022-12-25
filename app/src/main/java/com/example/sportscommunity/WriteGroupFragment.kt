@@ -21,6 +21,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.WriteGroupFragmentBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,6 +36,7 @@ import java.util.*
 class WriteGroupFragment : Fragment() {
 
     private var mBinding: WriteGroupFragmentBinding? = null
+    private val mainViewModel: MainViewModel by viewModels { MainViewModelFactory(Repository()) }
     private val binding get() = mBinding!!
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private var dateString = ""
@@ -318,6 +323,8 @@ class WriteGroupFragment : Fragment() {
                         requireActivity().supportFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container_view, SportsMapGroupFragment())
                             .commit()
+                        val mainActivity = activity as MainActivity
+                        mainActivity.itemSelected()
                     }.setNegativeButton("취소") { dialog, which ->
                         dialog.dismiss()
                     }
@@ -414,31 +421,13 @@ class WriteGroupFragment : Fragment() {
         } else if(binding.twoCheckBox.isChecked){
             writing["once"] = "일회성"
         }
-
-
-
-        val retrofitService = Retrofits.postGroup()
-        val call: Call<WriteGroupPlay> = retrofitService.postContent(writing)
-
-        call.enqueue(object : Callback<WriteGroupPlay> {
-            override fun onResponse(
-                call: Call<WriteGroupPlay>,
-                response: Response<WriteGroupPlay>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-                        Log.e("userInfoPost", "success")
-                        Log.d("성공:", "${response.body()}")
-                    }
-                } catch (e: Exception) {
-                    Log.e("userInfoPost", response.body().toString())
-                    Log.e("userInfoPost", response.message().toString())
-                }
+        mainViewModel.writeGroup.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                Log.d("writeGroup","success")
+            } else{
+                Log.d("writeGroup",it.errorBody().toString())
             }
-
-            override fun onFailure(call: Call<WriteGroupPlay>, t: Throwable) {
-                Log.e("userInfoPost", t.message.toString())
-            }
-        })
+        }
+        mainViewModel.writeGroup(writing)
     }
 }

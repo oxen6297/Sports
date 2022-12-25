@@ -10,6 +10,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.sportscommunity.databinding.WriteContentLayoutBinding
 
 class WriteContentFragment : Fragment() {
@@ -20,6 +25,7 @@ class WriteContentFragment : Fragment() {
     private var flags: Int = 0
     private var flagss: Int = 0
     lateinit var callback: OnBackPressedCallback
+    lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -138,16 +144,6 @@ class WriteContentFragment : Fragment() {
         anotherBtn.setBackgroundResource(color)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                requireActivity().supportFragmentManager.popBackStack()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
 
     override fun onDestroy() {
         super.onDestroy()

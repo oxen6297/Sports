@@ -18,10 +18,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sportscommunity.Adapter.WriteShopAdapter
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.WriteShopFragmentBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,6 +37,7 @@ class WriteShopFragment : Fragment() {
 
     private var mBinding: WriteShopFragmentBinding? = null
     private val binding get() = mBinding!!
+    private val mainViewModel: MainViewModel by viewModels { MainViewModelFactory(Repository()) }
     lateinit var callback: OnBackPressedCallback
     private var shopImage = mutableListOf<Uri>()
     private var imageText = mutableListOf<String>()
@@ -269,7 +274,7 @@ class WriteShopFragment : Fragment() {
         writeTime = "$formatted $formattedTime"
         Log.d("currentDateTime", writeTime)
 
-        nickname = sp.getString("nickname","none").toString()
+        nickname = sp.getString("nickname", "none").toString()
 
         val writing = HashMap<String, Any>()
         writing["id"] = categoryType
@@ -278,37 +283,23 @@ class WriteShopFragment : Fragment() {
         writing["description"] = content
         writing["nickname"] = nickname
         writing["writedate"] = writeTime
-        writing["usedimage"] = image
-        writing["usedimageTwo"] = imageTwo
-        writing["usedimageThree"] = imageThree
-        writing["usedimageFour"] = imageFour
-        writing["usedimageFive"] = imageFive
+        writing["usedimage1"] = image
+        writing["usedimage2"] = imageTwo
+        writing["usedimage3"] = imageThree
+        writing["usedimage4"] = imageFour
+        writing["usedimage5"] = imageFive
         writing["price"] = price
         writing["userimage"] = userimage
         writing["userid"] = 3
+        writing["likedcount"] = 0
 
-        val retrofitService = Retrofits.postShop()
-        val call: Call<WriteShop> = retrofitService.postContent(writing)
-
-        call.enqueue(object : Callback<WriteShop> {
-            override fun onResponse(
-                call: Call<WriteShop>,
-                response: Response<WriteShop>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-                        Log.e("userInfoPost", "success")
-                        Log.d("성공:", "${response.body()}")
-                    }
-                } catch (e: Exception) {
-                    Log.e("userInfoPost", response.body().toString())
-                    Log.e("userInfoPost", response.message().toString())
-                }
+        mainViewModel.writeShop.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                Log.d("writeShop", "success")
+            } else {
+                Log.d("writeShop", it.errorBody().toString())
             }
-
-            override fun onFailure(call: Call<WriteShop>, t: Throwable) {
-                Log.e("userInfoPost", t.message.toString())
-            }
-        })
+        }
+        mainViewModel.writeShop(writing)
     }
 }

@@ -15,6 +15,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.WriteAloneFragmentBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,6 +30,7 @@ import java.util.*
 class WriteAloneFragment : Fragment() {
 
     private var mBinding: WriteAloneFragmentBinding? = null
+    private val mainViewModel: MainViewModel by viewModels { MainViewModelFactory(Repository()) }
     private val binding get() = mBinding!!
     private var dateString = ""
     private var timeString = ""
@@ -128,11 +133,6 @@ class WriteAloneFragment : Fragment() {
                     dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
                     daySpinner.text = dateString
                     daySpinner.setTextColor(Color.parseColor("#1F1F1F"))
-//                    mainActivity.setDataAtFragmentTwo(
-//                        this@WriteAloneFragment,
-//                        dateString,
-//                        "dateTwo"
-//                    )
                 }
                 DatePickerDialog(
                     requireContext(),
@@ -150,11 +150,6 @@ class WriteAloneFragment : Fragment() {
                     timeString = "${hourOfDay}시 ${minute}분"
                     hourSpinner.text = timeString
                     hourSpinner.setTextColor(Color.parseColor("#1F1F1F"))
-//                    mainActivity.setDataAtFragmentTwo(
-//                        this@WriteAloneFragment,
-//                        timeString,
-//                        "timeTwo"
-//                    )
                 }
                 TimePickerDialog(
                     requireContext(),
@@ -190,6 +185,8 @@ class WriteAloneFragment : Fragment() {
 
                         requireActivity().supportFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container_view, SportsMapFragment()).commit()
+                        val mainActivity = activity as MainActivity
+                        mainActivity.itemSelected()
                     }.setNegativeButton("취소") { dialog, which ->
                         dialog.dismiss()
                     }
@@ -279,8 +276,6 @@ class WriteAloneFragment : Fragment() {
         } else {
             "$date $time"
         }
-        title = binding.contentTitleEdit.text.toString()
-        content = binding.contentTextEdit.text.toString()
         sex = if (binding.sortSexSpinner.selectedItem == "상관없음") {
             "상관없음"
         } else {
@@ -304,9 +299,9 @@ class WriteAloneFragment : Fragment() {
         val formattedTime = currentDate.format(formatterTwo)
         Log.d("currentTime", formattedTime.toString())
 
+        title = binding.contentTitleEdit.text.toString()
+        content = binding.contentTextEdit.text.toString()
         writeTime = "$formatted $formattedTime"
-        Log.d("currentDateTime", writeTime)
-
         nickname = sp.getString("nickname","none").toString()
 
         val writing = HashMap<String, Any>()
@@ -321,30 +316,15 @@ class WriteAloneFragment : Fragment() {
         writing["maxage"] = maxAge
         writing["writedate"] = writeTime
         writing["userid"] = 3
+        writing["likedcount"] = 0
 
-        val retrofitService = Retrofits.postAlone()
-        val call: Call<WritePlayWith> = retrofitService.postContent(writing)
-
-        call.enqueue(object : Callback<WritePlayWith> {
-            override fun onResponse(
-                call: Call<WritePlayWith>,
-                response: Response<WritePlayWith>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-                        Log.e("userInfoPost", "success")
-                        Log.d("성공:", "${response.body()}")
-                    }
-                } catch (e: Exception) {
-                    Log.e("userInfoPost", response.body().toString())
-                    Log.e("userInfoPost", response.message().toString())
-                }
+        mainViewModel.writeAlone.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                Log.d("writeAlone","success")
+            } else {
+                Log.d("writeAlone","failed")
             }
-
-            override fun onFailure(call: Call<WritePlayWith>, t: Throwable) {
-                Log.e("userInfoPost", t.message.toString())
-            }
-        })
+        }
+        mainViewModel.writeAlone(writing)
     }
-
 }

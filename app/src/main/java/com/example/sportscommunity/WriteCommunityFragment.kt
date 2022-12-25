@@ -16,6 +16,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.ViewModel.MainViewModel
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.WriteCommunityFragmentBinding
 import com.kakao.usermgmt.StringSet.email
 import retrofit2.Call
@@ -24,10 +30,11 @@ import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class WriteCommunityFragment : Fragment() {
+open class WriteCommunityFragment : Fragment() {
 
     private var mBinding: WriteCommunityFragmentBinding? = null
     private val binding get() = mBinding!!
+    private val mainViewModel: MainViewModel by viewModels { MainViewModelFactory(Repository()) }
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     lateinit var callback: OnBackPressedCallback
     private var categoryType = 0
@@ -97,7 +104,11 @@ class WriteCommunityFragment : Fragment() {
                     .setMessage("작성을 취소하시겠습니까?\n확인시 작성중이던 글은 삭제됩니다.")
                     .setPositiveButton("확인") { dialog, which ->
 
+
                         val mainActivity = activity as MainActivity
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container_view, SportsHomeFragment())
+                            .commit()
                         mainActivity.homeSelected()
 
                     }.setNegativeButton("취소") { dialog, which ->
@@ -148,8 +159,7 @@ class WriteCommunityFragment : Fragment() {
             "문의하기" -> categoryType = 10
         }
 
-        title = binding.contentTitleEdit.text.toString()
-        content = binding.contentTextEdit.text.toString()
+
         val currentDate = LocalDateTime.now()
         val formatter = DateTimeFormatter.ISO_DATE
         val formatted = currentDate.format(formatter)
@@ -160,43 +170,28 @@ class WriteCommunityFragment : Fragment() {
         Log.d("currentTime", formattedTime.toString())
 
         writeTime = "$formatted $formattedTime"
-        Log.d("currentDateTime", writeTime)
-        Log.d("imageUri", image)
-
-        nickname = sp.getString("nickname","none").toString()
+        title = binding.contentTitleEdit.text.toString()
+        content = binding.contentTextEdit.text.toString()
+        nickname = sp.getString("nickname", "none").toString()
 
         val comwrites = HashMap<String, Any>()
         comwrites["title"] = title
         comwrites["description"] = content
         comwrites["img"] = image
-        comwrites["id"] = categoryType.toString()
+        comwrites["id"] = categoryType.toString().toInt()
         comwrites["nickname"] = nickname
         comwrites["userid"] = 3
         comwrites["writedate"] = writeTime
+        comwrites["likedcount"] = 0
 
-        val retrofitService = Retrofits.postCommunity()
-        val call: Call<WriteContent> = retrofitService.postContent(comwrites)
-
-        call.enqueue(object : Callback<WriteContent> {
-            override fun onResponse(
-                call: Call<WriteContent>,
-                response: Response<WriteContent>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-                        Log.e("userInfoPost", "success")
-                        Log.d("성공:", "${response.body()}")
-                    }
-                } catch (e: Exception) {
-                    Log.e("userInfoPost", response.body().toString())
-                    Log.e("userInfoPost", response.message().toString())
-                }
+        mainViewModel.writeCommunity.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                Log.d("writeCom", "success")
+            } else {
+                Log.d("writeCom", it.errorBody().toString())
             }
-
-            override fun onFailure(call: Call<WriteContent>, t: Throwable) {
-                Log.e("userInfoPost", t.message.toString())
-            }
-        })
+        }
+        mainViewModel.writeCommunity(comwrites)
     }
 
     private fun autoSelectCategory(flag: Int, spinner: Spinner) {
