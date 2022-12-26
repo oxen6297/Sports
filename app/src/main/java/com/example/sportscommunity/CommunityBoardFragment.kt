@@ -1,26 +1,23 @@
 package com.example.sportscommunity
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.Adapter.ChatAdapter
+import com.example.sportscommunity.ViewModel.ChatViewModel
 import com.example.sportscommunity.databinding.CommunityBoardFragmentBinding
-import com.example.sportscommunity.databinding.SportsHomeFragmentBindingImpl
+import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,8 +25,9 @@ import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@AndroidEntryPoint
 class CommunityBoardFragment : Fragment() {
-
+    private val chatViewModel: ChatViewModel by viewModels()
     lateinit var binding: CommunityBoardFragmentBinding
     private val boardId = FreeBoardId["boardId"].toString()
     private val titles = titleHash["title"].toString()
@@ -56,7 +54,9 @@ class CommunityBoardFragment : Fragment() {
     @SuppressLint("UseCompatLoadingForDrawables", "CommitPrefEdits", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        chatAdpater.setHasStableIds(true)
         binding.chatRecycle.adapter = chatAdpater
+
         postLikeCount()
         getChat()
         getReChat()
@@ -193,6 +193,7 @@ class CommunityBoardFragment : Fragment() {
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun postReChat(position: Int, commentId: Int) {
         val chat = HashMap<String, Any>()
 
@@ -214,53 +215,42 @@ class CommunityBoardFragment : Fragment() {
         chat["profileimage"] = images
         chat["inherentcommentsid"] = commentId
 
-        val retrofitService = Retrofits.postReComments()
-        val call: Call<String> = retrofitService.postReComment(chat)
+        chatViewModel.postReChatResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val body = it.body().toString()
 
-        call.enqueue(object : Callback<String> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                try {
+                val chatNumber = JSONObject(body).getJSONObject("replycount")
+                val chatCounts = chatNumber.getString("replycount").toString()
+                val commentsid = chatNumber.getString("replyid").toString()
 
-                    if (response.isSuccessful) {
-                        val body = response.body().toString()
+                commentList.add(
+                    position,
+                    Comment(
+                        nickname,
+                        description,
+                        writeTime,
+                        boardId.toInt(),
+                        categoryId.toInt(),
+                        3,
+                        images,
+                        1,
+                        commentsid.toInt(),
+                        0,
+                        null
+                    )
+                )
 
-                        val chatNumber = JSONObject(body).getJSONObject("replycount")
-                        val chatCounts = chatNumber.getString("replycount").toString()
-                        val commentsid = chatNumber.getString("replyid").toString()
-
-                        commentList.add(
-                            position,
-                            Comment(
-                                nickname,
-                                description,
-                                writeTime,
-                                boardId.toInt(),
-                                categoryId.toInt(),
-                                3,
-                                images,
-                                1,
-                                commentsid.toInt(),
-                                0,
-                                null
-                            )
-                        )
-
-                        binding.chatNum.text = chatCounts
-                        binding.chatRecycle.setHasFixedSize(true)
-                        chatAdpater.notifyDataSetChanged()
-                    }
-                } catch (e: Exception) {
-                    Log.d("error", e.toString())
-                }
+                binding.chatRecycle.adapter = chatAdpater
+                binding.chatNum.text = chatCounts
+                binding.chatRecycle.setHasFixedSize(true)
+                chatAdpater.notifyDataSetChanged()
             }
+        }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("failed", t.message.toString())
-            }
-        })
+        chatViewModel.postReChat(chat,"replywrite")
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun postChat() {
         val chat = HashMap<String, Any>()
 
@@ -281,54 +271,40 @@ class CommunityBoardFragment : Fragment() {
         chat["writedate"] = writeTime
         chat["profileimage"] = images
 
-        val retrofitService = Retrofits.postComments()
-        val call: Call<String> = retrofitService.postComment(chat)
+        chatViewModel.postChatResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val chatNumber =
+                    JSONObject(it.body().toString()).getJSONObject("commentcount")
+                val chatCounts = chatNumber.getString("commentcount").toString()
+                val commentsid = chatNumber.getString("commentsid").toString()
 
-        call.enqueue(object : Callback<String> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                try {
+                commentList.add(
+                    Comment(
+                        nickname,
+                        description,
+                        writeTime,
+                        boardId.toInt(),
+                        categoryId.toInt(),
+                        3,
+                        images,
+                        2,
+                        commentsid.toInt(),
+                        0,
+                        null
+                    )
+                )
 
-                    if (response.isSuccessful) {
-
-                        val chatNumber =
-                            JSONObject(response.body().toString()).getJSONObject("commentcount")
-                        val chatCounts = chatNumber.getString("commentcount").toString()
-                        val commentsid = chatNumber.getString("commentsid").toString()
-
-                        commentList.add(
-                            Comment(
-                                nickname,
-                                description,
-                                writeTime,
-                                boardId.toInt(),
-                                categoryId.toInt(),
-                                3,
-                                images,
-                                2,
-                                commentsid.toInt(),
-                                0,
-                                null
-                            )
-                        )
-
-                        if (chatCounts.isEmpty()) {
-                            binding.chatNum.text = "0"
-                        } else {
-                            binding.chatNum.text = chatCounts
-                        }
-                        binding.chatRecycle.setHasFixedSize(true)
-                        chatAdpater.notifyDataSetChanged()
-                    }
-                } catch (e: Exception) {
-                    Log.d("error", e.toString())
+                if (chatCounts.isEmpty()) {
+                    binding.chatNum.text = "0"
+                } else {
+                    binding.chatNum.text = chatCounts
                 }
+                binding.chatRecycle.adapter = chatAdpater
+                binding.chatRecycle.setHasFixedSize(true)
+                chatAdpater.notifyDataSetChanged()
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("failed", t.message.toString())
-            }
-        })
+        }
+        chatViewModel.postChat(chat,"commentswrite")
     }
 
     private fun postLike() {
@@ -412,125 +388,111 @@ class CommunityBoardFragment : Fragment() {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getChat() {
-        val retrofitService = Retrofits.getCommentService()
-        val call: Call<String> = retrofitService.getComment()
 
-        call.enqueue(object : Callback<String> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                try {
-                    if (response.isSuccessful) {
-                        val res = response.body()
-                        val chatInfo = JSONObject(res.toString())
-                        val chatArray = chatInfo.optJSONArray("comment")
-                        var i = 0
-                        if (chatArray != null) {
-                            while (i < chatArray.length()) {
-                                val jsonObject = chatArray.getJSONObject(i)
-                                val nickname = jsonObject.getString("nickname")
-                                val description = jsonObject.getString("description")
-                                val writedate = jsonObject.getString("writedate")
-                                val profileimage = jsonObject.getString("profileimage")
-                                val isrecomment = jsonObject.getString("isrecomment").toInt()
-                                val inherentid = jsonObject.getString("inherentid").toInt()
-                                val categoryid = jsonObject.getString("categoryid").toInt()
-                                val userid = jsonObject.getString("userid").toInt()
-                                val inherentCommentsid = jsonObject.getString("commentsid").toInt()
-                                val likedCount = jsonObject.getString("likedcount").toInt()
+        val chat = HashMap<String, Any>()
+        chat["inherentid"] = boardId.toInt()
+        chat["categoryid"] = categoryId.toInt()
 
-                                commentList.add(
-                                    Comment(
-                                        nickname,
-                                        description,
-                                        writedate,
-                                        inherentid,
-                                        categoryid,
-                                        userid,
-                                        profileimage,
-                                        isrecomment,
-                                        inherentCommentsid,
-                                        likedCount,
-                                        null
-                                    )
-                                )
-                                i++
-                                commentList.sortBy { it.commentsid }
-                                chatAdpater.notifyDataSetChanged()
-                            }
-                        }
+        chatViewModel.getChatResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val res = it.body()
+                val chatInfo = JSONObject(res.toString())
+                val chatArray = chatInfo.optJSONArray("comment")
+                var i = 0
+                if (chatArray != null) {
+                    while (i < chatArray.length()) {
+                        val jsonObject = chatArray.getJSONObject(i)
+                        val nickname = jsonObject.getString("nickname")
+                        val description = jsonObject.getString("description")
+                        val writedate = jsonObject.getString("writedate")
+                        val profileimage = jsonObject.getString("profileimage")
+                        val isrecomment = jsonObject.getString("isrecomment").toInt()
+                        val inherentid = jsonObject.getString("inherentid").toInt()
+                        val categoryid = jsonObject.getString("categoryid").toInt()
+                        val userid = jsonObject.getString("userid").toInt()
+                        val inherentCommentsid = jsonObject.getString("commentsid").toInt()
+                        val likedCount = jsonObject.getString("likedcount").toInt()
+                        val chatCount = jsonObject.getString("commentcount").toString()
+                        binding.chatNum.text = chatCount
+
+                        commentList.add(
+                            Comment(
+                                nickname,
+                                description,
+                                writedate,
+                                inherentid,
+                                categoryid,
+                                userid,
+                                profileimage,
+                                isrecomment,
+                                inherentCommentsid,
+                                likedCount,
+                                null
+                            )
+                        )
+                        i++
+                        commentList.sortBy { it.commentsid }
+                        chatAdpater.notifyDataSetChanged()
                     }
-                } catch (e: Exception) {
-                    Log.d("error", e.toString())
                 }
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("failed", t.message.toString())
-            }
-        })
+        }
+        chatViewModel.getChat(chat,"commentsinfo")
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getReChat() {
-        val retrofitService = Retrofits.getReCommentService()
-        val call: Call<String> = retrofitService.getComment()
+        val chat = HashMap<String, Any>()
+        chat["inherentid"] = boardId.toInt()
+        chat["categoryid"] = categoryId.toInt()
 
-        call.enqueue(object : Callback<String> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                try {
-                    if (response.isSuccessful) {
-                        val res = response.body()
-                        Log.d("resssssss", res.toString())
-                        val chatInfo = JSONObject(res.toString())
-                        val chatArray = chatInfo.optJSONArray("reply")
-                        var i = 0
-                        if (chatArray != null) {
-                            while (i < chatArray.length()) {
-                                val jsonObject = chatArray.getJSONObject(i)
-                                val nickname = jsonObject.getString("nickname")
-                                val description = jsonObject.getString("description")
-                                val writedate = jsonObject.getString("writedate")
-                                val profileimage = jsonObject.getString("profileimage")
-                                val isrecomment = jsonObject.getString("isrecomment").toInt()
-                                val inherentid = jsonObject.getString("inherentid").toInt()
-                                val categoryid = jsonObject.getString("categoryid").toInt()
-                                val userid = jsonObject.getString("userid").toInt()
-                                val inherentCommentsid =
-                                    jsonObject.getString("inherentcommentsid").toInt()
-                                val likedCount = jsonObject.getString("likedcount").toInt()
-                                val replyId = jsonObject.getString("replyid").toInt()
+        chatViewModel.getReChatResponse.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
+                val res = it.body()
+                val chatInfo = JSONObject(res.toString())
+                val chatArray = chatInfo.optJSONArray("reply")
+                var i = 0
+                if (chatArray != null) {
+                    while (i < chatArray.length()) {
+                        val jsonObject = chatArray.getJSONObject(i)
+                        val nickname = jsonObject.getString("nickname")
+                        val description = jsonObject.getString("description")
+                        val writedate = jsonObject.getString("writedate")
+                        val profileimage = jsonObject.getString("profileimage")
+                        val isrecomment = jsonObject.getString("isrecomment").toInt()
+                        val inherentid = jsonObject.getString("inherentid").toInt()
+                        val categoryid = jsonObject.getString("categoryid").toInt()
+                        val userid = jsonObject.getString("userid").toInt()
+                        val inherentCommentsid =
+                            jsonObject.getString("inherentcommentsid").toInt()
+                        val likedCount = jsonObject.getString("likedcount").toInt()
+                        val replyId = jsonObject.getString("replyid").toInt()
 
-                                commentList.add(
-                                    Comment(
-                                        nickname,
-                                        description,
-                                        writedate,
-                                        inherentid,
-                                        categoryid,
-                                        userid,
-                                        profileimage,
-                                        isrecomment,
-                                        inherentCommentsid,
-                                        likedCount,
-                                        replyId
-                                    )
-                                )
-                                i++
-                                commentList.sortBy { it.replyid }
-                                commentList.reverse()
-                                chatAdpater.notifyDataSetChanged()
-                            }
-                        }
+                        commentList.add(
+                            Comment(
+                                nickname,
+                                description,
+                                writedate,
+                                inherentid,
+                                categoryid,
+                                userid,
+                                profileimage,
+                                isrecomment,
+                                inherentCommentsid,
+                                likedCount,
+                                replyId
+                            )
+                        )
+                        i++
+                        commentList.sortBy { it.replyid }
+                        commentList.reverse()
+                        chatAdpater.notifyDataSetChanged()
                     }
-                } catch (e: Exception) {
-                    Log.d("error", e.toString())
                 }
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("failed", t.message.toString())
-            }
-        })
+        }
+        chatViewModel.getReChat(chat,"replyinfo")
     }
 }

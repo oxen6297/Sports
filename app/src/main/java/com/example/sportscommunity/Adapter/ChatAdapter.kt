@@ -48,7 +48,6 @@ class ChatAdapter(
             ReChatItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return when (viewType) {
             1 -> ReViewHolder(bindingRe)
-            2 -> ViewHolder(binding)
             else -> ViewHolder(binding)
         }
     }
@@ -60,19 +59,19 @@ class ChatAdapter(
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (commentList!![position].isrecomment) {
-            2 -> (holder as ViewHolder).apply {
-                holder.onBind(commentList[position])
-                holder.binding.chatText.setOnClickListener {
-                    itemClickListeners.onClick(it, position)
-                    commentsId.put("commentsId",binding.inherentid.text.toString())
-
-                }
-            }
             1 -> (holder as ReViewHolder).apply {
                 holder.onBind(commentList[position])
                 holder.bindingTwo.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
                     commentsId.put("commentsId",bindingTwo.inherentid.text.toString())
+                }
+            }
+            else -> (holder as ViewHolder).apply {
+                holder.onBind(commentList[position])
+                holder.binding.chatText.setOnClickListener {
+                    itemClickListeners.onClick(it, position)
+                    commentsId.put("commentsId",binding.inherentid.text.toString())
+
                 }
             }
         }

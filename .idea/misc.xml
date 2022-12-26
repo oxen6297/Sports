@@ -50,7 +50,7 @@
         <entry key="app/src/main/res/layout/activity_find_id.xml" value="0.2203125" />
         <entry key="app/src/main/res/layout/activity_find_password.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/alone_board_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/alone_item_list.xml" value="0.22083333333333333" />
@@ -64,6 +64,7 @@
         <entry key="app/src/main/res/layout/edit_profile_fragment.xml" value="0.22083333333333333" />
         <entry key="app/src/main/res/layout/faq_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/fragment_group_board.xml" value="0.221875" />
+        <entry key="app/src/main/res/layout/fragment_sports_group_alone.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/fragment_sports_home.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/fragment_write_group_tab.xml" value="0.221875" />
         <entry key="app/src/main/res/layout/free_category_tab.xml" value="0.165" />
@@ -106,9 +107,9 @@
         <entry key="app/src/main/res/layout/water_sports_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/winter_sports_category_tab.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/write_alone_fragment.xml" value="0.22083333333333333" />
-        <entry key="app/src/main/res/layout/write_community_fragment.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/layout/write_community_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/write_content_item_list.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/write_content_layout.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/write_content_layout.xml" value="0.125" />
         <entry key="app/src/main/res/layout/write_group_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/write_shop_fragment.xml" value="0.22239583333333332" />
         <entry key="app/src/main/res/layout/write_shop_list_item.xml" value="0.22083333333333333" />
