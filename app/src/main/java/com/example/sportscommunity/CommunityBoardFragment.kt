@@ -15,7 +15,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.Adapter.ChatAdapter
+import com.example.sportscommunity.Repository.Repository
 import com.example.sportscommunity.ViewModel.ChatViewModel
+import com.example.sportscommunity.ViewModel.LikeViewModel
+import com.example.sportscommunity.ViewModelFactory.LikeViewModelFactory
+import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.CommunityBoardFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
@@ -28,6 +32,7 @@ import java.time.format.DateTimeFormatter
 @AndroidEntryPoint
 class CommunityBoardFragment : Fragment() {
     private val chatViewModel: ChatViewModel by viewModels()
+    private val likeViewModel: LikeViewModel by viewModels { LikeViewModelFactory(Repository()) }
     lateinit var binding: CommunityBoardFragmentBinding
     private val boardId = FreeBoardId["boardId"].toString()
     private val titles = titleHash["title"].toString()
@@ -240,7 +245,6 @@ class CommunityBoardFragment : Fragment() {
                     )
                 )
 
-                binding.chatRecycle.adapter = chatAdpater
                 binding.chatNum.text = chatCounts
                 binding.chatRecycle.setHasFixedSize(true)
                 chatAdpater.notifyDataSetChanged()
@@ -299,7 +303,6 @@ class CommunityBoardFragment : Fragment() {
                 } else {
                     binding.chatNum.text = chatCounts
                 }
-                binding.chatRecycle.adapter = chatAdpater
                 binding.chatRecycle.setHasFixedSize(true)
                 chatAdpater.notifyDataSetChanged()
             }
@@ -314,34 +317,20 @@ class CommunityBoardFragment : Fragment() {
         like["categoryid"] = categoryId.toInt()
         like["userid"] = 3
 
-        val retrofitService = Retrofits.postLikeNumber()
-        val call: Call<String> = retrofitService.postLike(like)
+        likeViewModel.postComLike.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                val body = it.body().toString()
 
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                try {
-
-                    if (response.isSuccessful) {
-                        val body = response.body().toString()
-
-                        val likeNumber = JSONObject(body).getJSONObject("likedcount")
-                        val likeCounts = likeNumber.getString("likedcount").toString()
-                        if (likeCounts.isEmpty()) {
-                            binding.likeNum.text = "0"
-                        } else {
-                            binding.likeNum.text = likeCounts
-                        }
-
-                    }
-                } catch (e: Exception) {
-                    Log.d("error", e.toString())
+                val likeNumber = JSONObject(body).getJSONObject("likedcount")
+                val likeCounts = likeNumber.getString("likedcount").toString()
+                if (likeCounts.isEmpty()) {
+                    binding.likeNum.text = "0"
+                } else {
+                    binding.likeNum.text = likeCounts
                 }
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("failed", t.message.toString())
-            }
-        })
+        }
+        likeViewModel.postComLike(like)
     }
 
     private fun postLikeCount() {
@@ -350,31 +339,18 @@ class CommunityBoardFragment : Fragment() {
         likeCount["inherentid"] = boardId.toInt()
         likeCount["categoryid"] = categoryId.toInt()
 
-        val retrofitService = Retrofits.postComLikeCount()
-        val call: Call<String> = retrofitService.postLikeCount(likeCount)
+        likeViewModel.getComLike.observe(viewLifecycleOwner){
+            if (it.isSuccessful){
+                val body = it.body().toString()
 
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                try {
-                    if (response.isSuccessful) {
+                val likeNumber = JSONObject(body).getJSONObject("likedcount")
+                val likeCounts = likeNumber.getString("likedcount")
+                binding.likeNum.text = likeCounts.toString()
 
-                        val body = response.body().toString()
-
-                        val likeNumber = JSONObject(body).getJSONObject("likedcount")
-                        val likeCounts = likeNumber.getString("likedcount")
-                        binding.likeNum.text = likeCounts.toString()
-
-                        Log.d("likedCount", likeCounts)
-                    }
-                } catch (e: Exception) {
-                    Log.d("errordd", e.toString())
-                }
+                Log.d("likedCount", likeCounts)
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("faileddd", t.message.toString())
-            }
-        })
+        }
+        likeViewModel.getComLike(likeCount)
     }
 
     private fun softkeyboardHide() {

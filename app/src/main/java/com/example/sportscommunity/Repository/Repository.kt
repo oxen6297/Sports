@@ -24,23 +24,31 @@ class Repository {
         return Retrofits.getBestBoardService().getBestBoard()
     }
 
-    suspend fun getCommunity(number: String):Response<FreeBoardTab> {
+    suspend fun getCommunity(number: String): Response<FreeBoardTab> {
         return Retrofits.getFreeBoardService().getCommunity(number)
     }
 
-    suspend fun writeAlone(hashMap: HashMap<String,Any>):Response<WritePlayWith> {
+    suspend fun writeAlone(hashMap: HashMap<String, Any>): Response<WritePlayWith> {
         return Retrofits.postAlone().postContent(hashMap)
     }
 
-    suspend fun writeGroup(hashMap: HashMap<String, Any>):Response<WriteGroupPlay>{
+    suspend fun writeGroup(hashMap: HashMap<String, Any>): Response<WriteGroupPlay> {
         return Retrofits.postGroup().postContent(hashMap)
     }
 
-    suspend fun writeShop(hashMap: HashMap<String, Any>):Response<WriteShop>{
+    suspend fun writeShop(hashMap: HashMap<String, Any>): Response<WriteShop> {
         return Retrofits.postShop().postContent(hashMap)
     }
 
-    suspend fun writeCommunity(hashMap: HashMap<String, Any>):Response<WriteContent>{
+    suspend fun writeCommunity(hashMap: HashMap<String, Any>): Response<WriteContent> {
         return Retrofits.postCommunity().postContent(hashMap)
+    }
+
+    suspend fun postComLike(hashMap: HashMap<String, Any>): Response<String> {
+        return Retrofits.postLikeNumber().postLike(hashMap)
+    }
+
+    suspend fun postComLikeCount(hashMap: HashMap<String, Any>): Response<String> {
+        return Retrofits.postComLikeCount().postLikeCount(hashMap)
     }
 }
