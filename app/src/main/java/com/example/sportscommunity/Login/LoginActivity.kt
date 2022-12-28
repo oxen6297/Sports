@@ -7,12 +7,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.sportscommunity.*
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.viewmodel.LoginAndSignViewModel
+import com.example.sportscommunity.ViewModelFactory.LoginAndSignViewModelFactory
 import com.example.sportscommunity.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -24,9 +28,7 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -43,8 +45,11 @@ class LoginActivity : AppCompatActivity() {
     private var token: String = ""
     private var mobile: String = ""
     private var dateTime: String = ""
-    private val naverType: String = "naver"
-    private val kakaoType: String = "kakao"
+    private val loginViewModel: LoginAndSignViewModel by viewModels {
+        LoginAndSignViewModelFactory(
+            Repository()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,18 +74,21 @@ class LoginActivity : AppCompatActivity() {
             }
 
             naverLoginBtn.setOnClickListener {
-                naverLogin(this@LoginActivity)
+                try {
+                    naverLogin(this@LoginActivity)
+                } catch (e: Exception) {
+                    Log.d("postUserError", e.toString())
+                }
             }
 
             loginAnother.setOnClickListener {
                 startActivity(Intent(this@LoginActivity, AnotherLoginActivity::class.java))
             }
-
-
         }
     }
 
     //카카오 로그인
+    @SuppressLint("ApplySharedPref")
     private fun kakaoLogin(context: Context) {
 
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -217,52 +225,43 @@ class LoginActivity : AppCompatActivity() {
                 /**
                  * 카카오 로그인 서버 연동 부분 --------------------------------------------------------
                  */
-                val user = HashMap<String, Any>()
+                val users = HashMap<String, Any>()
 
-                user["username"] = name
-                user["nickname"] = nickname
-                user["email"] = email
-                user["password"] = "password"
-                user["create_date"] = dateTime
-                user["mobile"] = mobile
-                user["modify_date"] = ""
-                user["birth"] = birth
-                user["image"] = profileImage
-                user["gender"] = gender
+                users["username"] = name
+                users["nickname"] = nickname
+                users["email"] = email
+                users["password"] = "password"
+                users["create_date"] = dateTime
+                users["mobile"] = mobile
+                users["modify_date"] = ""
+                users["birth"] = birth
+                users["image"] = profileImage
+                users["gender"] = gender
 
-                val retrofitService = Retrofits.postUserInfo()
-                val call: Call<User> = retrofitService.postUser(user)
+                Log.d("nicknameOne", nickname)
 
-                call.enqueue(object : Callback<User> {
-                    @SuppressLint("CommitPrefEdits", "ApplySharedPref")
-                    override fun onResponse(
-                        call: Call<User>,
-                        response: Response<User>
-                    ) {
-                        try {
-                            if (response.isSuccessful) {
-                                Log.e("userInfoPost", "success")
-                                Log.d("성공:", "${response.body()}")
+                loginViewModel.signOrLogin.observe(this@LoginActivity) {
+                    if (it.isSuccessful) {
+                        val userIdInfo = JSONObject(it.body().toString())
+                        val idArray = userIdInfo.optJSONArray("userid")
+                        if (idArray != null) {
+                            val jsonObject = idArray.getJSONObject(0)
+                            val userId = jsonObject.getString("id")
 
-                                val sharedPreferences =
-                                    getSharedPreferences("userId", Context.MODE_PRIVATE)
-                                val editor = sharedPreferences.edit()
-                                editor.putString("id",response.body()?.id.toString())
-                                editor.commit()
-                            }
-                        } catch (e: Exception) {
-                            Log.e("userInfoPost", response.body().toString())
-                            Log.e("userInfoPost", response.message().toString())
+                            val sharedPreferences =
+                                getSharedPreferences("userId", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putInt("id", userId.toString().toInt())
+                            Log.d("kakaoUserId", userId.toString())
+                            editor.putString("nickname", nickname)
+                            editor.commit()
                         }
                     }
-
-                    override fun onFailure(call: Call<User>, t: Throwable) {
-                        Log.e("userInfoPost", t.message.toString())
-                    }
-                })
+                }
                 /**
                  *  여기까지 ------------------------------------------------------------
                  */
+                loginViewModel.postSignOrLogin(users)
             }
         }
 //        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
@@ -291,7 +290,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onFailure(httpStatus: Int, message: String) {
-
+                Log.d("naverLoginFalied", httpStatus.toString())
             }
 
             override fun onSuccess() {
@@ -306,6 +305,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("NaverLoginError", "$httpStatus\n" + message)
                     }
 
+                    @SuppressLint("ApplySharedPref")
                     override fun onSuccess(result: NidProfileResponse) {
                         name = result.profile?.name.toString()
                         email = result.profile?.email.toString()
@@ -348,39 +348,30 @@ class LoginActivity : AppCompatActivity() {
                         user["mobile"] = mobile
                         user["modify_date"] = ""
                         user["birth"] = birth
-                        user["image"] = profileImage
+                        user["userimage"] = profileImage
                         user["gender"] = gender
+                        user["bestcategory"] = ""
+                        user["shortinfo"] = ""
 
-                        val retrofitService = Retrofits.postUserInfo()
-                        val call: Call<User> = retrofitService.postUser(user)
+                        loginViewModel.signOrLogin.observe(this@LoginActivity) {
 
-                        call.enqueue(object : Callback<User> {
-                            @SuppressLint("ApplySharedPref")
-                            override fun onResponse(
-                                call: Call<User>,
-                                response: Response<User>
-                            ) {
-                                try {
-                                    if (response.isSuccessful) {
-                                        Log.e("userInfoPost", "success")
-                                        Log.d("성공:", "${response.body()}")
+                            if (it.isSuccessful) {
+                                val userIdInfo = JSONObject(it.body().toString())
+                                val idArray = userIdInfo.optJSONArray("userid")
+                                if (idArray != null) {
+                                    val jsonObject = idArray.getJSONObject(0)
+                                    val userId = jsonObject.getString("id")
 
-                                        val sharedPreferences =
-                                            getSharedPreferences("userId", Context.MODE_PRIVATE)
-                                        val editor = sharedPreferences.edit()
-                                        editor.putString("id",response.body()?.id.toString())
-                                        editor.commit()
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e("userInfoPost", response.body().toString())
-                                    Log.e("userInfoPost", response.message().toString())
+                                    val sharedPreferences =
+                                        getSharedPreferences("userId", Context.MODE_PRIVATE)
+                                    val editor = sharedPreferences.edit()
+                                    editor.putInt("id", userId.toString().toInt())
+                                    editor.commit()
+                                    Log.d("naverUserId", userId.toString())
                                 }
                             }
-
-                            override fun onFailure(call: Call<User>, t: Throwable) {
-                                Log.e("userInfoPost", t.message.toString())
-                            }
-                        })
+                        }
+                        loginViewModel.postSignOrLogin(user)
                         /**
                          *  여기까지 ------------------------------------------------------------
                          */
@@ -403,40 +394,14 @@ class LoginActivity : AppCompatActivity() {
                 })
             }
         }
-
         NaverIdLoginSDK.initialize(
-            context,
+            this,
             getString(R.string.naver_cliend_id),
             getString(R.string.naver_cliend_secret),
             "맺음"
         )
-        NaverIdLoginSDK.authenticate(context, oAuthLoginCallback)
+        NaverIdLoginSDK.authenticate(this, oAuthLoginCallback)
     }
-
-//    private fun callUserInfo(context: Context){
-//        val retrofitService = Retrofits.getUserService()
-//        val call: Call<UserEmail> = retrofitService.getUserInfo()
-//
-//        call.enqueue(object : Callback<UserEmail> {
-//            override fun onResponse(call: Call<UserEmail>, response: Response<UserEmail>) {
-//                try {
-//                    if (response.isSuccessful){
-//                        //유저 정보, 이메일 받아오기
-//                        if (response.body()?.userInfo!=null){
-//                            startActivity(Intent(context, MainActivity::class.java))
-//                        }
-//                        Log.d("userInfoGet","")
-//                    }
-//                } catch (e: Exception){
-//                    e.printStackTrace()
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<UserEmail>, t: Throwable) {
-//                Log.d("failed", "Shop_failed")
-//            }
-//        })
-//    }
 
     class LoginPagerAdapter(
         fragmentActivity: FragmentActivity,

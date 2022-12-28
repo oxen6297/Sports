@@ -51,4 +51,28 @@ class Repository {
     suspend fun postComLikeCount(hashMap: HashMap<String, Any>): Response<String> {
         return Retrofits.postComLikeCount().postLikeCount(hashMap)
     }
+
+    suspend fun postAloneLike(hashMap: HashMap<String, Any>): Response<String> {
+        return Retrofits.postAloneLikeNumber().postLike(hashMap)
+    }
+
+    suspend fun postAloneLikeCount(hashMap: HashMap<String, Any>): Response<String> {
+        return Retrofits.postAloneLikeCount().postLikeCount(hashMap)
+    }
+
+    suspend fun postShopLike(hashMap: HashMap<String, Any>): Response<String> {
+        return Retrofits.postShopLikeNumber().postLike(hashMap)
+    }
+
+    suspend fun postShopLikeCount(hashMap: HashMap<String, Any>): Response<String> {
+        return Retrofits.postShopLikeCount().postLikeCount(hashMap)
+    }
+
+    suspend fun loginAndSignUp(hashMap: HashMap<String,Any>): Response<String> {
+        return Retrofits.postUserInfo().postUser(hashMap)
+    }
+
+    suspend fun putUserInfo(hashMap: HashMap<String,Any>): Response<String> {
+        return Retrofits.putUserInfo().putUser(hashMap)
+    }
 }

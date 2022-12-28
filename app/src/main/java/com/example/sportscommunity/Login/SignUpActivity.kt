@@ -1,29 +1,24 @@
 package com.example.sportscommunity.Login
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
-import android.telephony.SmsMessage
 import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.Retrofits
-import com.example.sportscommunity.User
+import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.viewmodel.LoginAndSignViewModel
+import com.example.sportscommunity.ViewModelFactory.LoginAndSignViewModelFactory
 import com.example.sportscommunity.databinding.ActivitySignUpBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -34,6 +29,11 @@ class SignUpActivity : AppCompatActivity() {
     private var email = ""
     private var password = ""
     private var signTime = ""
+    private val signUpViewModel: LoginAndSignViewModel by viewModels {
+        LoginAndSignViewModelFactory(
+            Repository()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,6 +130,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("CommitPrefEdits", "ApplySharedPref")
     private fun signUpRetrofit() {
         name = binding.nameEdit.text.toString()
         nickname = binding.nicknameEdit.text.toString()
@@ -159,50 +160,28 @@ class SignUpActivity : AppCompatActivity() {
 //        user["image"] = "asd"
 //        user["gender"] = ""
 
-        val retrofitService = Retrofits.postUserInfo()
-        val call: Call<User> = retrofitService.postUser(user)
+        signUpViewModel.signOrLogin.observe(this@SignUpActivity){
+            if (it.isSuccessful){
 
-        call.enqueue(object : Callback<User> {
-            @SuppressLint("ApplySharedPref", "CommitPrefEdits")
-            override fun onResponse(
-                call: Call<User>,
-                response: Response<User>
-            ) {
-                try {
-                    if (response.isSuccessful) {
-                        Log.e("userInfoPost", "success")
-                        Log.d("성공:", "${response.body()}")
-                        val sharedPreferences =
-                            getSharedPreferences("userId", Context.MODE_PRIVATE)
-                        val sp = getSharedPreferences("userInfo",Context.MODE_PRIVATE)
+                val userIdInfo = JSONObject(it.body().toString())
+                val idArray = userIdInfo.optJSONArray("userid")
+                if (idArray != null) {
+                    val jsonObject = idArray.getJSONObject(0)
+                    val userId = jsonObject.getString("id")
 
-                        val editor = sharedPreferences.edit()
-                        val editorTwo = sp.edit()
+                    val sharedPreferences =
+                        getSharedPreferences("userId", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
 
-                        editor.putString("id", response.body()?.id.toString())
-                        editorTwo.putString("email", binding.joinEmailEdit.text.toString())
-                        editorTwo.putString("password", binding.joinPasswordEdit.text.toString())
-                        editor.commit()
-
-                        Toast.makeText(this@SignUpActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
-
-                    }
-                } catch (e: Exception) {
-                    Log.e("userInfoPost", response.body().toString())
-                    Log.e("userInfoPost", response.message().toString())
+                    editor.putInt("id", userId.toString().toInt())
+                    Log.d("majeumUserId", userId.toString())
+                    editor.commit()
                 }
-            }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Log.e("userInfoPost", t.message.toString())
-                Toast.makeText(
-                    this@SignUpActivity,
-                    "오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@SignUpActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
             }
-        })
+        }
+        signUpViewModel.postSignOrLogin(user)
     }
-
 }
