@@ -1,5 +1,6 @@
 package com.example.sportscommunity.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,12 +25,10 @@ class LoginAndSignViewModel(private val repository: Repository) : ViewModel() {
         get() = _putInfo
 
     var inputNickname: MutableLiveData<String> = MutableLiveData()
-
     var inputLikeCategory: MutableLiveData<String> = MutableLiveData()
-
     var inputShortInfo: MutableLiveData<String> = MutableLiveData()
-
     var userProfileImage: MutableLiveData<String> = MutableLiveData()
+    var userId: MutableLiveData<Int> = MutableLiveData()
 
 
     fun postSignOrLogin(hashMap: HashMap<String, Any>) {
@@ -43,7 +42,7 @@ class LoginAndSignViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun putUserInfo(hashMap: HashMap<String, Any>) {
+    private fun putUserInfo(hashMap: HashMap<String, Any>) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 try {
@@ -66,12 +65,13 @@ class LoginAndSignViewModel(private val repository: Repository) : ViewModel() {
         val formattedTime = currentDate.format(formatterTwo)
 
         val writeTime = "$formatted $formattedTime"
+
         postUser["nickname"] = inputNickname.value.toString()
         postUser["userimage"] = userProfileImage.value.toString()
-        postUser["bestcategory"] = "inputLikeCategory.value.toString()"
+        postUser["bestcategory"] = inputLikeCategory.value.toString()
         postUser["shortinfo"] = inputShortInfo.value.toString()
         postUser["modify_date"] = writeTime
-        postUser["id"] = 180
+        postUser["id"] = userId.value.toString().toInt()
         putUserInfo(postUser)
     }
 }
