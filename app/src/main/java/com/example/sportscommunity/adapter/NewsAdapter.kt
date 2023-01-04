@@ -45,5 +45,5 @@ class ListSourceAdapter(
         }
     }
 
-    override fun getItemCount(): Int = newsData!!.size
+    override fun getItemCount(): Int = newsData?.size?:0
 }

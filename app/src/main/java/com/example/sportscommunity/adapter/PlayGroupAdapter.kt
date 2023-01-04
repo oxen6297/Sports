@@ -1,11 +1,9 @@
-package com.example.sportscommunity.Adapter
+package com.example.sportscommunity.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.*
@@ -79,12 +77,6 @@ class PlayGroupAdapter(
             }
         }
 
-//        holder.itemView.setOnClickListener {
-//            activity.changeFragment(16)
-////            activity.setDataAtFragmentThree(GroupBoardFragment(),item,"title")
-//
-//        }
-
         val formatter = SimpleDateFormat("yyyyMMddHHmmss")
         var date: Date? = null
 
@@ -115,5 +107,5 @@ class PlayGroupAdapter(
     }
 
 
-    override fun getItemCount(): Int = playGroup!!.size
+    override fun getItemCount(): Int = playGroup?.size?:0
 }

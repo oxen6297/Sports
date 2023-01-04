@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Adapter
+package com.example.sportscommunity.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.example.sportscommunity.databinding.ChatItemListBinding
 import com.example.sportscommunity.databinding.ReChatItemListBinding
 
 class ChatAdapter(
-    private val commentList: MutableList<Comment>?
+    private var commentList: MutableList<Comment>?
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var itemClickListeners: OnItemClickListener
@@ -20,14 +20,16 @@ class ChatAdapter(
         fun onClick(v: View, position: Int)
     }
 
-    inner class ViewHolder(val binding: ChatItemListBinding) :
+
+
+    class ViewHolder(val binding: ChatItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: Comment) {
             binding.comment = data
         }
     }
 
-    inner class ReViewHolder(val bindingTwo: ReChatItemListBinding) :
+    class ReViewHolder(val bindingTwo: ReChatItemListBinding) :
         RecyclerView.ViewHolder(bindingTwo.root) {
         fun onBind(data: Comment) {
             bindingTwo.reComment = data
@@ -60,14 +62,14 @@ class ChatAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (commentList!![position].isrecomment) {
             1 -> (holder as ReViewHolder).apply {
-                holder.onBind(commentList[position])
+                holder.onBind(commentList!![position])
                 holder.bindingTwo.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
                     commentsId.put("commentsId",bindingTwo.inherentid.text.toString())
                 }
             }
-            else -> (holder as ViewHolder).apply {
-                holder.onBind(commentList[position])
+            2 -> (holder as ViewHolder).apply {
+                holder.onBind(commentList!![position])
                 holder.binding.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
                     commentsId.put("commentsId",binding.inherentid.text.toString())

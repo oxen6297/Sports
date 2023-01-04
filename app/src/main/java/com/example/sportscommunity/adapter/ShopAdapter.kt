@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Adapter
+package com.example.sportscommunity.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,7 +13,7 @@ class ShopAdapter(
     private val context: Context,
     private val shopList: MutableList<Shop>?,
     val mainActivity: MainActivity
-) : RecyclerView.Adapter<ShopAdapter.ViewHolder>(), Filterable {
+) : RecyclerView.Adapter<ShopAdapter.ViewHolder>() {
 
     private var files = shopList
     private var unfiles = shopList
@@ -55,31 +55,6 @@ class ShopAdapter(
         }
     }
 
-    override fun getFilter(): android.widget.Filter {
-        return object : android.widget.Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charString = constraint.toString()
-                files = if (charString.isEmpty()) {
-                    unfiles
-                } else {
-                    val filterList = mutableListOf<Shop>()
-                    for (item in unfiles!!) {
-                        if (item.title == charString) filterList.add(item)
-                    }
-                    filterList
-                }
-                val filterResult = FilterResults()
-                filterResult.values = files
-                return filterResult
-            }
 
-            @SuppressLint("NotifyDataSetChanged")
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                files = results?.values as MutableList<Shop>
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    override fun getItemCount(): Int = shopList!!.size
+    override fun getItemCount(): Int = shopList?.size?:0
 }

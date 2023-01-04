@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Adapter
+package com.example.sportscommunity.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,8 +6,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.TranslateAnimation
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.*
@@ -15,7 +13,7 @@ import com.example.sportscommunity.databinding.WriteShopListItemBinding
 
 class WriteShopAdapter(
     val context: Context,
-    private val imageList: MutableList<Uri>,
+    private val imageList: MutableList<Uri>?,
     private val imageText: MutableList<String>
 ) : RecyclerView.Adapter<WriteShopAdapter.ViewHolder>() {
 
@@ -32,11 +30,11 @@ class WriteShopAdapter(
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = imageList.size
+    override fun getItemCount(): Int = imageList?.size?:0
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val imageItem = imageList[position]
+        val imageItem = imageList!![position]
         holder.binding.imageText.text = imageText[position]
         Glide.with(context).load(imageItem).centerCrop().into(holder.binding.listImg)
 

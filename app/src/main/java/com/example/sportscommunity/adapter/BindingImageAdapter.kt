@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Adapter
+package com.example.sportscommunity.adapter
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView

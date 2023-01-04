@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Adapter
+package com.example.sportscommunity.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -78,5 +78,5 @@ class AloneAdapter(
         }
     }
 
-    override fun getItemCount(): Int = aloneList!!.size
+    override fun getItemCount(): Int = aloneList?.size?:0
 }
