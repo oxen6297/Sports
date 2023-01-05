@@ -10,17 +10,26 @@ import com.example.sportscommunity.commentsId
 import com.example.sportscommunity.databinding.ChatItemListBinding
 import com.example.sportscommunity.databinding.ReChatItemListBinding
 
-class ChatAdapter(
-    private var commentList: MutableList<Comment>?
-    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var itemClickListeners: OnItemClickListener
+    var commentList:MutableList<Comment>? = mutableListOf()
 
     interface OnItemClickListener {
         fun onClick(v: View, position: Int)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(commentList: MutableList<Comment>,position: Int){
+        this.commentList = commentList
+        notifyItemInserted(position)
+    }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun getSetData(commentList: MutableList<Comment>){
+        this.commentList = commentList
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(val binding: ChatItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -54,26 +63,24 @@ class ChatAdapter(
         }
     }
 
-    override fun getItemCount(): Int{
-        return commentList?.size ?: 0
-    }
+    override fun getItemCount(): Int = commentList?.size ?: 0
 
-    @SuppressLint("NotifyDataSetChanged")
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (commentList!![position].isrecomment) {
+        when (commentList?.get(position)?.isrecomment) {
+
             1 -> (holder as ReViewHolder).apply {
                 holder.onBind(commentList!![position])
                 holder.bindingTwo.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
-                    commentsId.put("commentsId",bindingTwo.inherentid.text.toString())
+                    commentsId["commentsId"] = bindingTwo.inherentid.text.toString()
                 }
             }
             2 -> (holder as ViewHolder).apply {
                 holder.onBind(commentList!![position])
                 holder.binding.chatText.setOnClickListener {
                     itemClickListeners.onClick(it, position)
-                    commentsId.put("commentsId",binding.inherentid.text.toString())
-
+                    commentsId["commentsId"] = binding.inherentid.text.toString()
                 }
             }
         }

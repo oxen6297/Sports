@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Repository
+package com.example.sportscommunity.repository
 
 import retrofit2.Response
 

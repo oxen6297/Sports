@@ -14,13 +14,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.example.sportscommunity.Adapter.ChatAdapter
-import com.example.sportscommunity.Repository.Repository
-import com.example.sportscommunity.ViewModel.ChatViewModel
-import com.example.sportscommunity.ViewModel.LikeViewModel
-import com.example.sportscommunity.ViewModelFactory.LikeViewModelFactory
-import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.adapter.ChatAdapter
 import com.example.sportscommunity.databinding.CommunityBoardFragmentBinding
+import com.example.sportscommunity.repository.Repository
+import com.example.sportscommunity.sharedpreference.SharedPreferenceManager
+import com.example.sportscommunity.viewmodel.ChatViewModel
+import com.example.sportscommunity.viewmodel.LikeViewModel
+import com.example.sportscommunity.viewmodelfactory.LikeViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
 import retrofit2.Call
@@ -28,6 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.concurrent.thread
 
 @AndroidEntryPoint
 class CommunityBoardFragment : Fragment() {
@@ -42,8 +43,9 @@ class CommunityBoardFragment : Fragment() {
     private val writedates = writedateHash["writedate"].toString()
     private val categoryId = categoryHash["categoryId"].toString()
     private var flag = 0
-    private var commentList = mutableListOf<Comment>()
-    private val chatAdpater = ChatAdapter(commentList)
+    private val commentList = mutableListOf<Comment>()
+    private var chatAdpater = ChatAdapter()
+    private var description = ""
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreateView(
@@ -56,15 +58,18 @@ class CommunityBoardFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables", "CommitPrefEdits", "ApplySharedPref")
+    @SuppressLint("UseCompatLoadingForDrawables", "CommitPrefEdits", "ApplySharedPref",
+        "NotifyDataSetChanged"
+    )
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        chatAdpater.setHasStableIds(true)
         binding.chatRecycle.adapter = chatAdpater
+        description = binding.chatEdit.text.toString()
 
         postLikeCount()
         getChat()
         getReChat()
+        postChat()
 
         val mainActivity = activity as MainActivity
         mainActivity.hideBottomNavigationView(true)
@@ -127,30 +132,47 @@ class CommunityBoardFragment : Fragment() {
             timeText.text = writedates
             Glide.with(requireContext()).load(images).fitCenter().error(R.color.orange)
                 .into(contentProfileImg)
-        }
 
+            sendBtn.setOnClickListener {
+                val chat = HashMap<String, Any>()
+                val id = SharedPreferenceManager.getInt(requireContext(), "id", 0)
 
-        binding.sendBtn.setOnClickListener {
-            postChat()
-            binding.chatEdit.text = null
-            softkeyboardHide()
-        }
+                val currentDate = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ISO_DATE
+                val formatted = currentDate.format(formatter)
+                val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
+                val formattedTime = currentDate.format(formatterTwo)
+                val writeTime = "$formatted $formattedTime"
+                Log.d("chatchat",chatEdit.text.toString())
 
-        chatAdpater.setItemClickListener(object : ChatAdapter.OnItemClickListener {
-            override fun onClick(v: View, position: Int) {
-                binding.sendBtnTwo.visibility = View.VISIBLE
-                binding.sendBtn.visibility = View.GONE
-                softkeyboard()
-                binding.sendBtnTwo.setOnClickListener {
-                    val commentsId = commentsId["commentsId"].toString().toInt()
-                    postReChat(position, commentsId)
-                    binding.chatEdit.text = null
-                    softkeyboardHide()
-                    it.visibility = View.GONE
-                    binding.sendBtn.visibility = View.VISIBLE
-                }
+                chat["nickname"] = nickname
+                chat["description"] = description
+                chat["userid"] = id
+                chat["categoryid"] = categoryId.toInt()
+                chat["inherentid"] = boardId.toInt()
+                chat["writedate"] = writeTime
+                chat["profileimage"] = images
+                chatViewModel.postChat(chat, "commentswrite")
+                chatEdit.text = null
+                softkeyboardHide()
             }
-        })
+
+            chatAdpater.setItemClickListener(object : ChatAdapter.OnItemClickListener {
+                override fun onClick(v: View, position: Int) {
+                    softkeyboard()
+                    sendBtnTwo.visibility = View.VISIBLE
+                    sendBtn.visibility = View.GONE
+                    sendBtnTwo.setOnClickListener {
+                        softkeyboardHide()
+                        val commentsId = commentsId["commentsId"].toString().toInt()
+                        postReChat(position, commentsId)
+                        chatEdit.text = null
+                        it.visibility = View.GONE
+                        sendBtn.visibility = View.VISIBLE
+                    }
+                }
+            })
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -166,10 +188,11 @@ class CommunityBoardFragment : Fragment() {
 
     private fun unLike() {
         val unLike = HashMap<String, Any>()
+        val id = SharedPreferenceManager.getInt(requireContext(), "id", 0)
 
         unLike["inherentid"] = boardId.toInt()
         unLike["categoryid"] = categoryId.toInt()
-        unLike["userid"] = 3
+        unLike["userid"] = id
 
         val retrofitService = Retrofits.communityDeleteLikeNumber()
         val call: Call<String> = retrofitService.comDeleteLike(unLike)
@@ -210,10 +233,11 @@ class CommunityBoardFragment : Fragment() {
         val formatterTwo = DateTimeFormatter.ofPattern("HH:mm:ss")
         val formattedTime = currentDate.format(formatterTwo)
         val writeTime = "$formatted $formattedTime"
+        val id = SharedPreferenceManager.getInt(requireContext(), "id", 0)
 
         chat["nickname"] = nickname
         chat["description"] = description
-        chat["userid"] = 3
+        chat["userid"] = id
         chat["categoryid"] = categoryId.toInt()
         chat["inherentid"] = boardId.toInt()
         chat["writedate"] = writeTime
@@ -225,7 +249,7 @@ class CommunityBoardFragment : Fragment() {
                 val body = it.body().toString()
 
                 val chatNumber = JSONObject(body).getJSONObject("replycount")
-                val chatCounts = chatNumber.getString("replycount").toString()
+                val chatCounts = chatNumber.getString("commentcount").toString()
                 val commentsid = chatNumber.getString("replyid").toString()
 
                 commentList.add(
@@ -236,7 +260,7 @@ class CommunityBoardFragment : Fragment() {
                         writeTime,
                         boardId.toInt(),
                         categoryId.toInt(),
-                        3,
+                        id,
                         images,
                         1,
                         commentsid.toInt(),
@@ -246,19 +270,16 @@ class CommunityBoardFragment : Fragment() {
                 )
 
                 binding.chatNum.text = chatCounts
-                binding.chatRecycle.setHasFixedSize(true)
-                chatAdpater.notifyDataSetChanged()
+                chatAdpater.notifyItemInserted(position)
             }
         }
 
-        chatViewModel.postReChat(chat,"replywrite")
+        chatViewModel.postReChat(chat, "replywrite")
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun postChat() {
-        val chat = HashMap<String, Any>()
-
-        val description = binding.chatEdit.text.toString()
+        val id = SharedPreferenceManager.getInt(requireContext(), "id", 0)
 
         val currentDate = LocalDateTime.now()
         val formatter = DateTimeFormatter.ISO_DATE
@@ -267,20 +288,12 @@ class CommunityBoardFragment : Fragment() {
         val formattedTime = currentDate.format(formatterTwo)
         val writeTime = "$formatted $formattedTime"
 
-        chat["nickname"] = nickname
-        chat["description"] = description
-        chat["userid"] = 3
-        chat["categoryid"] = categoryId.toInt()
-        chat["inherentid"] = boardId.toInt()
-        chat["writedate"] = writeTime
-        chat["profileimage"] = images
-
         chatViewModel.postChatResponse.observe(viewLifecycleOwner) {
             if (it.isSuccessful) {
                 val chatNumber =
                     JSONObject(it.body().toString()).getJSONObject("commentcount")
-                val chatCounts = chatNumber.getString("commentcount").toString()
-                val commentsid = chatNumber.getString("commentsid").toString()
+                val chatCounts = chatNumber.getInt("commentcount").toString()
+                val commentsid = chatNumber.getInt("commentsid").toString()
 
                 commentList.add(
                     Comment(
@@ -289,7 +302,7 @@ class CommunityBoardFragment : Fragment() {
                         writeTime,
                         boardId.toInt(),
                         categoryId.toInt(),
-                        3,
+                        id,
                         images,
                         2,
                         commentsid.toInt(),
@@ -303,22 +316,21 @@ class CommunityBoardFragment : Fragment() {
                 } else {
                     binding.chatNum.text = chatCounts
                 }
-                binding.chatRecycle.setHasFixedSize(true)
-                chatAdpater.notifyDataSetChanged()
+                chatAdpater.setData(commentList,commentList.size-1)
             }
         }
-        chatViewModel.postChat(chat,"commentswrite")
     }
 
     private fun postLike() {
+        val id = SharedPreferenceManager.getInt(requireContext(), "id", 0)
         val like = HashMap<String, Any>()
 
         like["inherentid"] = boardId.toInt()
         like["categoryid"] = categoryId.toInt()
-        like["userid"] = 3
+        like["userid"] = id
 
-        likeViewModel.postComLike.observe(viewLifecycleOwner){
-            if (it.isSuccessful){
+        likeViewModel.postComLike.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
                 val body = it.body().toString()
 
                 val likeNumber = JSONObject(body).getJSONObject("likedcount")
@@ -339,8 +351,8 @@ class CommunityBoardFragment : Fragment() {
         likeCount["inherentid"] = boardId.toInt()
         likeCount["categoryid"] = categoryId.toInt()
 
-        likeViewModel.getComLike.observe(viewLifecycleOwner){
-            if (it.isSuccessful){
+        likeViewModel.getComLike.observe(viewLifecycleOwner) {
+            if (it.isSuccessful) {
                 val body = it.body().toString()
 
                 val likeNumber = JSONObject(body).getJSONObject("likedcount")
@@ -361,7 +373,6 @@ class CommunityBoardFragment : Fragment() {
     private fun softkeyboard() {
         val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(binding.chatEdit, 0)
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -391,7 +402,6 @@ class CommunityBoardFragment : Fragment() {
                         val inherentCommentsid = jsonObject.getString("commentsid").toInt()
                         val likedCount = jsonObject.getString("likedcount").toInt()
                         val chatCount = jsonObject.getString("commentcount").toString()
-                        binding.chatNum.text = chatCount
 
                         commentList.add(
                             Comment(
@@ -409,13 +419,18 @@ class CommunityBoardFragment : Fragment() {
                             )
                         )
                         i++
+                        if (chatCount == null){
+                            binding.chatNum.text = "0"
+                        } else {
+                            binding.chatNum.text = chatCount
+                        }
                         commentList.sortBy { it.commentsid }
-                        chatAdpater.notifyDataSetChanged()
+                        chatAdpater.getSetData(commentList)
                     }
                 }
             }
         }
-        chatViewModel.getChat(chat,"commentsinfo")
+        chatViewModel.getChat(chat, "commentsinfo")
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -464,11 +479,11 @@ class CommunityBoardFragment : Fragment() {
                         i++
                         commentList.sortBy { it.replyid }
                         commentList.reverse()
-                        chatAdpater.notifyDataSetChanged()
+                        chatAdpater.getSetData(commentList)
                     }
                 }
             }
         }
-        chatViewModel.getReChat(chat,"replyinfo")
+        chatViewModel.getReChat(chat, "replyinfo")
     }
 }
