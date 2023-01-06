@@ -1,4 +1,4 @@
-package com.example.sportscommunity.Login
+package com.example.sportscommunity.login
 
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
@@ -14,10 +14,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.sportscommunity.*
-import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.repository.Repository
 import com.example.sportscommunity.viewmodel.LoginAndSignViewModel
-import com.example.sportscommunity.ViewModelFactory.LoginAndSignViewModelFactory
+import com.example.sportscommunity.viewmodelfactory.LoginAndSignViewModelFactory
 import com.example.sportscommunity.databinding.ActivityLoginBinding
+import com.example.sportscommunity.sharedpreference.SharedPreferenceManager
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -247,14 +248,13 @@ class LoginActivity : AppCompatActivity() {
                         if (idArray != null) {
                             val jsonObject = idArray.getJSONObject(0)
                             val userId = jsonObject.getString("id")
-
-                            val sharedPreferences =
-                                getSharedPreferences("userId", Context.MODE_PRIVATE)
-                            val editor = sharedPreferences.edit()
-                            editor.putInt("id", userId.toString().toInt())
-                            Log.d("kakaoUserId", userId.toString())
-                            editor.putString("nickname", nickname)
-                            editor.commit()
+                            SharedPreferenceManager.putInt(context,"id",userId.toString().toInt())
+                            SharedPreferenceManager.putString(context,"nickname",nickname)
+//                            val sharedPreferences =
+//                                getSharedPreferences("userId", Context.MODE_PRIVATE)
+//                            val editor = sharedPreferences.edit()
+//                            editor.putInt("id", userId.toString().toInt())
+//                            editor.commit()
                         }
                     }
                 }
@@ -361,13 +361,13 @@ class LoginActivity : AppCompatActivity() {
                                 if (idArray != null) {
                                     val jsonObject = idArray.getJSONObject(0)
                                     val userId = jsonObject.getString("id")
-
-                                    val sharedPreferences =
-                                        getSharedPreferences("userId", Context.MODE_PRIVATE)
-                                    val editor = sharedPreferences.edit()
-                                    editor.putInt("id", userId.toString().toInt())
-                                    editor.commit()
-                                    Log.d("naverUserId", userId.toString())
+                                    SharedPreferenceManager.putInt(context,"id",userId.toString().toInt())
+                                    SharedPreferenceManager.putString(context,"nickname",nickname)
+//                                    val sharedPreferences =
+//                                        getSharedPreferences("userId", Context.MODE_PRIVATE)
+//                                    val editor = sharedPreferences.edit()
+//                                    editor.putInt("id", userId.toString().toInt())
+//                                    editor.commit()
                                 }
                             }
                         }

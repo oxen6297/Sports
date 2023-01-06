@@ -1,7 +1,6 @@
-package com.example.sportscommunity.Login
+package com.example.sportscommunity.login
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +11,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.example.sportscommunity.MainActivity
-import com.example.sportscommunity.Repository.Repository
+import com.example.sportscommunity.repository.Repository
 import com.example.sportscommunity.viewmodel.LoginAndSignViewModel
-import com.example.sportscommunity.ViewModelFactory.LoginAndSignViewModelFactory
+import com.example.sportscommunity.viewmodelfactory.LoginAndSignViewModelFactory
 import com.example.sportscommunity.databinding.ActivitySignUpBinding
+import com.example.sportscommunity.sharedpreference.SharedPreferenceManager
 import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -168,14 +168,14 @@ class SignUpActivity : AppCompatActivity() {
                 if (idArray != null) {
                     val jsonObject = idArray.getJSONObject(0)
                     val userId = jsonObject.getString("id")
-
-                    val sharedPreferences =
-                        getSharedPreferences("userId", Context.MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-
-                    editor.putInt("id", userId.toString().toInt())
-                    Log.d("majeumUserId", userId.toString())
-                    editor.commit()
+                    SharedPreferenceManager.putInt(applicationContext,"id",userId.toString().toInt())
+                    SharedPreferenceManager.putString(applicationContext,"nickname",nickname)
+//                    val sharedPreferences =
+//                        getSharedPreferences("userId", Context.MODE_PRIVATE)
+//                    val editor = sharedPreferences.edit()
+//
+//                    editor.putInt("id", userId.toString().toInt())
+//                    editor.commit()
                 }
 
                 Toast.makeText(this@SignUpActivity, "회원가입 완료", Toast.LENGTH_SHORT).show()
