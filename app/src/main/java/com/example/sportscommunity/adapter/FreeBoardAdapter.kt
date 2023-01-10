@@ -53,15 +53,15 @@ class FreeBoardAdapter(
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charString = constraint.toString()
+                val charString = constraint.toString().replace(" ","")
                 communityList = if (charString.isEmpty()) {
                     filterCommunityList
                 } else {
                     val filterList = mutableListOf<Content>()
                     if (filterCommunityList != null) {
                         for (item in filterCommunityList!!) {
-                            if (item.title?.replace(" ", "")
-                                    ?.contains(charString)!! || item.nickname?.replace(" ", "")
+                            if (item.title!!.replace(" ", "")
+                                    .contains(charString) || item.nickname?.replace(" ", "")
                                     ?.contains(charString)!!
                             ) {
                                 filterList.add(item)

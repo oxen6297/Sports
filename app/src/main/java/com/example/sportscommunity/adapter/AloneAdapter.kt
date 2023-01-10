@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.*
@@ -39,24 +41,24 @@ class AloneAdapter(
             .into(holder.binding.aloneItemImage)
 
         holder.binding.aloneLayout.setOnClickListener {
-            titleHash.put("title", item.title.toString())
-            categoryHash.put("category", holder.binding.aloneItemName.text.toString())
-            localHash.put("local", item.local.toString())
-            descriptionHash.put("description", item.description.toString())
-            genderHash.put("gender", item.gender.toString())
-            minageHash.put("minage", item.minage.toString())
-            maxageHash.put("maxage", item.maxage.toString())
-            userImageHash.put("image", item.userimage.toString())
-            nicknameHash.put("nickname", item.nickname.toString())
-            writedateHash.put("writedate", item.writedate.toString())
-            AloneBoardId.put("alone",item.individualid.toString())
-            AloneCategoryHash.put("categoryid",item.id.toString())
+            titleHash["title"] = item.title.toString()
+            categoryHash["category"] = holder.binding.aloneItemName.text.toString()
+            localHash["local"] = item.local.toString()
+            descriptionHash["description"] = item.description.toString()
+            genderHash["gender"] = item.gender.toString()
+            minageHash["minage"] = item.minage.toString()
+            maxageHash["maxage"] = item.maxage.toString()
+            userImageHash["image"] = item.userimage.toString()
+            nicknameHash["nickname"] = item.nickname.toString()
+            writedateHash["writedate"] = item.writedate.toString()
+            AloneBoardId["alone"] = item.individualid.toString()
+            AloneCategoryHash["categoryid"] = item.id.toString()
 
 
             mainActivity.changeFragment(17)
         }
 
-        when (aloneList[position].id) {
+        when (aloneList!![position].id) {
             1 -> {
                 holder.binding.aloneItemName.text = "구기종목"
             }

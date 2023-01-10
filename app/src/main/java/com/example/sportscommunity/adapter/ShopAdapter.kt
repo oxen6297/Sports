@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportscommunity.*
@@ -11,12 +12,11 @@ import com.example.sportscommunity.databinding.ShopListItemBinding
 
 class ShopAdapter(
     private val context: Context,
-    private val shopList: MutableList<Shop>?,
+    private var shopList: MutableList<Shop>?,
     val mainActivity: MainActivity
-) : RecyclerView.Adapter<ShopAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ShopAdapter.ViewHolder>(),Filterable {
 
-    private var files = shopList
-    private var unfiles = shopList
+    var filterShopList: MutableList<Shop>? = shopList
 
     class ViewHolder(val binding: ShopListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: Shop) {
@@ -33,23 +33,23 @@ class ShopAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.onBind(shopList!![position])
-        val item = shopList[position]
+        val item = shopList!![position]
 
         holder.binding.shopLayout.setOnClickListener {
-            titleHash.put("title", item.title.toString())
-            categoryHash.put("category", item.id.toString())
-            localHash.put("local", item.local.toString())
-            descriptionHash.put("description", item.description.toString())
-            nicknameHash.put("nickname", item.nickname.toString())
-            writedateHash.put("writedate", item.writedate.toString())
-            shopImageHash.put("imageOne", item.usedimage1)
-            shopImageHashTwo.put("imageTwo", item.usedimage2)
-            shopImageHashThree.put("imageThree", item.usedimage3)
-            shopImageHashFour.put("imageFour", item.usedimage4)
-            shopImageHashFive.put("imageFive", item.usedimage5)
-            priceHash.put("price", item.price.toString())
-            userImageHash.put("userimage",item.userimage.toString())
-            ShopBoardId.put("shop",item.usedid.toString())
+            titleHash["title"] = item.title.toString()
+            categoryHash["category"] = item.id.toString()
+            localHash["local"] = item.local.toString()
+            descriptionHash["description"] = item.description.toString()
+            nicknameHash["nickname"] = item.nickname.toString()
+            writedateHash["writedate"] = item.writedate.toString()
+            shopImageHash["imageOne"] = item.usedimage1
+            shopImageHashTwo["imageTwo"] = item.usedimage2
+            shopImageHashThree["imageThree"] = item.usedimage3
+            shopImageHashFour["imageFour"] = item.usedimage4
+            shopImageHashFive["imageFive"] = item.usedimage5
+            priceHash["price"] = item.price.toString()
+            userImageHash["userimage"] = item.userimage.toString()
+            ShopBoardId["shop"] = item.usedid.toString()
 
             mainActivity.changeFragment(18)
         }
@@ -57,4 +57,37 @@ class ShopAdapter(
 
 
     override fun getItemCount(): Int = shopList?.size?:0
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint.toString().replace(" ","")
+                shopList = if (charString.isEmpty()) {
+                    filterShopList
+                } else {
+                    val filterList = mutableListOf<Shop>()
+                    if (filterShopList != null) {
+                        for (item in filterShopList!!) {
+                            if (item.title!!.replace(" ", "")
+                                    .contains(charString) || item.nickname?.replace(" ", "")
+                                    ?.contains(charString)!!
+                            ) {
+                                filterList.add(item)
+                            }
+                        }
+                    }
+                    filterList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = shopList
+                return filterResults
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                shopList = results?.values as MutableList<Shop>?
+                notifyDataSetChanged()
+            }
+        }
+    }
 }

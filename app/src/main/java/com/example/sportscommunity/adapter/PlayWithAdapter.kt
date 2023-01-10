@@ -1,20 +1,22 @@
 package com.example.sportscommunity.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportscommunity.*
 import com.example.sportscommunity.databinding.PlayWithItemListBinding
 
 class PlayWithAdapter(
     private val context: Context,
-    private val playWith: MutableList<PlayWith>?,
+    private var playWith: MutableList<PlayWith>?,
     val mainActivity: MainActivity
-) : RecyclerView.Adapter<PlayWithAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<PlayWithAdapter.ViewHolder>(),Filterable {
 
-    private var files = playWith
-    private var unfiles = playWith
+    var filterPlayWithList:MutableList<PlayWith>? = playWith
 
     inner class ViewHolder(val binding: PlayWithItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -34,27 +36,26 @@ class PlayWithAdapter(
 
         holder.onBind(playWith!![position])
 
-        val item = playWith[position]
+        val item = playWith!![position]
 
         holder.binding.aloneLayout.setOnClickListener {
-            titleHash.put("title", item.title.toString())
-            categoryHash.put("category", holder.binding.playCategory.text.toString())
-            localHash.put("local", item.local.toString())
-            descriptionHash.put("description", item.description.toString())
-            genderHash.put("gender", item.gender.toString())
-            minageHash.put("minage", item.minage.toString())
-            maxageHash.put("maxage", item.maxage.toString())
-            userImageHash.put("image", item.userimage.toString())
-            nicknameHash.put("nickname", item.nickname.toString())
-            writedateHash.put("writedate", item.writedate.toString())
-            AloneBoardId.put("alone",item.individualid.toString())
-            AloneCategoryHash.put("categoryid",item.id.toString())
-
+            titleHash["title"] = item.title.toString()
+            categoryHash["category"] = holder.binding.playCategory.text.toString()
+            localHash["local"] = item.local.toString()
+            descriptionHash["description"] = item.description.toString()
+            genderHash["gender"] = item.gender.toString()
+            minageHash["minage"] = item.minage.toString()
+            maxageHash["maxage"] = item.maxage.toString()
+            userImageHash["image"] = item.userimage.toString()
+            nicknameHash["nickname"] = item.nickname.toString()
+            writedateHash["writedate"] = item.writedate.toString()
+            AloneBoardId["alone"] = item.individualid.toString()
+            AloneCategoryHash["categoryid"] = item.id.toString()
 
             mainActivity.changeFragment(17)
         }
 
-        when (playWith[position].id) {
+        when (playWith!![position].id) {
             1 -> {
                 holder.binding.playCategory.text = "구기종목"
             }
@@ -77,4 +78,37 @@ class PlayWithAdapter(
     }
 
     override fun getItemCount(): Int = playWith?.size?:0
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint.toString().replace(" ","")
+                playWith = if (charString.isEmpty()) {
+                    filterPlayWithList
+                } else {
+                    val filterList = mutableListOf<PlayWith>()
+                    if (filterPlayWithList != null) {
+                        for (item in filterPlayWithList!!) {
+                            if (item.title!!.replace(" ", "")
+                                    .contains(charString) || item.nickname?.replace(" ", "")
+                                    ?.contains(charString)!!
+                            ) {
+                                filterList.add(item)
+                            }
+                        }
+                    }
+                    filterList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = playWith
+                return filterResults
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                playWith = results?.values as MutableList<PlayWith>?
+                notifyDataSetChanged()
+            }
+        }
+    }
 }

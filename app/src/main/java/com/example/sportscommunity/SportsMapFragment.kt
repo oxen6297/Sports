@@ -11,31 +11,24 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportscommunity.Adapter.AloneAdapter
-import com.example.sportscommunity.Adapter.PlayWithAdapter
-import com.example.sportscommunity.Adapter.backPressed
-import com.example.sportscommunity.Repository.Repository
-import com.example.sportscommunity.ViewModel.MainViewModel
-import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.adapter.AloneAdapter
+import com.example.sportscommunity.adapter.PlayWithAdapter
+import com.example.sportscommunity.adapter.backPressed
+import com.example.sportscommunity.repository.Repository
+import com.example.sportscommunity.viewmodel.MainViewModel
+import com.example.sportscommunity.viewmodelfactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsMapFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SportsMapFragment : Fragment() {
 
     //개인 탭
     private var mBinding: SportsMapFragmentBinding? = null
     private val binding get() = mBinding!!
-    private val alone = mutableListOf<PlayWith>()
     private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
+    private lateinit var aloneAdapter:PlayWithAdapter
 
     private var flags = 0
 
@@ -58,6 +51,10 @@ class SportsMapFragment : Fragment() {
         getAlone(mainActivity)
 
         binding.run {
+
+            searchEdit.doAfterTextChanged {
+                aloneAdapter.filter.filter(it.toString())
+            }
 
             groupBtn.setOnClickListener {
                 mainActivity.changeFragment(3)
@@ -144,9 +141,8 @@ class SportsMapFragment : Fragment() {
     private fun getAlone(mainActivity:MainActivity){
         mainViewModel.aloneResponse.observe(viewLifecycleOwner) {
             if (it.isSuccessful) {
-                val aloneAdapter =
+                aloneAdapter =
                     PlayWithAdapter(requireContext(), it.body()?.individualwrite, mainActivity)
-                aloneAdapter.setHasStableIds(true)
                 binding.groupPlayWithRecycle.adapter = aloneAdapter
                 binding.groupPlayWithRecycle.setHasFixedSize(true)
             } else {

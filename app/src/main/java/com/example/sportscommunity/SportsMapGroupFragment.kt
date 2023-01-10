@@ -8,14 +8,14 @@ import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import com.example.sportscommunity.Adapter.PlayGroupAdapter
-import com.example.sportscommunity.Adapter.backPressed
-import com.example.sportscommunity.Repository.Repository
-import com.example.sportscommunity.ViewModel.MainViewModel
-import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.adapter.PlayGroupAdapter
+import com.example.sportscommunity.adapter.backPressed
+import com.example.sportscommunity.repository.Repository
+import com.example.sportscommunity.viewmodel.MainViewModel
+import com.example.sportscommunity.viewmodelfactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsMapGroupFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -25,6 +25,7 @@ class SportsMapGroupFragment : Fragment() {
     private var mBinding: SportsMapGroupFragmentBinding? = null
     private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
     private val binding get() = mBinding!!
+    private lateinit var playGroupAdapter: PlayGroupAdapter
 
     private var flag = 0
     private var flags = 0
@@ -61,13 +62,17 @@ class SportsMapGroupFragment : Fragment() {
 
         binding.run {
 
-            writeBtn.setOnClickListener {
-                activitys?.changeFragment(0)
-                activitys?.setDataAtFragment(WriteContentFragment(), 1, "writeThree")
+            groupSearchEdit.doAfterTextChanged {
+                playGroupAdapter.filter.filter(it.toString())
             }
 
             aloneBtn.setOnClickListener {
                 activitys?.changeFragment(2)
+            }
+
+            writeBtn.setOnClickListener {
+                activitys?.changeFragment(0)
+                activitys?.setDataAtFragment(WriteContentFragment(), 1, "writeThree")
             }
 
             groupSortTime.setOnClickListener {
@@ -166,12 +171,11 @@ class SportsMapGroupFragment : Fragment() {
     private fun getGroup(mainActivity: MainActivity){
         mainViewModel.groupResponse.observe(viewLifecycleOwner) {
             if (it.isSuccessful) {
-                val playGroupAdapter = PlayGroupAdapter(
+                playGroupAdapter = PlayGroupAdapter(
                     requireContext(),
                     it.body()?.groupwrite,
                     mainActivity
                 )
-                playGroupAdapter.setHasStableIds(true)
                 binding.playWithRecycle.adapter = playGroupAdapter
                 binding.playWithRecycle.setHasFixedSize(true)
             } else {

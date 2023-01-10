@@ -12,21 +12,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportscommunity.Adapter.ShopAdapter
-import com.example.sportscommunity.Adapter.backPressed
-import com.example.sportscommunity.Repository.Repository
-import com.example.sportscommunity.ViewModel.MainViewModel
-import com.example.sportscommunity.ViewModelFactory.MainViewModelFactory
+import com.example.sportscommunity.adapter.ShopAdapter
+import com.example.sportscommunity.adapter.backPressed
+import com.example.sportscommunity.repository.Repository
+import com.example.sportscommunity.viewmodel.MainViewModel
+import com.example.sportscommunity.viewmodelfactory.MainViewModelFactory
 import com.example.sportscommunity.databinding.SportsShopFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SportsShopFragment : Fragment() {
 
@@ -34,8 +28,8 @@ class SportsShopFragment : Fragment() {
     private val binding get() = mBinding!!
     private var flag = 0
     private var flags = 0
-    private val shop = mutableListOf<Shop>()
     private val mainViewModel: MainViewModel by viewModels {MainViewModelFactory(Repository())}
+    private lateinit var shopAdapter: ShopAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +54,10 @@ class SportsShopFragment : Fragment() {
         mainActivity.hideBottomNavigationView(false)
 
         binding.run {
+
+            shopSearchEdit.doAfterTextChanged {
+                shopAdapter.filter.filter(it.toString())
+            }
 
             writeBtn.setOnClickListener {
                 mainActivity.changeFragment(14)
@@ -132,8 +130,7 @@ class SportsShopFragment : Fragment() {
     private fun getShop(mainActivity: MainActivity){
         mainViewModel.shopResponse.observe(viewLifecycleOwner){
             if (it.isSuccessful){
-                val shopAdapter = ShopAdapter(requireContext(),it.body()?.usedwrite, mainActivity)
-                shopAdapter.setHasStableIds(true)
+                shopAdapter = ShopAdapter(requireContext(),it.body()?.usedwrite, mainActivity)
                 binding.shopRecycle.adapter = shopAdapter
                 binding.shopRecycle.setHasFixedSize(true)
             } else {

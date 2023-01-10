@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sportscommunity.*
@@ -13,9 +15,11 @@ import java.util.*
 
 class PlayGroupAdapter(
     private val context: Context,
-    private val playGroup: MutableList<GroupPlay>?,
+    private var playGroup: MutableList<GroupPlay>?,
     val mainActivity: MainActivity
-) : RecyclerView.Adapter<PlayGroupAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<PlayGroupAdapter.ViewHolder>(),Filterable {
+
+    var filterPlayGroupList :MutableList<GroupPlay>? = playGroup
 
     inner class ViewHolder(val binding: PlayGroupItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -36,22 +40,22 @@ class PlayGroupAdapter(
 
         holder.onBind(playGroup!![position])
 
-        val item = playGroup[position]
+        val item = playGroup!![position]
 
         holder.binding.groupLayout.setOnClickListener {
 
-            titleHash.put("title", item.title.toString())
-            categoryHash.put("category", holder.binding.groupCategory.text.toString())
-            onceHash.put("once", item.once.toString())
-            localHash.put("local", item.local.toString())
-            lineHash.put("line", item.line.toString())
-            descriptionHash.put("description", item.description.toString())
-            nownumHash.put("nownum", item.peoplenownum.toString())
-            peoplenumHash.put("peoplenum", item.peoplenum.toString())
-            genderHash.put("gender", item.gender.toString())
-            minageHash.put("minage", item.minage.toString())
-            maxageHash.put("maxage", item.maxage.toString())
-            titleImageHash.put("image", item.titleimage.toString())
+            titleHash["title"] = item.title.toString()
+            categoryHash["category"] = holder.binding.groupCategory.text.toString()
+            onceHash["once"] = item.once.toString()
+            localHash["local"] = item.local.toString()
+            lineHash["line"] = item.line.toString()
+            descriptionHash["description"] = item.description.toString()
+            nownumHash["nownum"] = item.peoplenownum.toString()
+            peoplenumHash["peoplenum"] = item.peoplenum.toString()
+            genderHash["gender"] = item.gender.toString()
+            minageHash["minage"] = item.minage.toString()
+            maxageHash["maxage"] = item.maxage.toString()
+            titleImageHash["image"] = item.titleimage.toString()
 
             mainActivity.changeFragment(16)
         }
@@ -106,6 +110,38 @@ class PlayGroupAdapter(
             .into(holder.binding.groupProfileImg)
     }
 
-
     override fun getItemCount(): Int = playGroup?.size?:0
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint.toString().replace(" ","")
+                playGroup = if (charString.isEmpty()) {
+                    filterPlayGroupList
+                } else {
+                    val filterList = mutableListOf<GroupPlay>()
+                    if (filterPlayGroupList != null) {
+                        for (item in filterPlayGroupList!!) {
+                            if (item.title!!.replace(" ", "")
+                                    .contains(charString) || item.nickname?.replace(" ", "")
+                                    ?.contains(charString)!!
+                            ) {
+                                filterList.add(item)
+                            }
+                        }
+                    }
+                    filterList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = playGroup
+                return filterResults
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                playGroup = results?.values as MutableList<GroupPlay>?
+                notifyDataSetChanged()
+            }
+        }
+    }
 }
