@@ -6,15 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.sportscommunity.R
+import com.example.sportscommunity.databinding.FaqCategoryTabBinding
+import com.example.sportscommunity.databinding.FragmentMyGrouopPageBinding
 
 
-class MyGrouopPageFragment : Fragment() {
+class MyGroupPageFragment : Fragment() {
+
+    private var mBinding: FragmentMyGrouopPageBinding? = null
+    private val binding get() = mBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_my_grouop_page, container, false)
+    ): View {
+        mBinding = FragmentMyGrouopPageBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,6 +1,8 @@
 package com.example.sportscommunity.repository
 
 import com.example.sportscommunity.*
+import org.json.JSONObject
+import retrofit2.Call
 import retrofit2.Response
 
 class Repository {
@@ -74,5 +76,13 @@ class Repository {
 
     suspend fun putUserInfo(hashMap: HashMap<String,Any>): Response<String> {
         return Retrofits.putUserInfo().putUser(hashMap)
+    }
+
+    suspend fun postMyWrite(hashMap: HashMap<String,Any>): Response<JSONObject> {
+        return Retrofits.postMyWrite().postMyWrite(hashMap)
+    }
+
+    suspend fun postMyLike(hashMap: HashMap<String,Any>): Response<JSONObject> {
+        return Retrofits.postMyLike().postMyLike(hashMap)
     }
 }

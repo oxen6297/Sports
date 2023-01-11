@@ -2,20 +2,24 @@ package com.example.sportscommunity.mypage
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Context.LOCATION_SERVICE
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -38,6 +42,7 @@ class MyLocationCertifyFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = mBinding!!
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,16 +59,105 @@ class MyLocationCertifyFragment : Fragment(), OnMapReadyCallback {
         val locationManager =
             requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
 
-        binding.getLocationBtn.setOnClickListener {
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Toast.makeText(requireContext(), "위치 정보를 활성화 시켜주세요", Toast.LENGTH_SHORT).show()
-            } else {
-                checkPermission()
+        binding.run {
+            binding.getLocationBtn.setOnClickListener {
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    Toast.makeText(requireContext(), "위치 정보를 활성화 시켜주세요", Toast.LENGTH_SHORT).show()
+                } else {
+                    checkPermission()
+                }
+            }
+
+            val areaAdapter =
+                ArrayAdapter.createFromResource(
+                    requireContext(),
+                    R.array.areaList,
+                    R.layout.spinner_dropdown_item
+                )
+            areaAdapter.setDropDownViewResource(R.layout.spinner_item_style)
+            areaSpinner.adapter = areaAdapter
+
+            areaSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when (position) {
+                        0 -> detailAreaSpinner(R.array.noSelect)
+                        1 -> detailAreaSpinner(R.array.seoulItem)
+                        2 -> detailAreaSpinner(R.array.gyungiList)
+                        3 -> detailAreaSpinner(R.array.incheonList)
+                        4 -> detailAreaSpinner(R.array.daeJeonList)
+                        5 -> detailAreaSpinner(R.array.daeGuList)
+                        6 -> detailAreaSpinner(R.array.ulsanList)
+                        7 -> detailAreaSpinner(R.array.jeonnamList)
+                        8 -> detailAreaSpinner(R.array.jeonbukList)
+                        9 -> detailAreaSpinner(R.array.chungnamList)
+                        10 -> detailAreaSpinner(R.array.chungbukList)
+                        11 -> detailAreaSpinner(R.array.jejuList)
+                        12 -> detailAreaSpinner(R.array.sejongList)
+                        13 -> detailAreaSpinner(R.array.gwangjuList)
+                        14 -> detailAreaSpinner(R.array.busanList)
+                        15 -> detailAreaSpinner(R.array.gyungbukList)
+                        16 -> detailAreaSpinner(R.array.gyungnamList)
+                        17 -> detailAreaSpinner(R.array.gangwonList)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            }
+
+            certifyBtn.setOnClickListener {
+                checkLocationInfo()
             }
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun detailAreaSpinner(item: Int) {
+        binding.run {
+            val adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                item,
+                R.layout.spinner_dropdown_item
+            )
+            adapter.setDropDownViewResource(R.layout.spinner_item_style)
+            areaSpinnerTwo.adapter = adapter
+        }
+    }
+
+    private fun checkLocationInfo() {
+        //구글 지도 위치 인증 함수
+        val area =
+            binding.areaSpinner.selectedItem.toString() + " " + binding.areaSpinnerTwo.selectedItem.toString()
+        Log.d("myArea", area)
+        if (binding.myLocateText.text.toString() == "나의 현재 위치: $area") {
+            Toast.makeText(requireContext(), "인증에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+            requireActivity().supportFragmentManager.popBackStack()
+        } else {
+            Toast.makeText(
+                requireContext(), "인증 실패\n위치 정보를 확인해주세요.", Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
     private fun checkPermission() {
+
         if (ContextCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -132,11 +226,9 @@ class MyLocationCertifyFragment : Fragment(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission")
-    fun updateLocation() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.run {
+    private fun updateLocation() {
+        val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 5000
         }
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
@@ -155,24 +247,33 @@ class MyLocationCertifyFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     fun setLastLocation(lastLocation: Location) {
-        val LATLNG = LatLng(lastLocation.latitude, lastLocation.longitude)  // 전달받은 위치를 좌표로 마커를 생성
-        /* 마커 추가 및 옵션 */
-        val markerOptions = MarkerOptions()  // 마커 추가
-            .position(LATLNG)  // 마커의 좌표
-            .title("현재 위치")  // 마커의 제목
-        // .snippet("정보창 추가")
+        val geocoder = Geocoder(requireContext())
+        val lat = LatLng(lastLocation.latitude, lastLocation.longitude)
+        val markerOptions = MarkerOptions()
+            .position(lat)
+            .title("현재 위치")
 
-        /* 카메라 위치를 현재 위치로 세팅하고 마커와 함께 지도에 반영 */
-        val cameraPosition = CameraPosition.Builder()
-            .target(LATLNG)  // 카메라의 목표 지점
-            .zoom(15.0f)  // 카메라 줌
-            .build()
-        // bearing : 지도의 수직선이 북쪽을 기준으로 시계 방향 단위로 측정되는 방향
-        // tilt : 카메라의 기울기
+        val cameraPosition = CameraPosition.Builder().target(lat).zoom(14f).build()
 
-        mMap.clear()  // 마커를 지도에 반영하기 전에 clear를 사용해서 이전에 그려진 마커가 있으면 지운다.
-        mMap.addMarker(markerOptions)?.showInfoWindow()  // 지도에 마커를 추가
+        mMap.clear()
+        mMap.addMarker(markerOptions)?.showInfoWindow()
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        val address =
+            geocoder.getFromLocation(lastLocation.latitude, lastLocation.longitude, 1)
+        val addressSubLocate = address[0].locality.toString()
+        val addressLocate = address[0].adminArea
+        val addressLastLocate = address[0].subLocality
+        binding.myLocateText.text = "나의 현재 위치: $addressLocate $addressSubLocate $addressLastLocate"
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
