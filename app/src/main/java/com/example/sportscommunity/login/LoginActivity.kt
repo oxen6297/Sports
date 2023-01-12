@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.room.Room
+import androidx.room.migration.Migration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.sportscommunity.*
 import com.example.sportscommunity.repository.Repository
@@ -46,17 +47,22 @@ class LoginActivity : AppCompatActivity() {
     private var token: String = ""
     private var mobile: String = ""
     private var dateTime: String = ""
+    private var age: String = ""
     private val loginViewModel: LoginAndSignViewModel by viewModels {
         LoginAndSignViewModelFactory(
             Repository()
         )
     }
 
+    private var database: UserDatabase? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        database = UserDatabase.getInstance(this@LoginActivity)
 
         binding.run {
 
@@ -157,7 +163,7 @@ class LoginActivity : AppCompatActivity() {
                     scopes.add("account_ci")
                 }
 
-                if (scopes.count() > 0) {
+                if (scopes.isNotEmpty()) {
                     Log.d(TAG, "사용자에게 추가 동의를 받아야 합니다.")
 
                     // OpenID Connect 사용 시
@@ -250,11 +256,12 @@ class LoginActivity : AppCompatActivity() {
                             val userId = jsonObject.getString("id")
                             SharedPreferenceManager.putInt(context,"id",userId.toString().toInt())
                             SharedPreferenceManager.putString(context,"nickname",nickname)
-//                            val sharedPreferences =
-//                                getSharedPreferences("userId", Context.MODE_PRIVATE)
-//                            val editor = sharedPreferences.edit()
-//                            editor.putInt("id", userId.toString().toInt())
-//                            editor.commit()
+
+                            val userProfile = UserProfile(1, email, name,birth,nickname,mobile,gender)
+
+                            Thread {
+                                database?.userProfileDao()?.insert(userProfile)
+                            }.start()
                         }
                     }
                 }
@@ -276,11 +283,6 @@ class LoginActivity : AppCompatActivity() {
 
     //네이버 로그인
     private fun naverLogin(context: Context) {
-
-        val database = Room.databaseBuilder(
-            applicationContext, UserDatabase::class.java,
-            "user-database"
-        ).build()
 
         val oAuthLoginCallback = object : OAuthLoginCallback {
 
@@ -315,6 +317,7 @@ class LoginActivity : AppCompatActivity() {
                         nickname = result.profile?.nickname.toString()
                         token = result.profile?.id.toString()
                         mobile = result.profile?.mobile.toString()
+                        age = result.profile?.age.toString()
 
                         Log.e("userName", "네이버 로그인한 유저 정보 - 이름 : $name")
                         Log.e("userEmail", "네이버 로그인한 유저 정보 - 이메일 : $email")
@@ -376,17 +379,11 @@ class LoginActivity : AppCompatActivity() {
                          *  여기까지 ------------------------------------------------------------
                          */
 
-                        val userProfile = UserProfile(1, email, name)
+                        val userProfile = UserProfile(1, email, name,birth,nickname,mobile,gender)
 
-                        Thread(Runnable {
-                            val userProfiles = database.userProfileDao().getAll()
-
-                            database.userProfileDao().insert(userProfile)
-
-                            userProfiles.forEach {
-                                Log.d("roomDatabase", "" + it.email)
-                            }
-                        }).start()
+                        Thread {
+                            database?.userProfileDao()?.insert(userProfile)
+                        }.start()
 
                         startActivity(Intent(context, MainActivity::class.java))
                         Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show()
